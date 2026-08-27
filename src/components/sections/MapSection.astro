@@ -1,0 +1,96 @@
+---
+import type { ContactSettings, DayHours, SpecialHours } from "@/lib/types";
+import { computeStatus } from "@/lib/status";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  contact: ContactSettings;
+  hours: DayHours[];
+  special: SpecialHours[];
+}
+const { contact, hours, special } = Astro.props;
+const status = computeStatus(hours, special);
+const maps = contact.mapsUrl;
+---
+<section class="bg-ivory" id="map">
+  <div class="container-page py-20 md:py-28 grid lg:grid-cols-2 gap-12 items-stretch">
+    <div data-reveal>
+      <p class="eyebrow">Location</p>
+      <h2 class="display-section mt-4 text-balance">Come see us.</h2>
+      <p class="lead mt-6 max-w-md">{contact.addressVerified}. Tap directions for our verified map location — we will keep this updated as details are confirmed.</p>
+
+      <div class="mt-8 space-y-4 text-sm">
+        <p class="flex items-center gap-3 text-ink/80"><Icon name="pin" size={18} class="text-gold" /> {contact.addressVerified}</p>
+        <p class="flex items-center gap-3 text-ink/80"><Icon name="phone" size={18} class="text-gold" /> <a href={`tel:+${contact.phone}`} class="hover:text-forest">+{contact.phone}</a></p>
+        <p class="flex items-center gap-3 text-ink/80"><Icon name="whatsapp" size={18} class="text-gold" /> <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener" class="hover:text-forest">WhatsApp</a></p>
+      </div>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={maps} target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full bg-forest text-ivory px-6 py-3.5 text-sm font-medium hover:bg-forest-deep transition-colors">
+          <Icon name="pin" size={16} /> Get Directions
+        </a>
+        <a href={maps} target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full border border-ink/20 px-6 py-3.5 text-sm font-medium hover:border-forest hover:text-forest transition-colors">
+          Open in Google Maps
+        </a>
+      </div>
+
+      <div class="mt-8 inline-flex items-center gap-2 text-sm bg-forest-deep text-ivory px-4 py-2.5 rounded-full" data-map-status>
+        <span class="w-2 h-2 rounded-full" style={`background:${status.open ? "#9fb09a" : "#d8c4a0"}`} data-map-dot></span>
+        <span data-map-label>{status.label} · {status.detail}</span>
+      </div>
+    </div>
+
+    <!-- Stylised map panel -->
+    <div data-reveal data-reveal-delay="1" class="relative rounded-lg overflow-hidden bg-forest-deep min-h-[20rem] lg:min-h-0" data-hours-json={JSON.stringify(hours)} data-special-json={JSON.stringify(special)}>
+      <svg viewBox="0 0 800 600" class="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect width="800" height="600" fill="#1f322a" />
+        <g stroke="#2c4439" stroke-width="14" fill="none">
+          <path d="M-20 180 H820 M-20 360 H820 M-20 520 H820" />
+          <path d="M160 -20 V620 M420 -20 V620 M640 -20 V620" />
+        </g>
+        <g stroke="#3a574a" stroke-width="3" fill="none" opacity="0.7">
+          <path d="M-20 90 H820 M-20 270 H820 M-20 450 H820 M80 -20 V620 M300 -20 V620 M540 -20 V620 M720 -20 V620" />
+        </g>
+        <g fill="#244034">
+          <rect x="40" y="220" width="90" height="110" rx="10" />
+          <rect x="200" y="220" width="170" height="110" rx="10" />
+          <rect x="460" y="220" width="140" height="110" rx="10" />
+          <rect x="640" y="220" width="120" height="110" rx="10" />
+          <rect x="40" y="400" width="200" height="90" rx="10" />
+          <rect x="300" y="400" width="90" height="90" rx="10" />
+          <rect x="460" y="400" width="240" height="90" rx="10" />
+        </g>
+      </svg>
+      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+        <span class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gold text-forest-deep shadow-lift">
+          <Icon name="pin" size={26} />
+        </span>
+        <p class="mt-3 text-ivory font-display text-xl">JABARI DENTAL</p>
+        <p class="text-ivory/70 text-sm">{contact.addressVerified}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { computeStatus } from "@/lib/status";
+  function initMapStatus() {
+    const sec = document.querySelector("[data-hours-json][data-special-json]");
+    const label = document.querySelector("[data-map-label]");
+    const dot = document.querySelector<HTMLElement>("[data-map-dot]");
+    if (!sec || !label) return;
+    let hours: any[] = [], special: any[] = [];
+    try {
+      hours = JSON.parse(sec.dataset.hoursJson || "[]");
+      special = JSON.parse(sec.dataset.specialJson || "[]");
+    } catch {}
+    function tick() {
+      const s = computeStatus(hours, special);
+      label.textContent = `${s.label} · ${s.detail}`;
+      if (dot) dot.style.background = s.open ? "#9fb09a" : "#d8c4a0";
+    }
+    tick();
+    setInterval(tick, 1000 * 30);
+  }
+  initMapStatus();
+</script>

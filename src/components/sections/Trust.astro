@@ -1,0 +1,21 @@
+---
+const values = [
+  { t: "Modern dentistry", s: "Considered, current care" },
+  { t: "Personalised care", s: "Planned around you" },
+  { t: "Comfort first", s: "A calm, easy visit" },
+  { t: "Human approach", s: "Real conversation" },
+];
+---
+<section class="bg-ivory border-b hairline">
+  <div class="container-page py-12 md:py-16">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-6">
+      {values.map((v, i) => (
+        <div data-reveal data-reveal-delay={String(i + 1)} class="relative pl-5">
+          <span class="absolute left-0 top-1 w-px h-8 bg-gold/50"></span>
+          <p class="font-display text-2xl md:text-3xl text-ink">{v.t}</p>
+          <p class="text-sm text-stone mt-1.5">{v.s}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /studio
+Disallow: /studio/
+Disallow: /api/
+Disallow: /*/studio
+
+Sitemap: https://jabaridental.com/sitemap-index.xml

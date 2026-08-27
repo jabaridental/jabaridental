@@ -1,0 +1,30 @@
+---
+import type { Treatment } from "@/lib/types";
+import SmartImage from "@/components/SmartImage.astro";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  treatment: Treatment;
+}
+const { treatment } = Astro.props;
+---
+<section class="bg-forest-deep text-ivory">
+  <div class="grid lg:grid-cols-2">
+    <div class="relative min-h-[22rem] lg:min-h-[34rem] overflow-hidden">
+      <SmartImage image={treatment.image} imgClass="hover:scale-105 transition-transform duration-700" class="h-full" sizes="(min-width:1024px) 50vw, 100vw" />
+    </div>
+    <div class="container-page py-16 md:py-24 flex flex-col justify-center" data-reveal>
+      <p class="eyebrow text-gold-soft">Featured treatment</p>
+      <h2 class="font-display text-4xl md:text-5xl mt-5 text-ivory text-balance">{treatment.name}</h2>
+      <p class="text-ivory/75 mt-6 max-w-md leading-relaxed">{treatment.shortDescription}</p>
+      <div class="mt-10 flex flex-wrap gap-3">
+        <a href={`/treatments/${treatment.slug}`} class="inline-flex items-center gap-2 rounded-full bg-ivory text-forest-deep px-6 py-3.5 text-sm font-medium hover:bg-white transition-colors">
+          Explore treatment <Icon name="arrow-right" size={16} />
+        </a>
+        <a href="/book" class="inline-flex items-center gap-2 rounded-full border border-ivory/40 px-6 py-3.5 text-sm font-medium hover:bg-ivory/10 transition-colors">
+          Book this treatment
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

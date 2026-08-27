@@ -1,0 +1,44 @@
+---
+import { getSite } from "@/lib/store";
+import Base from "@/layouts/Base.astro";
+
+export const prerender = false;
+const site = await getSite();
+---
+<Base title="Privacy Policy" description={`Privacy policy for ${site.name}.`}>
+  <section class="bg-forest-deep text-ivory pt-24 pb-14 md:pt-32 md:pb-16">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow text-gold-soft">Legal</p>
+      <h1 class="display-section mt-4 text-ivory">Privacy Policy</h1>
+      <p class="text-ivory/70 mt-4 text-sm">Last updated: {new Date().getFullYear()}. This is an editable placeholder — the clinic should review and complete it with its own details.</p>
+    </div>
+  </section>
+  <section class="bg-ivory">
+    <div class="container-page max-w-3xl py-16 space-y-8 text-stone leading-relaxed">
+      <div>
+        <h2 class="font-display text-2xl text-ink mb-3">Overview</h2>
+        <p>{site.name} ("we", "us") is committed to protecting your privacy. This policy explains, in general terms, what information we handle and why. Final wording should be supplied by the clinic and its legal adviser.</p>
+      </div>
+      <div>
+        <h2 class="font-display text-2xl text-ink mb-3">Information you provide</h2>
+        <p>When you message us (including via WhatsApp), call, or use this website, you may share contact details such as your name and phone number so we can respond and arrange care. We use this only to communicate with you about your enquiry.</p>
+      </div>
+      <div>
+        <h2 class="font-display text-2xl text-ink mb-3">Booking by WhatsApp</h2>
+        <p>Appointment requests are sent through WhatsApp to +{site && ""}the clinic's verified number. Messaging is handled by WhatsApp and is subject to its own privacy terms.</p>
+      </div>
+      <div>
+        <h2 class="font-display text-2xl text-ink mb-3">Analytics & cookies</h2>
+        <p>This site is built to respect your privacy. If analytics or non-essential cookies are added later, we will request your consent and update this policy.</p>
+      </div>
+      <div>
+        <h2 class="font-display text-2xl text-ink mb-3">Your rights</h2>
+        <p>You may ask us to correct or delete the personal information you have shared. Contact the clinic to make a request.</p>
+      </div>
+      <div>
+        <h2 class="font-display text-2xl text-ink mb-3">Contact</h2>
+        <p>For any privacy question, please reach the clinic via the contact details on this website.</p>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,35 @@
+---
+import type { Treatment } from "@/lib/types";
+import SmartImage from "@/components/SmartImage.astro";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  treatment: Treatment;
+  class?: string;
+}
+const { treatment, class: cls = "" } = Astro.props;
+---
+<a
+  href={`/treatments/${treatment.slug}`}
+  class={`group block ${cls}`}
+  data-reveal
+  aria-label={`${treatment.name} — view treatment`}
+>
+  <div class="relative aspect-[4/3] overflow-hidden rounded-md">
+    <SmartImage
+      image={treatment.image}
+      imgClass="transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-105"
+      class="h-full"
+      sizes="(min-width:768px) 33vw, 90vw"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-forest-deep/55 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    <div class="absolute bottom-4 left-4 right-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+      <span class="inline-flex items-center gap-1.5 text-ivory text-sm">
+        Explore treatment <Icon name="arrow-right" size={15} />
+      </span>
+    </div>
+  </div>
+  <p class="eyebrow-ink mt-5">{treatment.category}</p>
+  <h3 class="font-display text-2xl mt-2 text-ink group-hover:text-forest transition-colors">{treatment.name}</h3>
+  <p class="text-stone mt-2 text-sm leading-relaxed max-w-sm">{treatment.shortDescription}</p>
+</a>

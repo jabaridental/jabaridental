@@ -1,0 +1,38 @@
+---
+import type { ImageRef } from "@/lib/types";
+
+interface Props {
+  image: ImageRef;
+  class?: string;
+  imgClass?: string;
+  loading?: "lazy" | "eager";
+  priority?: boolean;
+  sizes?: string;
+  ratio?: string; // e.g. "4 / 5"
+  rounded?: string;
+}
+const {
+  image,
+  class: cls = "",
+  imgClass = "",
+  loading = "lazy",
+  priority = false,
+  sizes = "100vw",
+  ratio,
+  rounded = "rounded-md",
+} = Astro.props;
+
+const position = `${image.focalX || 50}% ${image.focalY || 50}%`;
+---
+<div class={`relative overflow-hidden ${rounded} ${cls}`} style={ratio ? `aspect-ratio:${ratio}` : undefined}>
+  <img
+    src={image.src}
+    alt={image.alt}
+    loading={priority ? "eager" : loading}
+    decoding="async"
+    fetchpriority={priority ? "high" : "auto"}
+    sizes={sizes}
+    style={`object-position:${position}`}
+    class={`w-full h-full object-cover ${imgClass}`}
+  />
+</div>

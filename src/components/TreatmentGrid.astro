@@ -1,0 +1,31 @@
+---
+import type { Treatment } from "@/lib/types";
+import TreatmentCard from "@/components/TreatmentCard.astro";
+import CtaButton from "@/components/CtaButton.astro";
+
+interface Props {
+  treatments: Treatment[];
+  heading?: string;
+  subheading?: string;
+}
+const { treatments, heading = "Your smile. Your care.", subheading = "A considered range of dental care, planned around you." } = Astro.props;
+---
+<section class="bg-ivory">
+  <div class="container-page py-20 md:py-28">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+      <div data-reveal>
+        <p class="eyebrow">Treatments</p>
+        <h2 class="display-section mt-4 text-balance">{heading}</h2>
+        {subheading && <p class="lead mt-5 max-w-xl">{subheading}</p>}
+      </div>
+      <a href="/treatments" data-reveal class="shrink-0 inline-flex items-center gap-2 text-forest text-sm font-medium group">
+        View all treatments
+        <span class="transition-transform duration-300 group-hover:translate-x-1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+    </div>
+
+    <div class="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
+      {treatments.map((t) => <TreatmentCard treatment={t} />)}
+    </div>
+  </div>
+</section>

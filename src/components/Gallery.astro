@@ -1,0 +1,162 @@
+---
+import type { GalleryItem } from "@/lib/types";
+import SmartImage from "@/components/SmartImage.astro";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  items: GalleryItem[];
+  heading?: string;
+  subheading?: string;
+}
+const { items, heading = "Smile Gallery", subheading = "Moments from the clinic, the team and the care we love to share." } = Astro.props;
+
+const categories = ["All", ...Array.from(new Set(items.map((i) => i.category).filter(Boolean)))];
+---
+<section class="bg-linen" data-gallery-section>
+  <div class="container-page py-20 md:py-28">
+    <div data-reveal class="max-w-2xl">
+      <p class="eyebrow">Gallery</p>
+      <h2 class="display-section mt-4 text-balance">{heading}</h2>
+      {subheading && <p class="lead mt-5">{subheading}</p>}
+    </div>
+
+    {categories.length > 1 && (
+      <div class="mt-10 flex flex-wrap gap-2" data-gallery-filters>
+        {categories.map((c, i) => (
+          <button
+            type="button"
+            data-filter={c}
+            class={`text-xs sm:text-sm px-4 py-2 rounded-full border transition-colors ${i === 0 ? "bg-forest text-ivory border-forest" : "border-ink/20 text-ink/70 hover:border-forest"}`}
+          >
+            {c.charAt(0).toUpperCase() + c.slice(1)}
+          </button>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-10 columns-2 md:columns-3 gap-5" data-gallery-grid>
+      {items.map((it, i) => (
+        <button
+          type="button"
+          data-gallery-item
+          data-category={it.category}
+          data-index={String(i)}
+          data-src={it.image.src}
+          data-alt={it.alt}
+          data-title={it.title}
+          data-desc={it.description}
+          class="group block w-full mb-5 break-inside-avoid overflow-hidden rounded-md relative"
+          aria-label={`Open image: ${it.title}`}
+        >
+          <SmartImage image={it.image} imgClass="group-hover:scale-105 transition-transform duration-700" sizes="(min-width:768px) 30vw, 45vw" />
+          <span class="absolute inset-0 bg-forest-deep/0 group-hover:bg-forest-deep/30 transition-colors duration-500"></span>
+          <span class="absolute bottom-3 left-3 right-3 text-ivory text-sm translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+            {it.title}
+          </span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div
+    id="lightbox"
+    class="fixed inset-0 z-[80] hidden items-center justify-center bg-forest-deep/95 p-4 sm:p-10"
+    data-lightbox
+    role="dialog"
+    aria-modal="true"
+    aria-label="Image viewer"
+  >
+    <button type="button" data-lb-close class="absolute top-4 right-4 sm:top-6 sm:right-6 text-ivory/80 hover:text-ivory w-11 h-11 inline-flex items-center justify-center" aria-label="Close">
+      <Icon name="close" size={26} />
+    </button>
+    <button type="button" data-lb-prev class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 text-ivory/80 hover:text-ivory w-12 h-12 inline-flex items-center justify-center" aria-label="Previous image">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button type="button" data-lb-next class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 text-ivory/80 hover:text-ivory w-12 h-12 inline-flex items-center justify-center" aria-label="Next image">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <figure class="max-w-4xl max-h-full flex flex-col items-center" data-lb-figure>
+      <img data-lb-img src="" alt="" class="max-h-[78vh] w-auto object-contain rounded-md" />
+      <figcaption class="text-ivory mt-4 text-center max-w-xl">
+        <p class="font-display text-2xl" data-lb-title></p>
+        <p class="text-ivory/70 text-sm mt-1" data-lb-desc></p>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<script>
+  function initGallery() {
+    const section = document.querySelector("[data-gallery-section]");
+    if (!section) return;
+    const grid = section.querySelector<HTMLElement>("[data-gallery-grid]")!;
+    const items = Array.from(grid.querySelectorAll<HTMLElement>("[data-gallery-item]"));
+    const filters = section.querySelectorAll<HTMLElement>("[data-gallery-filters] [data-filter]");
+
+    let visible = items.slice();
+
+    filters.forEach((f) =>
+      f.addEventListener("click", () => {
+        const cat = f.dataset.filter;
+        filters.forEach((x) => {
+          const on = x === f;
+          x.classList.toggle("bg-forest", on);
+          x.classList.toggle("text-ivory", on);
+          x.classList.toggle("border-forest", on);
+          x.classList.toggle("border-ink/20", !on);
+          x.classList.toggle("text-ink/70", !on);
+        });
+        visible = items.filter((it) => cat === "All" || it.dataset.category === cat);
+        items.forEach((it) => {
+          it.style.display = visible.includes(it) ? "" : "none";
+        });
+      })
+    );
+
+    const lb = section.querySelector<HTMLElement>("[data-lightbox]")!;
+    const lbImg = lb.querySelector<HTMLImageElement>("[data-lb-img]")!;
+    const lbTitle = lb.querySelector<HTMLElement>("[data-lb-title]")!;
+    const lbDesc = lb.querySelector<HTMLElement>("[data-lb-desc]")!;
+    let current = 0;
+
+    function show(i: number) {
+      const list = visible;
+      current = (i + list.length) % list.length;
+      const el = list[current];
+      lbImg.src = el.dataset.src || "";
+      lbImg.alt = el.dataset.alt || "";
+      lbTitle.textContent = el.dataset.title || "";
+      lbDesc.textContent = el.dataset.desc || "";
+    }
+    function open(i: number) {
+      show(i);
+      lb.classList.remove("hidden");
+      lb.classList.add("flex");
+      document.body.style.overflow = "hidden";
+      (lb.querySelector("[data-lb-close]") as HTMLElement)?.focus();
+    }
+    function close() {
+      lb.classList.add("hidden");
+      lb.classList.remove("flex");
+      document.body.style.overflow = "";
+    }
+
+    items.forEach((it) =>
+      it.addEventListener("click", () => open(visible.indexOf(it)))
+    );
+    lb.querySelector("[data-lb-close]")?.addEventListener("click", close);
+    lb.querySelector("[data-lb-prev]")?.addEventListener("click", () => show(current - 1));
+    lb.querySelector("[data-lb-next]")?.addEventListener("click", () => show(current + 1));
+    lb.addEventListener("click", (e) => {
+      if (e.target === lb) close();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (lb.classList.contains("hidden")) return;
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowLeft") show(current - 1);
+      if (e.key === "ArrowRight") show(current + 1);
+    });
+  }
+  initGallery();
+</script>

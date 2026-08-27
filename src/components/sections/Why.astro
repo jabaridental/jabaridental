@@ -1,0 +1,38 @@
+---
+import SmartImage from "@/components/SmartImage.astro";
+import type { ImageRef } from "@/lib/types";
+
+interface Props {
+  image: ImageRef;
+}
+const { image } = Astro.props;
+const points = [
+  { h: "Personalised care", p: "We begin with listening. Your goals shape every recommendation we make, and nothing is one-size-fits-all." },
+  { h: "Comfort", p: "From the first message to the final check, we design the experience to feel unhurried, quiet and considered." },
+  { h: "Your long-term health", p: "We plan for years, not just the next visit — helping you protect your oral health with clarity, not pressure." },
+];
+---
+<section class="bg-linen">
+  <div class="container-page py-20 md:py-32 grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <div data-reveal>
+      <p class="eyebrow">Why JABARI DENTAL</p>
+      <h2 class="display-section mt-5">Dentistry that<br /><span class="italic text-forest">feels different.</span></h2>
+      <div class="mt-10 space-y-7 max-w-md">
+        {points.map((pt) => (
+          <div>
+            <h3 class="font-display text-xl text-ink">{pt.h}</h3>
+            <p class="text-stone mt-2 leading-relaxed">{pt.p}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div data-reveal data-reveal-delay="2" class="relative">
+      <div class="aspect-[4/5] overflow-hidden rounded-lg shadow-lift">
+        <SmartImage image={image} imgClass="hover:scale-105 transition-transform duration-700" class="h-full" sizes="(min-width:1024px) 40vw, 90vw" />
+      </div>
+      <div class="absolute -bottom-6 -left-6 hidden md:block bg-forest text-ivory p-6 rounded-md max-w-[15rem] shadow-lift">
+        <p class="font-display text-lg leading-snug">"A clinic that treats your time and your comfort as seriously as your teeth."</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,93 @@
+---
+import type { Hero, ContactSettings } from "@/lib/types";
+import { buildWhatsappUrl } from "@/lib/whatsapp";
+import SmartImage from "@/components/SmartImage.astro";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  hero: Hero;
+  contact: ContactSettings;
+}
+const { hero, contact } = Astro.props;
+const wa = buildWhatsappUrl(contact.whatsapp, "Hello JABARI DENTAL, I would like to book an appointment.");
+const tel = `tel:+${contact.phone}`;
+const maps = contact.mapsUrl;
+---
+<section class="relative min-h-[88vh] flex items-end overflow-hidden bg-forest-deep">
+  <div class="absolute inset-0" data-parallax>
+    <SmartImage image={hero.image} priority={true} rounded="" imgClass="hero-zoom" class="h-full w-full" />
+    <div class="absolute inset-0 bg-gradient-to-t from-forest-deep/85 via-forest-deep/35 to-forest-deep/20"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-forest-deep/70 to-transparent"></div>
+  </div>
+
+  <div class="crystal-glow" style="top:-12%; right:-6%; width:40vw; height:40vw;" aria-hidden="true"></div>
+
+  <div class="container-page relative z-10 py-20 md:py-28 text-ivory">
+    <p class="eyebrow text-gold-soft" data-reveal>{hero.eyebrow}</p>
+    <h1 class="display-hero mt-5 max-w-4xl" data-reveal data-reveal-delay="1">
+      {hero.headline}<br />
+      <span class="text-gold-soft italic">{hero.headlineAccent}</span>
+    </h1>
+    <p class="lead text-ivory/85 mt-7 max-w-xl" data-reveal data-reveal-delay="2">{hero.subhead}</p>
+
+    <div class="mt-10 flex flex-col sm:flex-row gap-3" data-reveal data-reveal-delay="3">
+      <a
+        href="/book"
+        class="crystal-shimmer inline-flex items-center justify-center gap-2 rounded-full bg-ivory text-forest-deep px-7 py-4 text-sm font-medium hover:bg-white hover:-translate-y-0.5 transition-all shadow-soft"
+      >
+        {hero.primaryCtaLabel} <Icon name="arrow-right" size={16} />
+      </a>
+      <a
+        href="/treatments"
+        class="inline-flex items-center justify-center gap-2 rounded-full border border-ivory/40 text-ivory px-7 py-4 text-sm font-medium hover:bg-ivory/10 transition-colors"
+      >
+        {hero.secondaryCtaLabel}
+      </a>
+    </div>
+
+    <div class="mt-12 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm text-ivory/80" data-reveal data-reveal-delay="4">
+      <span class="inline-flex items-center gap-2"><Icon name="pin" size={16} class="text-gold-soft" /> {contact.addressVerified}</span>
+      <a href={wa} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-ivory">
+        <Icon name="whatsapp" size={16} class="text-gold-soft" /> {hero.whatsappLabel}
+      </a>
+      <span class="inline-flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-sage"></span> {hero.statusNote}</span>
+    </div>
+  </div>
+
+  <!-- discreet quick contact -->
+  <div class="absolute top-6 right-6 z-10 hidden md:flex flex-col gap-2">
+    <a href={tel} aria-label="Call" class="w-11 h-11 rounded-full bg-ivory/10 backdrop-blur hover:bg-ivory/20 text-ivory inline-flex items-center justify-center transition-colors">
+      <Icon name="phone" size={18} />
+    </a>
+    <a href={wa} target="_blank" rel="noopener" aria-label="WhatsApp" class="w-11 h-11 rounded-full bg-ivory/10 backdrop-blur hover:bg-ivory/20 text-ivory inline-flex items-center justify-center transition-colors">
+      <Icon name="whatsapp" size={18} />
+    </a>
+      <a href={maps} target="_blank" rel="noopener" aria-label="Directions" class="w-11 h-11 rounded-full bg-ivory/10 backdrop-blur hover:bg-ivory/20 text-ivory inline-flex items-center justify-center transition-colors">
+        <Icon name="pin" size={18} />
+      </a>
+    </div>
+  </div>
+
+  <script is:inline>
+    const el = document.querySelector("[data-parallax]");
+    if (el && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      let ticking = false;
+      const update = () => {
+        const y = window.scrollY;
+        el.style.transform = `translate3d(0, ${Math.min(y * 0.18, 160)}px, 0) scale(1.08)`;
+        ticking = false;
+      };
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(update);
+          }
+        },
+        { passive: true }
+      );
+      update();
+    }
+  </script>
+</section>

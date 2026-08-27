@@ -1,0 +1,103 @@
+---
+import { getTreatments, getContact } from "@/lib/store";
+import type { Faq } from "@/lib/types";
+import Base from "@/layouts/Base.astro";
+import SmartImage from "@/components/SmartImage.astro";
+import FAQ from "@/components/FAQ.astro";
+import FinalCTA from "@/components/sections/FinalCTA.astro";
+import CtaButton from "@/components/CtaButton.astro";
+import Icon from "@/components/Icon.astro";
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+const treatments = await getTreatments();
+const treatment = treatments.find((t) => t.slug === slug);
+const contact = await getContact();
+
+if (!treatment) return Astro.redirect("/treatments");
+
+const related = treatments.filter((t) => t.slug !== slug).slice(0, 3);
+const faqs: Faq[] = (treatment.faqs || []).map((f, i) => ({
+  id: `tf${i}`,
+  question: f.question,
+  answer: f.answer,
+  displayOrder: i + 1,
+  published: true,
+}));
+---
+<Base title={treatment.seoTitle || treatment.name} description={treatment.seoDescription || treatment.shortDescription} image={treatment.image.src}>
+  <section class="bg-forest-deep text-ivory pt-24 pb-16 md:pt-32 md:pb-20">
+    <div class="container-page">
+      <nav class="text-ivory/60 text-sm mb-6" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-ivory">Home</a> <span class="mx-2">/</span>
+        <a href="/treatments" class="hover:text-ivory">Treatments</a> <span class="mx-2">/</span>
+        <span class="text-ivory">{treatment.name}</span>
+      </nav>
+      <p class="eyebrow text-gold-soft">{treatment.category}</p>
+      <h1 class="display-section mt-4 text-ivory text-balance max-w-3xl">{treatment.name}</h1>
+      <p class="lead text-ivory/80 mt-6 max-w-2xl">{treatment.shortDescription}</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <CtaButton href="/book" label="Book this treatment" variant="primary" icon="calendar" />
+        <CtaButton href={`https://wa.me/${contact.whatsapp}`} label="Ask on WhatsApp" variant="secondary" icon="whatsapp" external={true} />
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-ivory">
+    <div class="container-page py-16 md:py-24 grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+      <div data-reveal class="order-2 lg:order-1">
+        <h2 class="font-display text-3xl text-ink">About this treatment</h2>
+        <div class="mt-5 space-y-4 text-stone leading-relaxed max-w-prose">
+          {treatment.longDescription.split("\n\n").map((p) => <p>{p}</p>)}
+        </div>
+        {(treatment.duration || (treatment.priceVisible && treatment.price)) && (
+          <div class="mt-8 grid grid-cols-2 gap-4">
+            {treatment.duration && (
+              <div class="bg-linen rounded-md p-5">
+                <p class="text-xs uppercase tracking-wide text-stone">Typical duration</p>
+                <p class="font-display text-xl text-ink mt-1">{treatment.duration}</p>
+              </div>
+            )}
+            {treatment.priceVisible && treatment.price && (
+              <div class="bg-linen rounded-md p-5">
+                <p class="text-xs uppercase tracking-wide text-stone">From</p>
+                <p class="font-display text-xl text-ink mt-1">{treatment.price}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      <div data-reveal data-reveal-delay="1" class="order-1 lg:order-2">
+        <div class="aspect-[4/5] overflow-hidden rounded-lg shadow-lift">
+          <SmartImage image={treatment.image} class="h-full" sizes="(min-width:1024px) 40vw, 100vw" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {faqs.length > 0 && <FAQ faqs={faqs} />}
+
+  {related.length > 0 && (
+    <section class="bg-linen">
+      <div class="container-page py-16 md:py-20">
+        <h2 class="font-display text-3xl text-ink mb-8">Related treatments</h2>
+        <div class="grid sm:grid-cols-3 gap-6">
+          {related.map((r) => (
+            <a href={`/treatments/${r.slug}`} class="group block bg-ivory rounded-md overflow-hidden border border-ink/10">
+              <div class="aspect-[4/3] overflow-hidden">
+                <SmartImage image={r.image} imgClass="group-hover:scale-105 transition-transform duration-700" class="h-full" sizes="(min-width:768px) 30vw, 90vw" />
+              </div>
+              <div class="p-5">
+                <p class="eyebrow-ink">{r.category}</p>
+                <h3 class="font-display text-xl mt-1 text-ink group-hover:text-forest transition-colors">{r.name}</h3>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <FinalCTA contact={contact} />
+</Base>

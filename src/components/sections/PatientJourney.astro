@@ -1,0 +1,30 @@
+---
+const steps = [
+  { n: "01", t: "Book", d: "Tell us what you need. A quick WhatsApp message is enough — no account, no forms." },
+  { n: "02", t: "Meet", d: "Arrive to a calm space and a real conversation, not a clipboard and a wait." },
+  { n: "03", t: "Understand", d: "We explain clearly, with a simple plan you can actually follow and trust." },
+  { n: "04", t: "Care", d: "Thoughtful treatment and gentle follow-up that respects your time and comfort." },
+];
+---
+<section class="bg-ivory">
+  <div class="container-page py-20 md:py-32">
+    <div data-reveal>
+      <p class="eyebrow">Patient journey</p>
+      <h2 class="display-section mt-4 text-balance">Your visit.<br /><span class="italic text-forest">Made simple.</span></h2>
+    </div>
+    <div class="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-14">
+      {steps.map((s, i) => (
+        <div data-reveal data-reveal-delay={String(i + 1)} class="relative">
+          <span class="font-display text-5xl md:text-6xl text-gold/70">{s.n}</span>
+          <h3 class="font-display text-3xl mt-4 text-ink">{s.t}</h3>
+          <p class="text-stone mt-3 leading-relaxed">{s.d}</p>
+          {i < steps.length - 1 && (
+            <span class="hidden lg:block absolute top-6 -right-6 text-ink/15" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

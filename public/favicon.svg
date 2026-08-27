@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14.08" fill="#00264F"/>
+  <rect x="3.84" y="3.84" width="56.32" height="56.32" rx="11.52" fill="none" stroke="#b08d57" stroke-opacity="0.5" stroke-width="0.768"/>
+  <text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, serif" font-size="33.28" fill="#f6f1e8">J</text>
+  <line x1="20.48" y1="47.36" x2="43.52" y2="47.36" stroke="#b08d57" stroke-width="1.28"/>
+</svg>

@@ -1,0 +1,23 @@
+---
+import { getGallery, getContact } from "@/lib/store";
+import Base from "@/layouts/Base.astro";
+import Gallery from "@/components/Gallery.astro";
+import FinalCTA from "@/components/sections/FinalCTA.astro";
+
+export const prerender = false;
+
+const gallery = await getGallery();
+const contact = await getContact();
+---
+<Base title="Smile Gallery" description="A visual look at the JABARI DENTAL clinic, team and care in Kampala.">
+  <section class="bg-forest-deep text-ivory pt-24 pb-16 md:pt-32 md:pb-20">
+    <div class="container-page">
+      <p class="eyebrow text-gold-soft">Smile Gallery</p>
+      <h1 class="display-hero mt-5 max-w-4xl text-ivory text-balance">Moments from<br />the clinic.</h1>
+      <p class="lead text-ivory/80 mt-7 max-w-xl">A quiet look at our spaces, our team and the care we share. Tap any image to view it larger.</p>
+    </div>
+  </section>
+
+  <Gallery items={gallery} heading="The gallery" subheading="Filter by category, or just browse." />
+  <FinalCTA contact={contact} />
+</Base>

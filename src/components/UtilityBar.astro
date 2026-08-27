@@ -1,0 +1,96 @@
+---
+import type { DayHours, SpecialHours } from "@/lib/types";
+import { computeStatus, formatKampalaTime } from "@/lib/status";
+
+interface Props {
+  hours: DayHours[];
+  special: SpecialHours[];
+  siteName: string;
+  location: string;
+}
+const { hours, special, siteName, location } = Astro.props;
+const initial = computeStatus(hours, special);
+const initialTime = formatKampalaTime();
+---
+<div
+  class="bg-forest-deep text-ivory/90 text-[0.7rem] tracking-wide"
+  data-hours-json={JSON.stringify(hours)}
+  data-special-json={JSON.stringify(special)}
+>
+  <div class="container-page flex items-center justify-between h-[var(--utility-h)]">
+    <span class="uppercase tracking-[0.18em] text-ivory/70 hidden sm:block">
+      {siteName} · {location}
+    </span>
+    <span class="sm:hidden uppercase tracking-[0.18em] text-ivory/70">{location}</span>
+    <div class="flex items-center gap-3 sm:gap-5" data-utility>
+      <span class="inline-flex items-center gap-1.5" data-status>
+        <span
+          class="inline-block w-1.5 h-1.5 rounded-full"
+          style={`background:${initial.open ? "var(--color-sage)" : "#d8c4a0"}`}
+          data-status-dot
+        ></span>
+        <span data-status-label class="uppercase tracking-[0.16em]">{initial.label}</span>
+        <span class="text-ivory/55 hidden sm:inline" data-status-detail>· {initial.detail}</span>
+      </span>
+      <span class="hidden sm:inline-block text-ivory/40" aria-hidden="true">|</span>
+      <span class="tabular-nums tracking-[0.12em]" data-clock>{initialTime}</span>
+      <button
+        type="button"
+        data-theme-toggle
+        aria-label="Toggle dark mode"
+        title="Toggle dark mode"
+        class="ml-1 inline-flex items-center justify-center w-7 h-7 rounded-full hover:bg-ivory/15 text-ivory/80 transition-colors"
+      >
+        <span data-theme-icon aria-hidden="true">☾</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { computeStatus, formatKampalaTime } from "@/lib/status";
+  function initUtility() {
+    const bar = document.querySelector<HTMLElement>("[data-hours-json]");
+    if (!bar) return;
+    let hours: any[] = [];
+    let special: any[] = [];
+    try {
+      hours = JSON.parse(bar.dataset.hoursJson || "[]");
+      special = JSON.parse(bar.dataset.specialJson || "[]");
+    } catch {}
+    const label = document.querySelector<HTMLElement>("[data-status-label]");
+    const detail = document.querySelector<HTMLElement>("[data-status-detail]");
+    const dot = document.querySelector<HTMLElement>("[data-status-dot]");
+    const clock = document.querySelector<HTMLElement>("[data-clock]");
+
+    function tick() {
+      const status = computeStatus(hours, special);
+      if (label) label.textContent = status.label;
+      if (detail) detail.textContent = `· ${status.detail}`;
+      if (dot) dot.style.background = status.open ? "var(--color-sage)" : "#d8c4a0";
+      if (clock) clock.textContent = formatKampalaTime();
+    }
+    tick();
+    setInterval(tick, 1000 * 20);
+    setInterval(() => {
+      if (clock) clock.textContent = formatKampalaTime();
+    }, 1000);
+  }
+  initUtility();
+
+  // Dark mode toggle
+  const tBtn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+  const tIcon = document.querySelector<HTMLElement>("[data-theme-icon]");
+  function syncThemeIcon() {
+    if (!tIcon) return;
+    tIcon.textContent = document.documentElement.classList.contains("dark") ? "☀" : "☾";
+  }
+  tBtn?.addEventListener("click", () => {
+    const isDark = document.documentElement.classList.toggle("dark");
+    try {
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    } catch {}
+    syncThemeIcon();
+  });
+  syncThemeIcon();
+</script>

@@ -1,0 +1,56 @@
+---
+import type { Announcement } from "@/lib/types";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  announcements: Announcement[];
+}
+const { announcements } = Astro.props;
+const bar = announcements.find((a) => a.style === "bar") || announcements[0];
+if (!bar) {
+  // render nothing
+}
+---
+{bar && (
+  <div
+    class="bg-gold text-forest-deep text-[0.78rem] tracking-wide"
+    data-announcement={bar.id}
+    data-announcement-dismissable
+  >
+    <div class="container-page flex items-center justify-center gap-3 py-2 text-center">
+      <span class="font-medium">{bar.title}</span>
+      {bar.message && <span class="hidden md:inline text-forest-deep/80">— {bar.message}</span>}
+      {bar.ctaLabel && bar.ctaUrl && (
+        <a
+          href={bar.ctaUrl}
+          class="inline-flex items-center gap-1 underline underline-offset-4 decoration-forest-deep/40 hover:decoration-forest-deep font-medium"
+        >
+          {bar.ctaLabel}
+          <Icon name="arrow-right" size={14} />
+        </a>
+      )}
+      <button
+        type="button"
+        class="absolute right-3 md:right-6 opacity-60 hover:opacity-100"
+        data-announcement-close
+        aria-label="Dismiss announcement"
+      >
+        <Icon name="close" size={14} />
+      </button>
+    </div>
+  </div>
+)}
+
+<script>
+  const bars = document.querySelectorAll<HTMLElement>("[data-announcement-dismissable]");
+  bars.forEach((b) => {
+    const id = b.dataset.announcement;
+    if (id && localStorage.getItem(`ann-${id}`) === "1") {
+      b.style.display = "none";
+    }
+    b.querySelector("[data-announcement-close]")?.addEventListener("click", () => {
+      b.style.display = "none";
+      if (id) localStorage.setItem(`ann-${id}`, "1");
+    });
+  });
+</script>

@@ -1,0 +1,27 @@
+---
+import { getContact, getHours, getSpecialHours, getFaqs } from "@/lib/store";
+import Base from "@/layouts/Base.astro";
+import MapSection from "@/components/sections/MapSection.astro";
+import ContactSection from "@/components/sections/ContactSection.astro";
+import FAQ from "@/components/FAQ.astro";
+
+export const prerender = false;
+
+const contact = await getContact();
+const hours = await getHours();
+const special = await getSpecialHours();
+const faqs = await getFaqs();
+---
+<Base title="Contact" description="Get in touch with JABARI DENTAL in Kampala — call, WhatsApp, visit or book online.">
+  <section class="bg-forest-deep text-ivory pt-24 pb-16 md:pt-32 md:pb-20">
+    <div class="container-page">
+      <p class="eyebrow text-gold-soft">Contact</p>
+      <h1 class="display-hero mt-5 max-w-4xl text-ivory text-balance">We'd love to<br />hear from you.</h1>
+      <p class="lead text-ivory/80 mt-7 max-w-xl">Reach us by phone, WhatsApp or visit. However you prefer, we'll help you take the next step.</p>
+    </div>
+  </section>
+
+  <MapSection contact={contact} hours={hours} special={special} />
+  <ContactSection contact={contact} hours={hours} special={special} />
+  <FAQ faqs={faqs} />
+</Base>

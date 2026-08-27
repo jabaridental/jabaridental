@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Local env (secrets)
+.env
+.env.local
+
+# Runtime content store (seeded from src/data/seed.ts on first run)
+data/
+
+# Build output
+dist/
+.astro/
+
+# Editor / OS
+.DS_Store
+*.log

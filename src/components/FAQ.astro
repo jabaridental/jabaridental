@@ -1,0 +1,93 @@
+---
+import type { Faq } from "@/lib/types";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  faqs: Faq[];
+}
+const { faqs } = Astro.props;
+---
+<section class="bg-linen">
+  <div class="container-page py-20 md:py-28 grid lg:grid-cols-12 gap-12">
+    <div class="lg:col-span-4" data-reveal>
+      <p class="eyebrow">FAQ</p>
+      <h2 class="display-section mt-4 text-balance">Good to<br />know.</h2>
+      <p class="lead mt-6 max-w-sm">Honest, straightforward answers. Anything else? Message us on WhatsApp.</p>
+      <a href="/contact" class="inline-flex items-center gap-2 text-forest text-sm font-medium mt-6">Ask a question <Icon name="arrow-right" size={15} /></a>
+    </div>
+
+    <div class="lg:col-span-8 divide-y divide-ink/10 border-t border-ink/10" data-faq>
+      {faqs.map((f, i) => (
+        <div data-faq-item>
+          <button
+            type="button"
+            data-faq-trigger
+            class="w-full flex items-center justify-between gap-6 py-6 text-left group"
+            aria-expanded="false"
+            aria-controls={`faq-panel-${i}`}
+            id={`faq-trigger-${i}`}
+          >
+            <span class="font-display text-xl md:text-2xl text-ink group-hover:text-forest transition-colors">{f.question}</span>
+            <span class="shrink-0 w-9 h-9 rounded-full border border-ink/20 inline-flex items-center justify-center text-forest group-hover:border-forest transition-colors" data-faq-icon>
+              <Icon name="plus" size={18} />
+            </span>
+          </button>
+          <div id={`faq-panel-${i}`} role="region" aria-labelledby={`faq-trigger-${i}`} class="overflow-hidden max-h-0 transition-[max-height] duration-500 ease-[var(--ease-soft)]">
+            <p class="text-stone pb-7 leading-relaxed max-w-2xl">{f.answer}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  function initFaq() {
+    const root = document.querySelector("[data-faq]");
+    if (!root) return;
+    root.querySelectorAll<HTMLElement>("[data-faq-item]").forEach((item) => {
+      const btn = item.querySelector<HTMLButtonElement>("[data-faq-trigger]")!;
+      const panel = item.querySelector<HTMLElement>("[role='region']")!;
+      const icon = btn.querySelector("[data-faq-icon]");
+      btn.addEventListener("click", () => {
+        const open = btn.getAttribute("aria-expanded") === "true";
+        // close others
+        root.querySelectorAll<HTMLElement>("[data-faq-item]").forEach((other) => {
+          if (other !== item) {
+            const ob = other.querySelector<HTMLButtonElement>("[data-faq-trigger]")!;
+            const op = other.querySelector<HTMLElement>("[role='region']")!;
+            ob.setAttribute("aria-expanded", "false");
+            op.style.maxHeight = "0px";
+            ob.querySelector("[data-faq-icon]")?.replaceChildren(iconPlus());
+          }
+        });
+        if (open) {
+          btn.setAttribute("aria-expanded", "false");
+          panel.style.maxHeight = "0px";
+          btn.querySelector("[data-faq-icon]")?.replaceChildren(iconPlus());
+        } else {
+          btn.setAttribute("aria-expanded", "true");
+          panel.style.maxHeight = panel.scrollHeight + "px";
+          btn.querySelector("[data-faq-icon]")?.replaceChildren(iconMinus());
+        }
+      });
+    });
+  }
+  function iconPlus() {
+    const ns = "http://www.w3.org/2000/svg";
+    const s = document.createElementNS(ns, "svg");
+    s.setAttribute("width", "18"); s.setAttribute("height", "18"); s.setAttribute("viewBox", "0 0 24 24");
+    s.setAttribute("fill", "none"); s.setAttribute("stroke", "currentColor"); s.setAttribute("stroke-width", "1.6");
+    const p = document.createElementNS(ns, "path"); p.setAttribute("d", "M12 5v14M5 12h14"); p.setAttribute("stroke-linecap", "round");
+    s.appendChild(p); return s;
+  }
+  function iconMinus() {
+    const ns = "http://www.w3.org/2000/svg";
+    const s = document.createElementNS(ns, "svg");
+    s.setAttribute("width", "18"); s.setAttribute("height", "18"); s.setAttribute("viewBox", "0 0 24 24");
+    s.setAttribute("fill", "none"); s.setAttribute("stroke", "currentColor"); s.setAttribute("stroke-width", "1.6");
+    const p = document.createElementNS(ns, "path"); p.setAttribute("d", "M5 12h14"); p.setAttribute("stroke-linecap", "round");
+    s.appendChild(p); return s;
+  }
+  initFaq();
+</script>

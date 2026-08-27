@@ -1,0 +1,28 @@
+---
+import { getArticles, getContact } from "@/lib/store";
+import Base from "@/layouts/Base.astro";
+import ArticleGrid from "@/components/ArticleGrid.astro";
+import FinalCTA from "@/components/sections/FinalCTA.astro";
+
+export const prerender = false;
+
+const articles = await getArticles();
+const contact = await getContact();
+---
+<Base title="Articles" description="Careful, useful reading on oral health, treatment education and your visit to JABARI DENTAL.">
+  <section class="bg-forest-deep text-ivory pt-24 pb-16 md:pt-32 md:pb-20">
+    <div class="container-page">
+      <p class="eyebrow text-gold-soft">Journal</p>
+      <h1 class="display-hero mt-5 max-w-4xl text-ivory text-balance">Notes on a<br />healthier smile.</h1>
+      <p class="lead text-ivory/80 mt-7 max-w-xl">Practical, plain-language reading on oral health and what to expect from your care.</p>
+    </div>
+  </section>
+
+  {articles.length > 0 ? (
+    <ArticleGrid articles={articles} heading="All articles" subheading="The latest from the clinic." showViewAll={false} />
+  ) : (
+    <section class="bg-ivory"><div class="container-page py-20 text-stone">Articles are on the way. In the meantime, feel free to reach out with any questions.</div></section>
+  )}
+
+  <FinalCTA contact={contact} />
+</Base>

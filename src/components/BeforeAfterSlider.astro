@@ -1,0 +1,137 @@
+---
+import type { BeforeAfterCase } from "@/lib/types";
+import SmartImage from "@/components/SmartImage.astro";
+
+interface Props {
+  cases: BeforeAfterCase[];
+}
+const { cases } = Astro.props;
+if (cases.length === 0) {
+  // nothing rendered; host page should skip the section
+}
+---
+{cases.length > 0 && (
+  <section class="bg-ivory" data-ba-section>
+    <div class="container-page py-20 md:py-28">
+      <div data-reveal class="max-w-2xl">
+        <p class="eyebrow">Results</p>
+        <h2 class="display-section mt-4 text-balance">Real outcomes,<br /><span class="italic text-forest">shared with consent.</span></h2>
+        <p class="lead mt-5">
+          Only cases uploaded and explicitly approved by the clinic are shown here. Drag, tap or use arrow keys to compare.
+        </p>
+      </div>
+
+      <div class="mt-12 max-w-3xl" data-ba data-cases={JSON.stringify(cases.map((c) => ({
+        before: c.beforeImage.src,
+        after: c.afterImage.src,
+        beforeAlt: c.beforeImage.alt,
+        afterAlt: c.afterImage.alt,
+        name: c.treatmentName,
+        desc: c.description,
+        duration: c.duration,
+      })))}>
+        <div class="relative select-none rounded-lg overflow-hidden aspect-[16/10] bg-forest-deep" data-ba-stage>
+          <img data-ba-after src={cases[0].afterImage.src} alt={cases[0].afterImage.alt} class="absolute inset-0 w-full h-full object-cover" draggable="false" />
+          <img data-ba-before src={cases[0].beforeImage.src} alt={cases[0].beforeImage.alt} class="absolute inset-0 w-full h-full object-cover" style="clip-path: inset(0 50% 0 0)" draggable="false" />
+          <span class="absolute top-4 left-4 bg-forest-deep/80 text-ivory text-xs uppercase tracking-[0.2em] px-3 py-1.5 rounded-full" data-ba-label-before>BEFORE</span>
+          <span class="absolute top-4 right-4 bg-ivory/85 text-forest-deep text-xs uppercase tracking-[0.2em] px-3 py-1.5 rounded-full" data-ba-label-after>AFTER</span>
+
+          <div class="absolute inset-y-0 z-10" style="left:50%" data-ba-handle-line>
+            <span class="absolute top-0 bottom-0 w-px bg-ivory/90 -translate-x-1/2"></span>
+            <button
+              type="button"
+              data-ba-handle
+              class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-ivory text-forest-deep shadow-lift inline-flex items-center justify-center cursor-ew-resize focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+              aria-label="Compare before and after"
+              role="slider"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="50"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 6l-4 6 4 6M15 6l4 6-4 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <input type="range" min="0" max="100" value="50" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize" data-ba-range aria-label="Before and after comparison slider" />
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h3 class="font-display text-2xl text-ink" data-ba-name>{cases[0].treatmentName}</h3>
+            <p class="text-stone text-sm mt-1 max-w-lg" data-ba-desc>{cases[0].description}</p>
+            {cases[0].duration && <p class="text-xs text-mist mt-1" data-ba-duration>Timeline: {cases[0].duration}</p>}
+          </div>
+          {cases.length > 1 && (
+            <div class="flex gap-2 flex-wrap" data-ba-pills>
+              {cases.map((c, i) => (
+                <button
+                  type="button"
+                  data-ba-pill={String(i)}
+                  class={`text-xs px-3 py-1.5 rounded-full border ${i === 0 ? "bg-forest text-ivory border-forest" : "border-ink/20 text-ink/70 hover:border-forest"}`}
+                  aria-label={`Show case ${i + 1}: ${c.treatmentName}`}
+                >
+                  {c.treatmentName}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+  function initBA() {
+    const root = document.querySelector<HTMLElement>("[data-ba]");
+    if (!root) return;
+    const cases = JSON.parse(root.dataset.cases || "[]");
+    let active = 0;
+    let pos = 50;
+    const beforeImg = root.querySelector<HTMLImageElement>("[data-ba-before]")!;
+    const afterImg = root.querySelector<HTMLImageElement>("[data-ba-after]")!;
+    const line = root.querySelector<HTMLElement>("[data-ba-handle-line]")!;
+    const handle = root.querySelector<HTMLElement>("[data-ba-handle]")!;
+    const range = root.querySelector<HTMLInputElement>("[data-ba-range]")!;
+    const nameEl = root.querySelector<HTMLElement>("[data-ba-name]")!;
+    const descEl = root.querySelector<HTMLElement>("[data-ba-desc]")!;
+    const durEl = root.querySelector<HTMLElement>("[data-ba-duration]")!;
+
+    function apply() {
+      beforeImg.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
+      line.style.left = `${pos}%`;
+      handle.setAttribute("aria-valuenow", String(Math.round(pos)));
+      range.value = String(Math.round(pos));
+    }
+    function load(i: number) {
+      active = i;
+      const c = cases[i];
+      beforeImg.src = c.before;
+      beforeImg.alt = c.beforeAlt;
+      afterImg.src = c.after;
+      afterImg.alt = c.afterAlt;
+      nameEl.textContent = c.name;
+      descEl.textContent = c.desc;
+      if (durEl) durEl.textContent = c.duration ? `Timeline: ${c.duration}` : "";
+      document.querySelectorAll<HTMLElement>("[data-ba-pill]").forEach((p, idx) => {
+        const on = idx === i;
+        p.classList.toggle("bg-forest", on);
+        p.classList.toggle("text-ivory", on);
+        p.classList.toggle("border-forest", on);
+        p.classList.toggle("border-ink/20", !on);
+        p.classList.toggle("text-ink/70", !on);
+      });
+    }
+
+    range.addEventListener("input", () => {
+      pos = Number(range.value);
+      apply();
+    });
+
+    document.querySelectorAll<HTMLElement>("[data-ba-pill]").forEach((p) => {
+      p.addEventListener("click", () => load(Number(p.dataset.baPill)));
+    });
+
+    apply();
+  }
+  initBA();
+</script>

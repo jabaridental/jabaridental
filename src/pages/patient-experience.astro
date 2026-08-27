@@ -1,0 +1,40 @@
+---
+import { getContact, getHours, getSpecialHours, getFaqs, getGallery } from "@/lib/store";
+import Base from "@/layouts/Base.astro";
+import PatientJourney from "@/components/sections/PatientJourney.astro";
+import ClinicExperience from "@/components/sections/ClinicExperience.astro";
+import MapSection from "@/components/sections/MapSection.astro";
+import FAQ from "@/components/FAQ.astro";
+import FinalCTA from "@/components/sections/FinalCTA.astro";
+
+export const prerender = false;
+
+const contact = await getContact();
+const hours = await getHours();
+const special = await getSpecialHours();
+const faqs = await getFaqs();
+const gallery = await getGallery();
+const clinicImages = gallery.slice(0, 4).map((g) => g.image);
+const fallback = [
+  { src: "/images/stock/gallery-reception.jpg", alt: "Reception", focalX: 50, focalY: 45 },
+  { src: "/images/stock/gallery-room.jpg", alt: "Treatment room", focalX: 50, focalY: 45 },
+  { src: "/images/stock/gallery-comfort.jpg", alt: "Comfort", focalX: 50, focalY: 45 },
+  { src: "/images/stock/gallery-light.jpg", alt: "Clinic", focalX: 50, focalY: 45 },
+];
+const clinicForExp = clinicImages.length >= 4 ? clinicImages : fallback;
+---
+<Base title="Patient Experience" description="What a visit to JABARI DENTAL in Kampala feels like — from booking to follow-up.">
+  <section class="bg-forest-deep text-ivory pt-24 pb-16 md:pt-32 md:pb-20">
+    <div class="container-page">
+      <p class="eyebrow text-gold-soft">Patient experience</p>
+      <h1 class="display-hero mt-5 max-w-4xl text-ivory text-balance">What your visit<br />feels like.</h1>
+      <p class="lead text-ivory/80 mt-7 max-w-xl">Dentistry shouldn't feel like a chore. Here is how we make every step calm, clear and considered.</p>
+    </div>
+  </section>
+
+  <PatientJourney />
+  <ClinicExperience images={clinicForExp} />
+  <FAQ faqs={faqs} />
+  <MapSection contact={contact} hours={hours} special={special} />
+  <FinalCTA contact={contact} />
+</Base>

@@ -1,0 +1,284 @@
+---
+import type { ContactSettings } from "@/lib/types";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  contact: ContactSettings;
+  services: string[];
+}
+const { contact, services } = Astro.props;
+const list = services.length ? services : ["General Dentistry", "Consultation", "Cosmetic Dentistry", "Other"];
+const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"];
+---
+<section class="bg-ivory" id="book-wizard">
+  <div class="container-page py-20 md:py-28 max-w-3xl">
+    <div data-reveal class="text-center">
+      <p class="eyebrow">Book an appointment</p>
+      <h2 class="display-section mt-4 text-balance">Request your visit.</h2>
+      <p class="lead mt-5">A few quick steps. We will open WhatsApp with your request ready to send — no account needed.</p>
+    </div>
+
+    <div class="mt-12 bg-linen rounded-lg border border-ink/10 p-6 md:p-10" data-wizard data-phone={contact.whatsapp}>
+      <!-- progress -->
+      <div class="flex items-center justify-between mb-8" data-progress>
+        <span class="text-xs uppercase tracking-[0.2em] text-stone" data-step-label>Step 1 of 6</span>
+        <span class="text-xs text-mist" data-step-count>1 / 6</span>
+      </div>
+      <div class="h-1 bg-ink/10 rounded-full overflow-hidden mb-8">
+        <div class="h-full bg-forest transition-all duration-500" style="width:16.6%" data-progress-bar></div>
+      </div>
+
+      <form data-wizard-form novalidate>
+        <!-- Step 1: service -->
+        <fieldset data-step="0" class="block">
+          <legend class="font-display text-2xl text-ink mb-1">What do you need?</legend>
+          <p class="text-stone text-sm mb-5">Choose the closest option — you can add detail later.</p>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" role="radiogroup" aria-label="Service needed" data-service-group>
+            {list.map((s, i) => (
+              <label class="cursor-pointer">
+                <input type="radio" name="service" value={s} class="sr-only peer" />
+                <span class="block text-center text-sm px-3 py-4 rounded-md border border-ink/15 bg-ivory peer-checked:bg-forest peer-checked:text-ivory peer-checked:border-forest peer-focus-visible:ring-2 peer-focus-visible:ring-gold transition-colors">
+                  {s}
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <!-- Step 2: date -->
+        <fieldset data-step="1" class="hidden">
+          <legend class="font-display text-2xl text-ink mb-1">Preferred date</legend>
+          <p class="text-stone text-sm mb-5">Pick a day that suits you.</p>
+          <input type="date" name="date" class="w-full sm:w-auto rounded-md border border-ink/20 bg-ivory px-4 py-3 text-ink focus:border-forest" data-date />
+        </fieldset>
+
+        <!-- Step 3: time -->
+        <fieldset data-step="2" class="hidden">
+          <legend class="font-display text-2xl text-ink mb-1">Preferred time</legend>
+          <p class="text-stone text-sm mb-5">Tap a slot, or type your own.</p>
+          <div class="flex flex-wrap gap-3 mb-4" role="radiogroup" aria-label="Preferred time" data-time-group>
+            {timeSlots.map((t) => (
+              <label class="cursor-pointer">
+                <input type="radio" name="time" value={t} class="sr-only peer" />
+                <span class="block text-sm px-4 py-3 rounded-md border border-ink/15 bg-ivory peer-checked:bg-forest peer-checked:text-ivory peer-checked:border-forest peer-focus-visible:ring-2 peer-focus-visible:ring-gold transition-colors tabular-nums">{t}</span>
+              </label>
+            ))}
+          </div>
+          <input type="text" name="time-free" placeholder="Or type a time, e.g. 13:30" inputmode="text" class="w-full sm:w-64 rounded-md border border-ink/20 bg-ivory px-4 py-3 text-ink focus:border-forest" data-time-free aria-label="Custom time" />
+        </fieldset>
+
+        <!-- Step 4: name -->
+        <fieldset data-step="3" class="hidden">
+          <legend class="font-display text-2xl text-ink mb-1">Your name</legend>
+          <p class="text-stone text-sm mb-5">So we know who to welcome.</p>
+          <input type="text" name="name" autocomplete="name" placeholder="Full name" class="w-full rounded-md border border-ink/20 bg-ivory px-4 py-3 text-ink focus:border-forest" data-name />
+        </fieldset>
+
+        <!-- Step 5: phone -->
+        <fieldset data-step="4" class="hidden">
+          <legend class="font-display text-2xl text-ink mb-1">Phone number</legend>
+          <p class="text-stone text-sm mb-5">We will confirm your appointment here.</p>
+          <input type="tel" name="phone" autocomplete="tel" placeholder="+256..." class="w-full sm:w-80 rounded-md border border-ink/20 bg-ivory px-4 py-3 text-ink focus:border-forest" data-phone-input />
+        </fieldset>
+
+        <!-- Step 6: message -->
+        <fieldset data-step="5" class="hidden">
+          <legend class="font-display text-2xl text-ink mb-1">Anything else?</legend>
+          <p class="text-stone text-sm mb-5">Optional — share context, concerns or questions.</p>
+          <textarea name="message" rows="4" placeholder="Your message (optional)" class="w-full rounded-md border border-ink/20 bg-ivory px-4 py-3 text-ink focus:border-forest" data-message></textarea>
+        </fieldset>
+
+        <!-- summary -->
+        <div data-step="summary" class="hidden">
+          <h3 class="font-display text-2xl text-ink mb-5">Review your request</h3>
+          <dl class="space-y-3 text-sm" data-summary></dl>
+        </div>
+
+        <!-- success -->
+        <div data-step="success" class="hidden text-center py-6">
+          <span class="inline-flex w-16 h-16 rounded-full bg-forest/10 text-forest items-center justify-center"><Icon name="check" size={30} /></span>
+          <h3 class="font-display text-2xl text-ink mt-5">WhatsApp is opening.</h3>
+          <p class="text-stone mt-2 max-w-sm mx-auto">Your request has been prepared. If WhatsApp didn't open, use the button below. We'll reply as soon as we can during opening hours.</p>
+          <a href="#" data-wa-fallback class="inline-flex items-center gap-2 rounded-full bg-forest text-ivory px-6 py-3.5 text-sm font-medium mt-6"><Icon name="whatsapp" size={16} /> Open WhatsApp</a>
+        </div>
+
+        <!-- nav -->
+        <div class="mt-8 flex items-center justify-between gap-3" data-wizard-nav>
+          <button type="button" data-back class="inline-flex items-center gap-2 text-ink/70 hover:text-ink disabled:opacity-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12H5M11 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back
+          </button>
+          <p class="text-xs text-red-700" data-error hidden></p>
+          <button type="button" data-next class="inline-flex items-center gap-2 rounded-full bg-forest text-ivory px-7 py-3.5 text-sm font-medium hover:bg-forest-deep transition-colors">
+            <span data-next-label>Continue</span>
+            <Icon name="arrow-right" size={15} />
+          </button>
+          <button type="submit" data-submit class="hidden inline-flex items-center gap-2 rounded-full bg-forest text-ivory px-7 py-3.5 text-sm font-medium hover:bg-forest-deep transition-colors">
+            <Icon name="whatsapp" size={16} /> Send to WhatsApp
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { buildWhatsappUrl, buildBookingMessage } from "@/lib/whatsapp";
+  import type { BookingFields } from "@/lib/whatsapp";
+
+  function initWizard() {
+    const root = document.querySelector<HTMLElement>("[data-wizard]");
+    if (!root) return;
+    const phone = root.dataset.phone || "256770590299";
+    const steps = Array.from(root.querySelectorAll<HTMLElement>("[data-step]")).filter((s) => s.dataset.step !== "summary" && s.dataset.step !== "success");
+    const summaryEl = root.querySelector<HTMLElement>("[data-step='summary']")!;
+    const successEl = root.querySelector<HTMLElement>("[data-step='success']")!;
+    const bar = root.querySelector<HTMLElement>("[data-progress-bar]")!;
+    const stepLabel = root.querySelector<HTMLElement>("[data-step-label]")!;
+    const stepCount = root.querySelector<HTMLElement>("[data-step-count]")!;
+    const back = root.querySelector<HTMLButtonElement>("[data-back]")!;
+    const next = root.querySelector<HTMLButtonElement>("[data-next]")!;
+    const submit = root.querySelector<HTMLButtonElement>("[data-submit]")!;
+    const nextLabel = root.querySelector<HTMLElement>("[data-next-label]")!;
+    const errorEl = root.querySelector<HTMLElement>("[data-error]")!;
+    const nav = root.querySelector<HTMLElement>("[data-wizard-nav]")!;
+
+    const form = root.querySelector<HTMLFormElement>("[data-wizard-form]")!;
+    let cur = 0;
+
+    function show(i: number) {
+      steps.forEach((s, idx) => s.classList.toggle("hidden", idx !== i));
+      summaryEl.classList.add("hidden");
+      successEl.classList.add("hidden");
+      const pct = ((i + 1) / steps.length) * 100;
+      bar.style.width = pct + "%";
+      stepLabel.textContent = `Step ${i + 1} of ${steps.length}`;
+      stepCount.textContent = `${i + 1} / ${steps.length}`;
+      back.disabled = i === 0;
+      const last = i === steps.length - 1;
+      next.classList.toggle("hidden", last);
+      nextLabel.textContent = last ? "Review" : "Continue";
+      submit.classList.toggle("hidden", !last);
+      errorEl.hidden = true;
+      (steps[i].querySelector("input, textarea") as HTMLElement)?.focus();
+    }
+
+    function val(name: string) {
+      const el = form.querySelector<HTMLInputElement>(`[name='${name}']`) as HTMLInputElement;
+      return el ? el.value.trim() : "";
+    }
+
+    function validate(i: number): string | null {
+      if (i === 0 && !val("service")) return "Please choose a service.";
+      if (i === 1 && !val("date")) return "Please choose a date.";
+      if (i === 2) {
+        const t = val("time") || val("time-free");
+        if (!t) return "Please choose or type a time.";
+      }
+      if (i === 3 && !val("name")) return "Please enter your name.";
+      if (i === 4) {
+        const p = val("phone");
+        if (!p) return "Please enter your phone number.";
+        if (p.replace(/[^0-9]/g, "").length < 7) return "Please enter a valid phone number.";
+      }
+      return null;
+    }
+
+    function buildSummary() {
+      const time = val("time") || val("time-free");
+      const rows: [string, string, number][] = [
+        ["Service", val("service"), 0],
+        ["Preferred date", val("date"), 1],
+        ["Preferred time", time, 2],
+        ["Name", val("name"), 3],
+        ["Phone", val("phone"), 4],
+        ["Additional message", val("message"), 5],
+      ];
+      const html = rows
+        .filter(([, v]) => v)
+        .map(([label, v, step]) => `<div class="flex items-center justify-between gap-6 border-b border-ink/10 pb-2"><dt class="text-stone">${label}</dt><dd class="text-ink flex items-center gap-3"><span>${escapeHtml(v)}</span><button type="button" data-goto="${step}" class="text-xs text-forest underline underline-offset-2">Edit</button></dd></div>`)
+        .join("");
+      summaryEl.querySelector("[data-summary]")!.innerHTML = html;
+    }
+
+    function escapeHtml(s: string) {
+      return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] || c));
+    }
+
+    function send() {
+      const time = val("time") || val("time-free");
+      const fields: BookingFields = {
+        service: val("service"),
+        date: val("date"),
+        time,
+        name: val("name"),
+        phone: val("phone"),
+        message: val("message"),
+        clinicName: "JABARI DENTAL",
+      };
+      const url = buildWhatsappUrl(phone, buildBookingMessage(fields));
+      steps.forEach((s) => s.classList.add("hidden"));
+      summaryEl.classList.add("hidden");
+      nav.classList.add("hidden");
+      successEl.classList.remove("hidden");
+      bar.style.width = "100%";
+      stepLabel.textContent = "Ready to send";
+      const fb = root.querySelector<HTMLAnchorElement>("[data-wa-fallback]")!;
+      fb.href = url;
+      window.open(url, "_blank", "noopener");
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const err = validate(steps.length - 1);
+      if (err) {
+        errorEl.textContent = err;
+        errorEl.hidden = false;
+        return;
+      }
+      send();
+    });
+
+    next.addEventListener("click", () => {
+      const err = validate(cur);
+      if (err) {
+        errorEl.textContent = err;
+        errorEl.hidden = false;
+        return;
+      }
+      errorEl.hidden = true;
+      if (cur < steps.length - 1) {
+        cur++;
+        show(cur);
+      } else {
+        // go to summary
+        buildSummary();
+        steps.forEach((s) => s.classList.add("hidden"));
+        summaryEl.classList.remove("hidden");
+        nav.classList.add("hidden");
+        bar.style.width = "100%";
+        stepLabel.textContent = "Ready to send";
+      }
+    });
+
+    back.addEventListener("click", () => {
+      if (cur > 0) {
+        cur--;
+        nav.classList.remove("hidden");
+        show(cur);
+      }
+    });
+
+    // allow editing from summary
+    summaryEl.addEventListener("click", (e) => {
+      const t = (e.target as HTMLElement).closest("[data-goto]") as HTMLElement | null;
+      if (!t) return;
+      nav.classList.remove("hidden");
+      cur = Number(t.dataset.goto);
+      show(cur);
+    });
+
+    show(0);
+  }
+  initWizard();
+</script>

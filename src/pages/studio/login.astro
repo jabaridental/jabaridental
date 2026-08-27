@@ -1,0 +1,53 @@
+---
+import "../../styles/global.css";
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, noarchive, nofollow" />
+    <title>Studio · JABARI DENTAL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-forest-deep text-ivory min-h-screen flex items-center justify-center p-6" data-login>
+    <div class="w-full max-w-sm">
+      <div class="text-center mb-8">
+        <p class="eyebrow text-gold-soft">JABARI DENTAL</p>
+        <h1 class="font-display text-3xl mt-3">Studio</h1>
+        <p class="text-ivory/60 text-sm mt-2">Sign in to manage website content.</p>
+      </div>
+      <form data-login-form class="bg-ivory/5 border border-ivory/15 rounded-lg p-6 space-y-4">
+        <label class="block">
+          <span class="text-sm text-ivory/70">Password</span>
+          <input type="password" name="password" autocomplete="current-password" required class="mt-1 w-full rounded-md bg-forest-deep border border-ivory/20 px-4 py-3 text-ivory focus:border-gold outline-none" />
+        </label>
+        <p data-error class="text-red-300 text-sm hidden"></p>
+        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-full bg-gold text-forest-deep px-6 py-3 text-sm font-medium hover:bg-gold-soft transition-colors">Sign in</button>
+      </form>
+      <p class="text-ivory/40 text-xs text-center mt-6">This area is private and not indexed by search engines.</p>
+    </div>
+
+    <script>
+      const form = document.querySelector("[data-login-form]");
+      const err = document.querySelector("[data-error]");
+      form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fd = new FormData(form as HTMLFormElement);
+        const pw = fd.get("password");
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ password: pw }),
+        });
+        if (res.ok) {
+          location.href = "/studio";
+        } else {
+          if (err) { err.textContent = "Incorrect password. Please try again."; err.classList.remove("hidden"); }
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+---
+import type { ImageRef } from "@/lib/types";
+import SmartImage from "@/components/SmartImage.astro";
+
+interface Props {
+  images: ImageRef[];
+}
+const { images } = Astro.props;
+const pick = (i: number) => images[i] || images[0];
+const tiles = [
+  { img: pick(0), eyebrow: "Reception", title: "A modern clinic.", body: "Light, quiet and considered — designed to put you at ease the moment you arrive." },
+  { img: pick(1), eyebrow: "Treatment room", title: "Calm clinical spaces.", body: "Comfortable, precise and unhurried. Care that feels human, not clinical." },
+  { img: pick(2), eyebrow: "Comfort", title: "Your comfort, designed in.", body: "From seating to scheduling, the small details are planned around how you feel." },
+  { img: pick(3), eyebrow: "Team", title: "People who listen.", body: "A team that explains, checks in and treats your time as carefully as your care." },
+];
+---
+<section class="bg-linen">
+  <div class="container-page py-20 md:py-32">
+    <div class="max-w-2xl" data-reveal>
+      <p class="eyebrow">Clinic experience</p>
+      <h2 class="display-section mt-4 text-balance">A modern clinic.<br /><span class="italic text-forest">A human approach.</span></h2>
+    </div>
+
+    <div class="mt-14 grid md:grid-cols-12 gap-5 auto-rows-[16rem]">
+      <figure class="md:col-span-7 md:row-span-2 relative overflow-hidden rounded-lg group" data-reveal>
+        <SmartImage image={tiles[0].img} imgClass="group-hover:scale-105 transition-transform duration-700" class="h-full" sizes="(min-width:768px) 55vw, 100vw" />
+        <figcaption class="absolute inset-0 bg-gradient-to-t from-forest-deep/75 to-transparent flex flex-col justify-end p-7 text-ivory">
+          <p class="eyebrow text-gold-soft">{tiles[0].eyebrow}</p>
+          <h3 class="font-display text-3xl mt-2">{tiles[0].title}</h3>
+          <p class="text-ivory/80 mt-2 max-w-md text-sm leading-relaxed">{tiles[0].body}</p>
+        </figcaption>
+      </figure>
+      <figure class="md:col-span-5 relative overflow-hidden rounded-lg group" data-reveal data-reveal-delay="1">
+        <SmartImage image={tiles[1].img} imgClass="group-hover:scale-105 transition-transform duration-700" class="h-full" sizes="(min-width:768px) 40vw, 100vw" />
+        <figcaption class="absolute inset-0 bg-gradient-to-t from-forest-deep/75 to-transparent flex flex-col justify-end p-6 text-ivory">
+          <p class="eyebrow text-gold-soft">{tiles[1].eyebrow}</p>
+          <h3 class="font-display text-2xl mt-1.5">{tiles[1].title}</h3>
+        </figcaption>
+      </figure>
+      <figure class="md:col-span-5 relative overflow-hidden rounded-lg group" data-reveal data-reveal-delay="2">
+        <SmartImage image={tiles[2].img} imgClass="group-hover:scale-105 transition-transform duration-700" class="h-full" sizes="(min-width:768px) 40vw, 100vw" />
+        <figcaption class="absolute inset-0 bg-gradient-to-t from-forest-deep/75 to-transparent flex flex-col justify-end p-6 text-ivory">
+          <p class="eyebrow text-gold-soft">{tiles[2].eyebrow}</p>
+          <h3 class="font-display text-2xl mt-1.5">{tiles[2].title}</h3>
+        </figcaption>
+      </figure>
+      <figure class="md:col-span-12 relative overflow-hidden rounded-lg group" data-reveal data-reveal-delay="3">
+        <div class="absolute inset-0"><SmartImage image={tiles[3].img} imgClass="group-hover:scale-105 transition-transform duration-700" class="h-full" sizes="100vw" /></div>
+        <div class="absolute inset-0 bg-forest-deep/55"></div>
+        <figcaption class="relative h-full flex flex-col justify-center items-start p-8 md:p-14 text-ivory max-w-2xl">
+          <p class="eyebrow text-gold-soft">{tiles[3].eyebrow}</p>
+          <h3 class="font-display text-3xl md:text-4xl mt-2">{tiles[3].title}</h3>
+          <p class="text-ivory/85 mt-3 leading-relaxed">{tiles[3].body}</p>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>

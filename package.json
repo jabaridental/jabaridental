@@ -1,0 +1,29 @@
+{
+  "name": "jabari-dental",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "node server.mjs",
+    "build": "astro build",
+    "build:cf": "astro build --config astro.cloudflare.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "gen:icons": "node scripts/gen-icons.mjs"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.0.0",
+    "@astrojs/sitemap": "^3.4.0",
+    "astro": "^5.13.0",
+    "motion": "^12.23.0",
+    "sharp": "^0.34.0",
+    "shiki": "^4.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@tailwindcss/vite": "^4.1.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.8.0"
+  }
+}

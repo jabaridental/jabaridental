@@ -1,0 +1,27 @@
+---
+import { getContact, getTreatments } from "@/lib/store";
+import Base from "@/layouts/Base.astro";
+import BookingWizard from "@/components/BookingWizard.astro";
+import Icon from "@/components/Icon.astro";
+
+export const prerender = false;
+
+const contact = await getContact();
+const treatments = await getTreatments();
+const services = treatments.map((t) => t.name);
+---
+<Base title="Book Appointment" description="Request a dental appointment at JABARI DENTAL in Kampala via WhatsApp — quick, no account needed.">
+  <section class="bg-forest-deep text-ivory pt-24 pb-10 md:pt-32 md:pb-12">
+    <div class="container-page">
+      <p class="eyebrow text-gold-soft">Book</p>
+      <h1 class="display-section mt-4 max-w-3xl text-ivory text-balance">Your appointment, made simple.</h1>
+      <p class="lead text-ivory/80 mt-5 max-w-xl">Answer a few quick questions and we'll open WhatsApp with your request ready to send. You can also reach us directly:</p>
+      <div class="mt-6 flex flex-wrap gap-4 text-sm">
+        <a href={`tel:+${contact.phone}`} class="inline-flex items-center gap-2 text-ivory/85 hover:text-ivory"><Icon name="phone" size={16} class="text-gold-soft" /> +{contact.phone}</a>
+        <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-ivory/85 hover:text-ivory"><Icon name="whatsapp" size={16} class="text-gold-soft" /> WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <BookingWizard contact={contact} services={services} />
+</Base>

@@ -1,0 +1,373 @@
+---
+import "../../styles/global.css";
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, noarchive, nofollow" />
+    <title>Studio · JABARI DENTAL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-ivory text-ink" data-studio>
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside class="w-60 shrink-0 bg-forest-deep text-ivory hidden md:flex flex-col">
+        <div class="px-6 py-6 border-b border-ivory/10">
+          <p class="eyebrow text-gold-soft">JABARI DENTAL</p>
+          <p class="font-display text-xl mt-1">Studio</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4 text-sm" data-nav></nav>
+        <div class="p-4 border-t border-ivory/10">
+          <a href="/" class="text-ivory/60 hover:text-ivory text-xs block mb-3">← View website</a>
+          <button data-logout class="w-full inline-flex items-center justify-center gap-2 rounded-full border border-ivory/20 px-4 py-2.5 text-sm hover:bg-ivory/10">Sign out</button>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="flex-1 flex flex-col min-w-0">
+        <header class="flex items-center justify-between gap-4 px-6 py-5 border-b border-ink/10 bg-linen">
+          <div>
+            <h1 class="font-display text-2xl" data-title>Content</h1>
+            <p class="text-xs text-stone" data-subtitle>Manage public website content</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button data-new class="inline-flex items-center gap-2 rounded-full bg-forest text-ivory px-5 py-2.5 text-sm font-medium hover:bg-forest-deep hidden">+ New</button>
+            <button data-menu-btn class="md:hidden w-10 h-10 rounded-md border border-ink/15">☰</button>
+          </div>
+        </header>
+        <div class="flex-1 overflow-y-auto p-6" data-panel>
+          <p class="text-stone" data-loading>Loading…</p>
+        </div>
+      </main>
+    </div>
+
+    <!-- Editor modal -->
+    <div id="editor" class="fixed inset-0 z-50 hidden bg-forest-deep/60 backdrop-blur-sm">
+      <div class="absolute inset-0 flex items-stretch justify-center p-0 sm:p-6">
+        <div class="bg-ivory w-full max-w-2xl h-full sm:h-auto sm:max-h-[90vh] overflow-y-auto rounded-none sm:rounded-lg shadow-lift">
+          <div class="sticky top-0 bg-ivory border-b border-ink/10 px-6 py-4 flex items-center justify-between">
+            <h2 class="font-display text-xl" data-editor-title>Edit</h2>
+            <button data-editor-close class="w-10 h-10 rounded-md hover:bg-ink/5">✕</button>
+          </div>
+          <form data-editor-form class="p-6 space-y-4"></form>
+          <div class="sticky bottom-0 bg-ivory border-t border-ink/10 px-6 py-4 flex items-center justify-between gap-3">
+            <button type="button" data-editor-delete class="text-red-700 text-sm hidden">Delete</button>
+            <div class="flex gap-3 ml-auto">
+              <button type="button" data-editor-cancel class="px-4 py-2.5 rounded-full border border-ink/20 text-sm hover:border-ink">Cancel</button>
+              <button type="submit" form="editor-form" data-editor-save class="px-5 py-2.5 rounded-full bg-forest text-ivory text-sm font-medium hover:bg-forest-deep">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ============ Config ============
+      const SECTIONS = [
+        { key: "site", label: "Site settings", single: true },
+        { key: "hero", label: "Hero", single: true },
+        { key: "contact", label: "Contact & location", single: true },
+        { key: "treatments", label: "Treatments" },
+        { key: "team", label: "Team" },
+        { key: "gallery", label: "Smile Gallery" },
+        { key: "beforeAfter", label: "Before / After" },
+        { key: "testimonials", label: "Testimonials" },
+        { key: "articles", label: "Articles" },
+        { key: "announcements", label: "Announcements" },
+        { key: "offers", label: "Offers" },
+        { key: "hours", label: "Opening hours" },
+        { key: "specialHours", label: "Holidays & closures" },
+        { key: "faqs", label: "FAQ" },
+        { key: "social", label: "Social links" },
+      ];
+
+      function schema(key) {
+        const t = (name, label, type = "text", extra = {}) => ({ name, label, type, ...extra });
+        switch (key) {
+          case "site": return [t("name","Name"), t("shortName","Short name"), t("tagline","Tagline"), t("location","Location"), t("country","Country"), t("description","Description","textarea"), t("logoText","Logo text")];
+          case "hero": return [t("eyebrow","Eyebrow"), t("headline","Headline","textarea"), t("headlineAccent","Headline accent","textarea"), t("subhead","Subhead","textarea"), t("primaryCtaLabel","Primary CTA"), t("secondaryCtaLabel","Secondary CTA"), t("whatsappLabel","WhatsApp label"), t("image","Hero image","image"), t("imageMobile","Mobile image","image"), t("statusNote","Status note")];
+          case "contact": return [t("phone","Phone (E.164)"), t("whatsapp","WhatsApp (E.164)"), t("email","Email (leave blank if unverified)"), t("mapsUrl","Google Maps URL"), t("addressVerified","Verified location text"), t("addressNote","Address note","textarea")];
+          case "treatments": return [t("name","Name"), t("slug","Slug"), t("category","Category"), t("shortDescription","Short description","textarea"), t("longDescription","Long description","textarea"), t("image","Image","image"), t("icon","Icon (char)"), t("duration","Duration"), t("price","Price (optional)"), t("priceVisible","Show price","bool"), t("faqs","FAQs","objectlist"), t("seoTitle","SEO title"), t("seoDescription","SEO description","textarea"), t("featured","Featured","bool"), t("active","Active (published)","bool")];
+          case "team": return [t("name","Name"), t("role","Role"), t("photo","Photo","image"), t("biography","Biography","textarea"), t("specialties","Specialties (comma separated)","list"), t("credentials","Credentials"), t("published","Published","bool")];
+          case "gallery": return [t("title","Title"), t("category","Category","select",{options:["clinic","team","treatments","smile","lifestyle"]}), t("description","Description","textarea"), t("image","Image","image"), t("alt","Alt text"), t("date","Date","date"), t("featured","Featured","bool"), t("published","Published","bool")];
+          case "beforeAfter": return [t("treatmentName","Treatment name"), t("description","Description","textarea"), t("duration","Duration"), t("beforeImage","Before image","image"), t("afterImage","After image","image"), t("consent","Consent given","bool"), t("approval","Approval status","select",{options:["draft","pending","approved"]}), t("published","Published","bool")];
+          case "testimonials": return [t("displayName","Display name"), t("quote","Quote","textarea"), t("rating","Rating (1-5)","number"), t("date","Date","date"), t("isDemo","Mark as demo","bool"), t("approved","Approved","bool"), t("featured","Featured","bool"), t("published","Published","bool")];
+          case "articles": return [t("title","Title"), t("slug","Slug"), t("excerpt","Excerpt","textarea"), t("body","Body (markdown-lite)","textarea"), t("featuredImage","Featured image","image"), t("author","Author"), t("category","Category"), t("tags","Tags (comma separated)","list"), t("publishedDate","Published date","date"), t("updatedDate","Updated date","date"), t("seoTitle","SEO title"), t("seoDescription","SEO description","textarea"), t("socialImage","Social image","image"), t("featured","Featured","bool"), t("published","Published","bool")];
+          case "announcements": return [t("title","Title"), t("message","Message","textarea"), t("ctaLabel","CTA label"), t("ctaUrl","CTA URL"), t("startDate","Start date","date"), t("endDate","End date","date"), t("priority","Priority","select",{options:["low","normal","high"]}), t("style","Style","select",{options:["bar","banner","modal"]}), t("published","Published","bool")];
+          case "offers": return [t("title","Title"), t("description","Description","textarea"), t("image","Image","image"), t("validFrom","Valid from","date"), t("validUntil","Valid until","date"), t("ctaLabel","CTA label"), t("whatsappMessage","WhatsApp message","textarea"), t("active","Active","bool"), t("featured","Featured","bool")];
+          case "hours": return [t("label","Day (read-only)","static"), t("closed","Closed","bool"), t("open","Open"), t("close","Close"), t("open2","Second open"), t("close2","Second close")];
+          case "specialHours": return [t("label","Label"), t("date","Date","date"), t("closed","Closed","bool"), t("open","Open"), t("close","Close"), t("note","Note","textarea")];
+          case "faqs": return [t("question","Question"), t("answer","Answer","textarea"), t("published","Published","bool")];
+          case "social": return [t("label","Label"), t("url","URL"), t("displayOrder","Display order","number"), t("published","Published","bool")];
+          default: return [];
+        }
+      }
+
+      function titleField(key) {
+        const m = { treatments:"name", team:"name", gallery:"title", beforeAfter:"treatmentName", testimonials:"displayName", articles:"title", announcements:"title", offers:"title", specialHours:"label", faqs:"question", social:"label" };
+        return m[key] || "title";
+      }
+
+      // ============ State ============
+      let current = "site";
+      const $ = (s) => document.querySelector(s);
+      const nav = $("[data-nav]");
+      const panel = $("[data-panel]");
+      const titleEl = $("[data-title]");
+      const subtitleEl = $("[data-subtitle]");
+      const newBtn = $("[data-new]");
+
+      // ============ API ============
+      async function api(method, url, body) {
+        const res = await fetch(url, {
+          method,
+          headers: { "content-type": "application/json" },
+          body: body !== undefined ? JSON.stringify(body) : undefined,
+        });
+        if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || res.status);
+        return res.json();
+      }
+
+      // ============ Nav ============
+      function renderNav() {
+        nav.innerHTML = SECTIONS.map((s) =>
+          `<button data-section="${s.key}" class="w-full text-left px-6 py-2.5 hover:bg-ivory/10 ${s.key===current?"bg-ivory/10 text-gold-soft":""}">${s.label}</button>`
+        ).join("");
+        nav.querySelectorAll("[data-section]").forEach((b) =>
+          b.addEventListener("click", () => { current = b.dataset.section; renderNav(); load(); })
+        );
+      }
+
+      // ============ Helpers ============
+      function getVal(obj, name) {
+        // support nested? not needed; flat
+        return obj?.[name];
+      }
+      function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+      function fieldInput(f, val) {
+        const id = "f_" + f.name;
+        const label = `<label class="block text-sm font-medium text-ink/80" for="${id}">${f.label}</label>`;
+        if (f.type === "textarea") return `${label}<textarea id="${id}" name="${f.name}" rows="4" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">${escapeHtml(val ?? "")}</textarea>`;
+        if (f.type === "bool") return `<label class="flex items-center gap-2 text-sm text-ink/80 cursor-pointer"><input type="checkbox" id="${id}" name="${f.name}" ${val? "checked":""} class="w-4 h-4 rounded border-ink/30"> ${f.label}</label>`;
+        if (f.type === "number") return `${label}<input type="number" id="${id}" name="${f.name}" value="${escapeHtml(val ?? "")}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">`;
+        if (f.type === "date") return `${label}<input type="date" id="${id}" name="${f.name}" value="${escapeHtml(val ?? "")}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">`;
+        if (f.type === "select") return `${label}<select id="${id}" name="${f.name}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">${f.options.map(o=>`<option value="${o}" ${val===o?"selected":""}>${o}</option>`).join("")}</select>`;
+        if (f.type === "static") return `<p class="text-sm text-stone"><span class="text-ink/60">${f.label}:</span> ${escapeHtml(val ?? "")}</p>`;
+        if (f.type === "image") return imageField(f, val || {});
+        if (f.type === "list") return `${label}<input type="text" id="${id}" name="${f.name}" value="${escapeHtml(Array.isArray(val)?val.join(", "):(val??""))}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">`;
+        if (f.type === "objectlist") return objectListField(f, val || []);
+        return `${label}<input type="text" id="${id}" name="${f.name}" value="${escapeHtml(val ?? "")}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">`;
+      }
+
+      function imageField(f, val) {
+        const id = "f_" + f.name;
+        return `<div class="border border-ink/15 rounded-md p-3 bg-white">
+          <p class="text-sm font-medium text-ink/80 mb-2">${f.label}</p>
+          <div class="flex items-center gap-3 mb-2">
+            ${val.src ? `<img src="${val.src}" alt="" class="w-20 h-20 object-cover rounded">` : `<div class="w-20 h-20 rounded bg-ink/5 flex items-center justify-center text-ink/30 text-xs">none</div>`}
+            <div class="flex-1">
+              <input type="text" data-img-src="${f.name}" value="${escapeHtml(val.src ?? "")}" placeholder="/images/... or uploaded path" class="w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm mb-2">
+              <input type="file" data-img-file="${f.name}" accept="image/*" class="text-sm w-full">
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <input type="text" data-img-alt="${f.name}" value="${escapeHtml(val.alt ?? "")}" placeholder="Alt text" class="rounded-md border border-ink/20 bg-white px-2 py-1.5 text-xs">
+            <label class="text-xs flex items-center gap-1">X<input type="number" min="0" max="100" data-img-fx="${f.name}" value="${val.focalX ?? 50}" class="w-14 rounded border border-ink/20 px-1 py-1 text-xs"></label>
+            <label class="text-xs flex items-center gap-1">Y<input type="number" min="0" max="100" data-img-fy="${f.name}" value="${val.focalY ?? 50}" class="w-14 rounded border border-ink/20 px-1 py-1 text-xs"></label>
+          </div>
+        </div>`;
+      }
+
+      function objectListField(f, items) {
+        const id = "f_" + f.name;
+        return `<div class="border border-ink/15 rounded-md p-3 bg-white" data-objlist="${f.name}">
+          <p class="text-sm font-medium text-ink/80 mb-2">${f.label}</p>
+          <div class="space-y-2" data-objlist-items>${items.map((it,i)=>objRow(f,i,it)).join("")}</div>
+          <button type="button" data-objlist-add="${f.name}" class="mt-2 text-sm text-forest underline">+ Add item</button>
+        </div>`;
+      }
+      function objRow(f, i, it) {
+        return `<div class="grid grid-cols-1 gap-2 border border-ink/10 rounded p-2" data-objrow>
+          <input type="text" data-of="question" data-idx="${i}" value="${escapeHtml(it.question ?? "")}" placeholder="Question" class="rounded border border-ink/20 px-2 py-1.5 text-sm">
+          <textarea data-of="answer" data-idx="${i}" rows="2" placeholder="Answer" class="rounded border border-ink/20 px-2 py-1.5 text-sm">${escapeHtml(it.answer ?? "")}</textarea>
+          <button type="button" data-objrow-del class="text-xs text-red-700 justify-self-end">Remove</button>
+        </div>`;
+      }
+
+      // ============ Load ============
+      async function load() {
+        panel.innerHTML = `<p class="text-stone">Loading…</p>`;
+        const sec = SECTIONS.find((s) => s.key === current);
+        titleEl.textContent = sec.label;
+        subtitleEl.textContent = sec.single ? "Edit settings" : "Create, edit and publish";
+        newBtn.classList.toggle("hidden", !!sec.single);
+        try {
+          const { data } = await api("GET", `/api/content/${current}`);
+          if (sec.single) {
+            renderSingleForm(data);
+          } else {
+            renderList(data);
+          }
+        } catch (e) {
+          panel.innerHTML = `<p class="text-red-700">Error: ${escapeHtml(e.message)}</p>`;
+        }
+      }
+
+      function renderSingleForm(obj) {
+        const fields = schema(current);
+        const html = fields.map((f) => `<div>${fieldInput(f, getVal(obj, f.name))}</div>`).join("");
+        panel.innerHTML = `<form data-single-form class="max-w-2xl space-y-4 bg-white border border-ink/10 rounded-lg p-6">${html}
+          <div class="pt-2"><button type="submit" class="px-5 py-2.5 rounded-full bg-forest text-ivory text-sm font-medium hover:bg-forest-deep">Save changes</button></div></form>`;
+        panel.querySelector("[data-single-form]").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          await saveItem(current, null, obj);
+        });
+      }
+
+      function renderList(items) {
+        if (!Array.isArray(items) || items.length === 0) {
+          panel.innerHTML = `<p class="text-stone">No items yet. Click “New” to add one.</p>`;
+          return;
+        }
+        const tf = titleField(current);
+        panel.innerHTML = `<div class="space-y-2 max-w-3xl">${items.map((it, i) => `
+          <div class="flex items-center justify-between gap-3 bg-white border border-ink/10 rounded-lg px-4 py-3">
+            <div class="min-w-0">
+              <p class="font-medium truncate">${escapeHtml(it[tf] ?? it.label ?? "(untitled)")}</p>
+              <div class="flex gap-2 mt-1 text-xs">
+                ${it.published === false ? `<span class="text-red-700">Draft</span>` : `<span class="text-forest">Published</span>`}
+                ${it.featured ? `<span class="text-gold">Featured</span>` : ""}
+                ${it.approval && it.approval!=="approved" ? `<span class="text-stone">${it.approval}</span>`:""}
+                ${it.active===false?`<span class="text-red-700">Inactive</span>`:""}
+              </div>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button data-up="${it.id}" class="w-8 h-8 rounded hover:bg-ink/5" aria-label="Move up">↑</button>
+              <button data-down="${it.id}" class="w-8 h-8 rounded hover:bg-ink/5" aria-label="Move down">↓</button>
+              <button data-edit="${it.id}" class="px-3 py-1.5 rounded-full border border-ink/20 text-sm hover:border-forest">Edit</button>
+              <button data-del="${it.id}" class="w-8 h-8 rounded hover:bg-red-50 text-red-700" aria-label="Delete">🗑</button>
+            </div>
+          </div>`).join("")}</div>`;
+
+        panel.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => openEditor(items.find((x) => x.id === b.dataset.edit))));
+        panel.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
+          if (!confirm("Delete this item?")) return;
+          await api("DELETE", `/api/content/${current}/${b.dataset.del}`);
+          load();
+        }));
+        panel.querySelectorAll("[data-up]").forEach((b) => b.addEventListener("click", async () => { await api("PUT", `/api/content/${current}/${b.dataset.up}?reorder&dir=up`); load(); }));
+        panel.querySelectorAll("[data-down]").forEach((b) => b.addEventListener("click", async () => { await api("PUT", `/api/content/${current}/${b.dataset.down}?reorder&dir=down`); load(); }));
+      }
+
+      // ============ Editor ============
+      const editor = $("#editor");
+      const editorForm = $("[data-editor-form]");
+      const editorTitle = $("[data-editor-title]");
+      let editingId = null;
+
+      function openEditor(item) {
+        editingId = item?.id || null;
+        editorTitle.textContent = item ? "Edit" : "New " + SECTIONS.find(s=>s.key===current).label.replace(/s$/,"");
+        const fields = schema(current);
+        editorForm.innerHTML = fields.map((f) => `<div>${fieldInput(f, item ? getVal(item, f.name) : defaultVal(f))}</div>`).join("");
+        // objectlist handlers
+        editorForm.querySelectorAll("[data-objlist-add]").forEach((b) => b.addEventListener("click", () => {
+          const wrap = editorForm.querySelector(`[data-objlist="${b.dataset.objlistAdd}"] [data-objlist-items]`);
+          const i = wrap.children.length;
+          wrap.insertAdjacentHTML("beforeend", objRow({name:b.dataset.objlistAdd}, i, {}));
+        }));
+        editorForm.querySelectorAll("[data-objrow-del]").forEach((b) => b.addEventListener("click", () => b.closest("[data-objrow]").remove()));
+        $("[data-editor-delete]").classList.toggle("hidden", !editingId);
+        editor.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+      function defaultVal(f) {
+        if (f.type === "bool") return false;
+        if (f.type === "image") return { src:"", alt:"", focalX:50, focalY:50 };
+        if (f.type === "objectlist") return [];
+        if (f.type === "list") return [];
+        if (f.type === "number") return 0;
+        return "";
+      }
+      function collectForm() {
+        const out = {};
+        const fields = schema(current);
+        for (const f of fields) {
+          if (f.type === "image") {
+            const src = editorForm.querySelector(`[data-img-src="${f.name}"]`)?.value?.trim();
+            const alt = editorForm.querySelector(`[data-img-alt="${f.name}"]`)?.value?.trim();
+            const fx = Number(editorForm.querySelector(`[data-img-fx="${f.name}"]`)?.value || 50);
+            const fy = Number(editorForm.querySelector(`[data-img-fy="${f.name}"]`)?.value || 50);
+            out[f.name] = { src: src || "", alt: alt || "", focalX: fx, focalY: fy };
+            // handle pending upload
+            const fileInput = editorForm.querySelector(`[data-img-file="${f.name}"]`);
+            if (fileInput?.files?.[0]) out["__upload_"+f.name] = fileInput.files[0];
+          } else if (f.type === "objectlist") {
+            const rows = editorForm.querySelectorAll(`[data-objlist="${f.name}"] [data-objrow]`);
+            out[f.name] = Array.from(rows).map((r) => ({
+              question: r.querySelector('[data-of="question"]').value,
+              answer: r.querySelector('[data-of="answer"]').value,
+            }));
+          } else if (f.type === "bool") {
+            out[f.name] = editorForm.querySelector(`[name="${f.name}"]`)?.checked || false;
+          } else if (f.type === "static") {
+            // keep original
+          } else if (f.type === "list") {
+            out[f.name] = (editorForm.querySelector(`[name="${f.name}"]`)?.value || "").split(",").map(s=>s.trim()).filter(Boolean);
+          } else {
+            out[f.name] = editorForm.querySelector(`[name="${f.name}"]`)?.value ?? "";
+          }
+        }
+        return out;
+      }
+
+      async function saveItem(key, id, base) {
+        const data = collectForm();
+        // uploads
+        for (const k of Object.keys(data)) {
+          if (k.startsWith("__upload_")) {
+            const name = k.replace("__upload_", "");
+            const fd = new FormData();
+            fd.append("file", data[k]);
+            const r = await fetch("/api/upload", { method: "POST", body: fd });
+            const j = await r.json();
+            if (j.ok) {
+              data[name] = { ...(base?.[name]||{alt:"",focalX:50,focalY:50}), src: j.src };
+            }
+            delete data[k];
+          }
+        }
+        if (id) {
+          await api("PUT", `/api/content/${key}/${id}`, data);
+        } else {
+          await api("POST", `/api/content/${key}`, data);
+        }
+        closeEditor();
+        load();
+      }
+
+      editorForm.addEventListener("submit", (e) => { e.preventDefault(); saveItem(current, editingId, null); });
+      $("[data-editor-close]").addEventListener("click", closeEditor);
+      $("[data-editor-cancel]").addEventListener("click", closeEditor);
+      $("[data-editor-delete]").addEventListener("click", async () => {
+        if (!editingId) return;
+        if (!confirm("Delete this item?")) return;
+        await api("DELETE", `/api/content/${current}/${editingId}`);
+        closeEditor(); load();
+      });
+      function closeEditor() { editor.classList.add("hidden"); document.body.style.overflow = ""; }
+
+      newBtn.addEventListener("click", () => openEditor(null));
+      $("[data-logout]").addEventListener("click", async () => { await api("POST","/api/auth/logout"); location.href = "/studio/login"; });
+      $("[data-menu-btn]")?.addEventListener("click", () => nav.classList.toggle("hidden"));
+
+      renderNav();
+      load();
+    </script>
+  </body>
+</html>

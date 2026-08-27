@@ -1,0 +1,155 @@
+---
+import "../styles/global.css";
+import { getSite, getContact, getHours, getSpecialHours, getAnnouncements, getOffers, getSocial } from "@/lib/store";
+import Navbar from "@/components/Navbar.astro";
+import Footer from "@/components/Footer.astro";
+import UtilityBar from "@/components/UtilityBar.astro";
+import AnnouncementBar from "@/components/AnnouncementBar.astro";
+import MobileActionBar from "@/components/MobileActionBar.astro";
+import PWAInstall from "@/components/PWAInstall.astro";
+import AmbientSound from "@/components/AmbientSound.astro";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+  canonical?: string;
+  noindex?: boolean;
+}
+const {
+  title,
+  description,
+  image = "/images/stock/og-default.jpg",
+  type = "website",
+  canonical,
+  noindex = false,
+} = Astro.props;
+
+const site = await getSite();
+const contact = await getContact();
+const hours = await getHours();
+const special = await getSpecialHours();
+const announcements = await getAnnouncements();
+const offers = await getOffers();
+
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.tagline}`;
+const pageDesc = description || site.description;
+const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+
+const DAY_MAP: Record<string, string> = {
+  monday: "Mo", tuesday: "Tu", wednesday: "We", thursday: "Th", friday: "Fr", saturday: "Sa", sunday: "Su",
+};
+const openingSpec = hours
+  .filter((h) => !h.closed && h.open)
+  .map((h) => ({
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: h.label,
+    opens: h.open,
+    closes: h.close,
+    ...(h.open2 && h.close2 ? {} : {}),
+  }));
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Dentist",
+  name: site.name,
+  description: site.description,
+  url: Astro.site?.href,
+  telephone: `+${contact.phone}`,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Kampala",
+    addressCountry: "UG",
+  },
+  image: ogImage,
+  sameAs: (await getSocial()).map((s) => s.url),
+  openingHoursSpecification: openingSpec,
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (!t) t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          if (t === "dark") document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="theme-color" content={site.brandColors.primary} />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDesc} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, noarchive, nofollow" />}
+    {!noindex && <meta name="robots" content="index, follow" />}
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDesc} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDesc} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-3 focus:left-3 focus:bg-forest focus:text-ivory focus:px-4 focus:py-2 focus:rounded-full">Skip to content</a>
+
+    <UtilityBar hours={hours} special={special} siteName={site.name} location={site.location} />
+    <AnnouncementBar announcements={announcements} />
+    <Navbar site={site} contact={contact} />
+
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+
+    <Footer site={site} contact={contact} hours={hours} />
+    <MobileActionBar contact={contact} />
+    <PWAInstall />
+    <AmbientSound />
+
+    <script>
+      // Register service worker
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch(() => {});
+        });
+      }
+      // Reveal on scroll
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              (e.target as HTMLElement).classList.add("is-visible");
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { rootMargin: "0px 0px -10% 0px", threshold: 0.08 }
+      );
+      document.querySelectorAll("[data-reveal]").forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

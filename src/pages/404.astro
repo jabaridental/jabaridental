@@ -1,0 +1,20 @@
+---
+import Base from "@/layouts/Base.astro";
+import CtaButton from "@/components/CtaButton.astro";
+import Icon from "@/components/Icon.astro";
+
+export const prerender = false;
+---
+<Base title="Page not found" description="The page you were looking for could not be found." noindex={true}>
+  <section class="bg-forest-deep text-ivory min-h-[70vh] flex items-center">
+    <div class="container-page text-center max-w-xl">
+      <p class="eyebrow text-gold-soft">404</p>
+      <h1 class="display-hero mt-5 text-ivory text-balance">Sorry, we couldn't<br />find that page.</h1>
+      <p class="lead text-ivory/80 mt-6">The link may have moved. Let's get you back to something helpful.</p>
+      <div class="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+        <CtaButton href="/" label="Back home" variant="primary" />
+        <CtaButton href="/book" label="Book an appointment" variant="secondary" icon="calendar" />
+      </div>
+    </div>
+  </section>
+</Base>

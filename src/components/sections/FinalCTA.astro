@@ -1,0 +1,30 @@
+---
+import type { ContactSettings } from "@/lib/types";
+import { buildWhatsappUrl } from "@/lib/whatsapp";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  contact: ContactSettings;
+  image?: { src: string; alt: string };
+}
+const { contact, image } = Astro.props;
+const wa = buildWhatsappUrl(contact.whatsapp, "Hello JABARI DENTAL, I would like to book an appointment.");
+const bg = image || { src: "/images/stock/hero.jpg", alt: "JABARI DENTAL clinic" };
+---
+<section class="relative overflow-hidden bg-forest-deep">
+  <img src={bg.src} alt={bg.alt} class="absolute inset-0 w-full h-full object-cover opacity-25" aria-hidden="true" />
+  <div class="absolute inset-0 bg-gradient-to-r from-forest-deep via-forest-deep/85 to-forest-deep/40"></div>
+  <div class="container-page relative z-10 py-24 md:py-36 text-ivory text-center max-w-3xl mx-auto" data-reveal>
+    <p class="eyebrow text-gold-soft">Your next step</p>
+    <h2 class="display-section mt-5 text-ivory text-balance">Your smile<br />deserves better.</h2>
+    <p class="lead text-ivory/80 mt-6">Start with a conversation. We will listen first, then help you plan with clarity and care.</p>
+    <div class="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="/book" class="inline-flex items-center justify-center gap-2 rounded-full bg-ivory text-forest-deep px-7 py-4 text-sm font-medium hover:bg-white transition-colors">
+        Book an Appointment <Icon name="arrow-right" size={16} />
+      </a>
+      <a href={wa} target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 rounded-full border border-ivory/40 px-7 py-4 text-sm font-medium hover:bg-ivory/10 transition-colors">
+        <Icon name="whatsapp" size={16} /> WhatsApp JABARI DENTAL
+      </a>
+    </div>
+  </div>
+</section>

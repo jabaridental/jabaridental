@@ -1,0 +1,285 @@
+@import "tailwindcss";
+
+/* ============================================================
+   JABARI DENTAL — Design Tokens
+   60% photography/whitespace · 20% typography · 20% UI
+   ============================================================ */
+@theme {
+  /* Brand palette */
+  --color-ivory: #f6f1e8;
+  --color-cream: #ece2d2;
+  --color-linen: #faf6ef;
+  --color-white: #ffffff;
+
+  --color-ink: #211c17;
+  --color-charcoal: #2b2620;
+  --color-stone: #6f675c;
+  --color-mist: #a89e8f;
+
+  --color-forest: #003C80;
+  --color-forest-deep: #00264F;
+  --color-sage: #3E73B6;
+  --color-sage-soft: #D2E2F4;
+
+  --color-gold: #b08d57;
+  --color-gold-soft: #d8c4a0;
+
+  /* Typography */
+  --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Radii */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2.25rem;
+
+  /* Shadows — soft, premium */
+  --shadow-soft: 0 1px 2px rgba(33, 28, 23, 0.04), 0 12px 40px -24px rgba(33, 28, 23, 0.25);
+  --shadow-lift: 0 30px 80px -40px rgba(33, 28, 23, 0.45);
+
+  /* Motion */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Container */
+  --container-page: 78rem;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+@layer base {
+  :root {
+    --header-h: 4.5rem;
+    --utility-h: 2.25rem;
+    --announce-h: 2.75rem;
+  }
+
+  /* Dark mode — remap surfaces/text; keep "ivory" acting as a light
+     color for text and light buttons that sit on dark sections. */
+  .dark {
+    --color-ivory: #0d141d;
+    --color-cream: #13202c;
+    --color-linen: #101a24;
+    --color-white: #16222e;
+    --color-ink: #f1f5f9;
+    --color-charcoal: #d6dee8;
+    --color-stone: #b6c4d3;
+    --color-mist: #8493a3;
+    --color-sage-soft: #1d2f44;
+    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 40px -24px rgba(0, 0, 0, 0.6);
+    --shadow-lift: 0 30px 80px -40px rgba(0, 0, 0, 0.75);
+  }
+  /* blue accents/links must stay legible on dark surfaces */
+  .dark .text-forest,
+  .dark .text-forest-deep,
+  .dark .group:hover .group-hover\:text-forest { color: #7fb0e6; }
+  .dark .text-ivory,
+  .dark .text-ivory\/90,
+  .dark .text-ivory\/85,
+  .dark .text-ivory\/80,
+  .dark .text-ivory\/70,
+  .dark .text-ivory\/55,
+  .dark .text-ivory\/40 { color: #f4f7fb; }
+  .dark .bg-ivory.text-forest-deep { background: #f4f7fb; }
+  .dark .border-ivory\/40 { border-color: rgba(244, 247, 251, 0.4); }
+  .dark .border-ivory\/20 { border-color: rgba(244, 247, 251, 0.2); }
+  .dark .hairline { border-color: rgba(255, 255, 255, 0.12); }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    line-height: 1.65;
+  }
+
+  @media (max-width: 1023px) {
+    body {
+      padding-bottom: 4.5rem;
+    }
+  }
+
+  ::selection {
+    background: var(--color-forest);
+    color: var(--color-ivory);
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+
+  /* Accessible focus */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-forest);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+@layer utilities {
+  .container-page {
+    width: 100%;
+    max-width: var(--container-page);
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+
+  .eyebrow-ink {
+    color: var(--color-stone);
+  }
+
+  .lead {
+    font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+    line-height: 1.7;
+    color: var(--color-stone);
+  }
+
+  .measure {
+    max-width: 38rem;
+  }
+
+  .measure-narrow {
+    max-width: 32rem;
+  }
+
+  .display-hero {
+    font-size: clamp(2.75rem, 9vw, 7.5rem);
+    line-height: 0.96;
+    letter-spacing: -0.025em;
+  }
+
+  .display-section {
+    font-size: clamp(2rem, 5.5vw, 4.25rem);
+    line-height: 1.0;
+  }
+
+  .hairline {
+    border-color: rgba(33, 28, 23, 0.12);
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .text-balance { text-wrap: balance; }
+}
+
+/* Article reading typography (no typography plugin needed) */
+.prose-dental {
+  color: var(--color-ink);
+  font-size: 1.05rem;
+}
+.prose-dental :where(p) { color: var(--color-stone); }
+
+/* Reveal animation primitive (driven by IntersectionObserver) */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+  will-change: opacity, transform;
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+[data-reveal-delay="1"] { transition-delay: 0.08s; }
+[data-reveal-delay="2"] { transition-delay: 0.16s; }
+[data-reveal-delay="3"] { transition-delay: 0.24s; }
+[data-reveal-delay="4"] { transition-delay: 0.32s; }
+
+@keyframes heroZoom {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+.hero-zoom {
+  animation: heroZoom 1.8s var(--ease-soft) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .hero-zoom { animation: none !important; }
+}
+
+/* ============================================================
+   Crystal + motion (blue rebrand)
+   ============================================================ */
+@keyframes crystalSheen {
+  0% { transform: translateX(-130%) skewX(-12deg); }
+  55%, 100% { transform: translateX(230%) skewX(-12deg); }
+}
+.crystal-shimmer {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.crystal-shimmer::after {
+  content: "";
+  position: absolute;
+  top: -25%;
+  left: 0;
+  width: 45%;
+  height: 150%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: translateX(-130%) skewX(-12deg);
+  animation: crystalSheen 5.5s var(--ease-soft) infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes crystalFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.45; }
+  50% { transform: translate3d(0, -16px, 0) scale(1.05); opacity: 0.7; }
+}
+.crystal-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(46px);
+  background: radial-gradient(circle at 32% 30%, rgba(0, 60, 128, 0.55), rgba(62, 115, 182, 0.18) 55%, transparent 72%);
+  animation: crystalFloat 9s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crystal-shimmer::after { animation: none; opacity: 0; }
+  .crystal-glow { animation: none; opacity: 0.4; }
+}

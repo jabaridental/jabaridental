@@ -1,0 +1,62 @@
+---
+import { getHero, getContact, getHours, getSpecialHours, getTreatments, getGallery, getBeforeAfter, getTeam, getTestimonials, getArticles, getFaqs } from "@/lib/store";
+import Base from "@/layouts/Base.astro";
+import Hero from "@/components/sections/Hero.astro";
+import Trust from "@/components/sections/Trust.astro";
+import Why from "@/components/sections/Why.astro";
+import TreatmentGrid from "@/components/TreatmentGrid.astro";
+import FeaturedTreatment from "@/components/FeaturedTreatment.astro";
+import PatientJourney from "@/components/sections/PatientJourney.astro";
+import ClinicExperience from "@/components/sections/ClinicExperience.astro";
+import BeforeAfterSlider from "@/components/BeforeAfterSlider.astro";
+import TeamGrid from "@/components/TeamGrid.astro";
+import Gallery from "@/components/Gallery.astro";
+import TestimonialCarousel from "@/components/TestimonialCarousel.astro";
+import ArticleGrid from "@/components/ArticleGrid.astro";
+import FAQ from "@/components/FAQ.astro";
+import MapSection from "@/components/sections/MapSection.astro";
+import ContactSection from "@/components/sections/ContactSection.astro";
+import FinalCTA from "@/components/sections/FinalCTA.astro";
+
+export const prerender = false;
+
+const hero = await getHero();
+const contact = await getContact();
+const hours = await getHours();
+const special = await getSpecialHours();
+const treatments = await getTreatments();
+const featured = treatments.find((t) => t.featured) || treatments[0];
+const gallery = await getGallery();
+const beforeAfter = await getBeforeAfter();
+const team = await getTeam();
+const testimonials = await getTestimonials();
+const articles = await getArticles();
+const faqs = await getFaqs();
+// images for clinic experience grid
+const clinicImages = gallery.slice(0, 4).map((g) => g.image);
+const clinicFallback = [
+  { src: "/images/stock/gallery-reception.jpg", alt: "Reception", focalX: 50, focalY: 45 },
+  { src: "/images/stock/gallery-room.jpg", alt: "Treatment room", focalX: 50, focalY: 45 },
+  { src: "/images/stock/gallery-comfort.jpg", alt: "Comfort", focalX: 50, focalY: 45 },
+  { src: "/images/stock/gallery-light.jpg", alt: "Team", focalX: 50, focalY: 45 },
+];
+const clinicForExp = clinicImages.length >= 4 ? clinicImages : clinicFallback;
+---
+<Base title={undefined} description={undefined}>
+  <Hero hero={hero} contact={contact} />
+  <Trust />
+  <Why image={clinicFallback[3]} />
+  <TreatmentGrid treatments={treatments.slice(0, 6)} />
+  {featured && <FeaturedTreatment treatment={featured} />}
+  <PatientJourney />
+  <ClinicExperience images={clinicForExp} />
+  {beforeAfter.length > 0 && <BeforeAfterSlider cases={beforeAfter} />}
+  <TeamGrid team={team} />
+  <Gallery items={gallery} />
+  <TestimonialCarousel testimonials={testimonials} />
+  <ArticleGrid articles={articles.slice(0, 4)} />
+  <FAQ faqs={faqs} />
+  <MapSection contact={contact} hours={hours} special={special} />
+  <ContactSection contact={contact} hours={hours} special={special} />
+  <FinalCTA contact={contact} image={{ src: hero.image.src, alt: hero.image.alt }} />
+</Base>

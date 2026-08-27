@@ -1,0 +1,36 @@
+---
+import { getSite } from "@/lib/store";
+import Base from "@/layouts/Base.astro";
+
+export const prerender = false;
+const site = await getSite();
+---
+<Base title="Terms" description={`Terms of use for ${site.name}.`}>
+  <section class="bg-forest-deep text-ivory pt-24 pb-14 md:pt-32 md:pb-16">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow text-gold-soft">Legal</p>
+      <h1 class="display-section mt-4 text-ivory">Terms of Use</h1>
+      <p class="text-ivory/70 mt-4 text-sm">Last updated: {new Date().getFullYear()}. This is an editable placeholder — the clinic should review and complete it with its own details.</p>
+    </div>
+  </section>
+  <section class="bg-ivory">
+    <div class="container-page max-w-3xl py-16 space-y-8 text-stone leading-relaxed">
+      <div>
+        <h2 class="font-display text-2xl text-ink mb-3">Use of this site</h2>
+        <p>This website provides general information about {site.name} and its dental services in {site.location}. It is not a substitute for professional medical advice.</p>
+      </div>
+      <div>
+        <h2 class="font-display text-2xl text-ink mb-3">Appointments</h2>
+        <p>Booking requests made through this site or WhatsApp are enquiries, not confirmed appointments, until the clinic confirms with you directly.</p>
+      </div>
+      <div>
+        <h2 class="font-display text-2xl text-ink mb-3">Content</h2>
+        <p>Articles and educational content are provided for general information. Treatment suitability is always assessed individually by a clinician.</p>
+      </div>
+      <div>
+        <h2 class="font-display text-2xl text-ink mb-3">Liability</h2>
+        <p>To the fullest extent permitted by law, {site.name} is not liable for decisions made solely on the basis of website content. Final terms should be supplied by the clinic and its legal adviser.</p>
+      </div>
+    </div>
+  </section>
+</Base>

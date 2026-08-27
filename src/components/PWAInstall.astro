@@ -1,0 +1,54 @@
+---
+// Tasteful, deferred PWA install prompt.
+// Only shows after meaningful engagement and when installation is supported.
+---
+<button
+  type="button"
+  id="pwa-install"
+  class="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-50 hidden items-center gap-2 rounded-full bg-forest text-ivory pl-4 pr-5 py-3 shadow-lift text-sm font-medium"
+  aria-label="Install JABARI DENTAL app"
+>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+    <path d="M12 4v10m0 0l-4-4m4 4l4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+  <span>Install app</span>
+</button>
+
+<script>
+  let deferred: any = null;
+  const btn = document.getElementById("pwa-install");
+  const KEY = "pwa-dismissed";
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferred = e;
+  });
+
+  function maybeShow() {
+    if (!deferred) return;
+    if (localStorage.getItem(KEY) === "1") return;
+    if (window.matchMedia("(display-mode: standalone)").matches) return;
+    // show after the user has scrolled / engaged a bit
+    btn?.classList.remove("hidden");
+    btn?.classList.add("flex");
+  }
+
+  // Show after some engagement
+  let engaged = false;
+  function onEngage() {
+    if (engaged) return;
+    engaged = true;
+    setTimeout(maybeShow, 4000);
+  }
+  window.addEventListener("scroll", onEngage, { once: true, passive: true });
+  document.addEventListener("click", onEngage, { once: true });
+
+  btn?.addEventListener("click", async () => {
+    if (!deferred) return;
+    deferred.prompt();
+    await deferred.userChoice;
+    deferred = null;
+    btn.classList.add("hidden");
+    btn.classList.remove("flex");
+  });
+</script>

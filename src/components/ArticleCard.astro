@@ -1,0 +1,38 @@
+---
+import type { Article } from "@/lib/types";
+import SmartImage from "@/components/SmartImage.astro";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  article: Article;
+  featured?: boolean;
+}
+const { article, featured = false } = Astro.props;
+
+function fmt(d: string) {
+  try {
+    return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  } catch {
+    return d;
+  }
+}
+---
+<article class={`group ${featured ? "md:grid md:grid-cols-2 md:gap-10 md:items-center" : ""}`} data-reveal>
+  <a href={`/articles/${article.slug}`} class="block overflow-hidden rounded-md">
+    <SmartImage image={article.featuredImage} imgClass="group-hover:scale-105 transition-transform duration-700" class="aspect-[16/10]" sizes={featured ? "(min-width:768px) 45vw, 100vw" : "(min-width:768px) 33vw, 90vw"} />
+  </a>
+  <div class="mt-5 md:mt-0">
+    <div class="flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-stone">
+      <span class="text-gold">{article.category}</span>
+      <span class="text-mist">{fmt(article.publishedDate)}</span>
+    </div>
+    <h3 class={`font-display text-ink mt-3 group-hover:text-forest transition-colors ${featured ? "text-3xl md:text-4xl" : "text-2xl"}`}>
+      <a href={`/articles/${article.slug}`}>{article.title}</a>
+    </h3>
+    <p class="text-stone mt-3 leading-relaxed max-w-prose">{article.excerpt}</p>
+    <a href={`/articles/${article.slug}`} class="inline-flex items-center gap-1.5 text-forest text-sm font-medium mt-4 group">
+      Read article
+      <Icon name="arrow-right" size={15} class="transition-transform duration-300 group-hover:translate-x-1" />
+    </a>
+  </div>
+</article>

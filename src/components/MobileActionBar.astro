@@ -1,0 +1,33 @@
+---
+import type { ContactSettings } from "@/lib/types";
+import { buildWhatsappUrl } from "@/lib/whatsapp";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  contact: ContactSettings;
+}
+const { contact } = Astro.props;
+const wa = buildWhatsappUrl(contact.whatsapp, "Hello JABARI DENTAL, I would like to book an appointment.");
+const tel = `tel:+${contact.phone}`;
+---
+<div
+  class="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-ivory/95 backdrop-blur border-t hairline"
+  style="padding-bottom: env(safe-area-inset-bottom);"
+>
+  <div class="grid grid-cols-3 divide-x divide-ink/10">
+    <a href={tel} class="flex flex-col items-center justify-center gap-1 py-3 text-ink/80 active:bg-ink/5" aria-label="Call the clinic">
+      <Icon name="phone" size={20} />
+      <span class="text-[0.65rem] uppercase tracking-[0.16em]">Call</span>
+    </a>
+    <a href={wa} target="_blank" rel="noopener" class="flex flex-col items-center justify-center gap-1 py-3 text-forest active:bg-forest/5" aria-label="WhatsApp the clinic">
+      <Icon name="whatsapp" size={20} />
+      <span class="text-[0.65rem] uppercase tracking-[0.16em]">WhatsApp</span>
+    </a>
+    <a href="/book" class="flex flex-col items-center justify-center gap-1 py-3 bg-forest text-ivory active:bg-forest-deep" aria-label="Book an appointment">
+      <Icon name="calendar" size={20} />
+      <span class="text-[0.65rem] uppercase tracking-[0.16em]">Book</span>
+    </a>
+  </div>
+</div>
+<!-- spacer so content isn't hidden behind the bar on mobile -->
+<div class="lg:hidden h-[4.5rem]" aria-hidden="true"></div>

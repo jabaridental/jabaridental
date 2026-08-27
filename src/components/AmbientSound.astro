@@ -1,0 +1,54 @@
+---
+const src = "/audio/DENTELSOUND.mp3";
+---
+
+<button
+  id="ambient-toggle"
+  type="button"
+  aria-pressed="false"
+  aria-label="Play ambient sound"
+  class="fixed bottom-4 left-4 z-[90] inline-flex items-center gap-2 rounded-full border border-ink/15 bg-ivory/90 px-4 py-2 text-sm font-medium text-ink shadow-lift backdrop-blur transition-colors hover:bg-ivory"
+>
+  <Icon name="volume-off" id="ambient-icon" size={18} />
+  <span id="ambient-label">Ambient sound</span>
+</button>
+
+<audio id="ambient-audio" src={src} loop preload="none"></audio>
+
+<script>
+  const btn = document.getElementById("ambient-toggle") as HTMLButtonElement;
+  const audio = document.getElementById("ambient-audio") as HTMLAudioElement;
+  const icon = document.getElementById("ambient-icon") as HTMLElement;
+  const label = document.getElementById("ambient-label") as HTMLElement;
+  if (btn && audio && icon && label) {
+    let playing = false;
+    const reflect = () => {
+      btn.setAttribute("aria-pressed", String(playing));
+      btn.setAttribute("aria-label", playing ? "Mute ambient sound" : "Play ambient sound");
+      icon.innerHTML = playing
+        ? '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a3.5 3.5 0 0 1 0 6M18.5 6.5a7 7 0 0 1 0 11"/></svg>'
+        : '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M22 9l-5 6M17 9l5 6"/></svg>';
+    };
+    const setPlaying = (state: boolean) => {
+      playing = state;
+      reflect();
+    };
+    btn.addEventListener("click", async () => {
+      if (playing) {
+        audio.pause();
+        setPlaying(false);
+      } else {
+        try {
+          await audio.play();
+          setPlaying(true);
+        } catch {
+          setPlaying(false);
+        }
+      }
+    });
+    audio.addEventListener("ended", () => setPlaying(false));
+    audio.addEventListener("pause", () => setPlaying(false));
+    audio.addEventListener("play", () => setPlaying(true));
+    reflect();
+  }
+</script>

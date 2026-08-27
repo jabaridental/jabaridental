@@ -1,0 +1,89 @@
+---
+import { getArticles, getContact } from "@/lib/store";
+import { renderArticle, plainText } from "@/lib/markdown";
+import Base from "@/layouts/Base.astro";
+import SmartImage from "@/components/SmartImage.astro";
+import Icon from "@/components/Icon.astro";
+import FinalCTA from "@/components/sections/FinalCTA.astro";
+import CtaButton from "@/components/CtaButton.astro";
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+const articles = await getArticles();
+const article = articles.find((a) => a.slug === slug);
+const contact = await getContact();
+
+if (!article) return Astro.redirect("/articles");
+
+const html = renderArticle(article.body);
+const related = articles.filter((a) => a.slug !== slug).slice(0, 2);
+
+function fmt(d: string) {
+  try { return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); } catch { return d; }
+}
+---
+<Base title={article.seoTitle || article.title} description={article.seoDescription || plainText(article.body)} image={article.featuredImage.src} type="article">
+  <article>
+    <header class="bg-forest-deep text-ivory pt-24 pb-14 md:pt-32 md:pb-20">
+      <div class="container-page max-w-3xl">
+        <nav class="text-ivory/60 text-sm mb-6" aria-label="Breadcrumb">
+          <a href="/" class="hover:text-ivory">Home</a> <span class="mx-2">/</span>
+          <a href="/articles" class="hover:text-ivory">Articles</a> <span class="mx-2">/</span>
+          <span class="text-ivory">{article.category}</span>
+        </nav>
+        <div class="flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-gold-soft">
+          <span>{article.category}</span><span class="text-ivory/40">·</span><span class="text-ivory/60">{fmt(article.publishedDate)}</span>
+        </div>
+        <h1 class="font-display text-4xl md:text-5xl lg:text-6xl mt-5 text-ivory text-balance leading-[1.05]">{article.title}</h1>
+        <p class="lead text-ivory/80 mt-6">{article.excerpt}</p>
+        <p class="text-ivory/60 text-sm mt-5">By {article.author}</p>
+      </div>
+    </header>
+
+    <div class="bg-ivory">
+      <div class="container-page max-w-3xl py-12 md:py-16">
+        <div class="aspect-[16/9] overflow-hidden rounded-lg shadow-lift -mt-24 md:-mt-28 relative z-10 mb-12">
+          <SmartImage image={article.featuredImage} class="h-full" priority={true} sizes="(min-width:768px) 48rem, 100vw" />
+        </div>
+        <div class="prose-dental" set:html={html}></div>
+
+        <div class="mt-14 border-t hairline pt-8 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex flex-wrap gap-2">
+            {article.tags.map((t) => <span class="text-xs text-ink/60 border border-ink/15 rounded-full px-3 py-1">#{t}</span>)}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="bg-linen border-t hairline">
+      <div class="container-page py-16 text-center">
+        <p class="font-display text-2xl text-ink">Have a question?</p>
+        <CtaButton href={`https://wa.me/${contact.whatsapp}`} label="Talk to JABARI DENTAL on WhatsApp" variant="primary" icon="whatsapp" external={true} class="mt-5" />
+      </div>
+    </section>
+
+    {related.length > 0 && (
+      <section class="bg-ivory">
+        <div class="container-page py-16">
+          <h2 class="font-display text-3xl text-ink mb-8">Keep reading</h2>
+          <div class="grid sm:grid-cols-2 gap-8">
+            {related.map((r) => (
+              <a href={`/articles/${r.slug}`} class="group block bg-linen rounded-md overflow-hidden">
+                <div class="aspect-[16/9] overflow-hidden">
+                  <SmartImage image={r.featuredImage} imgClass="group-hover:scale-105 transition-transform duration-700" class="h-full" sizes="(min-width:768px) 40vw, 100vw" />
+                </div>
+                <div class="p-5">
+                  <p class="eyebrow-ink">{r.category}</p>
+                  <h3 class="font-display text-xl mt-1 text-ink group-hover:text-forest transition-colors">{r.title}</h3>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </article>
+
+  <FinalCTA contact={contact} />
+</Base>

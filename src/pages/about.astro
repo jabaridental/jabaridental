@@ -1,0 +1,52 @@
+---
+import { getContact, getHours, getSpecialHours, getTeam, getGallery } from "@/lib/store";
+import Base from "@/layouts/Base.astro";
+import SmartImage from "@/components/SmartImage.astro";
+import Trust from "@/components/sections/Trust.astro";
+import ClinicExperience from "@/components/sections/ClinicExperience.astro";
+import TeamGrid from "@/components/TeamGrid.astro";
+import FinalCTA from "@/components/sections/FinalCTA.astro";
+
+export const prerender = false;
+
+const contact = await getContact();
+const hours = await getHours();
+const special = await getSpecialHours();
+const team = await getTeam();
+const gallery = await getGallery();
+const clinicImages = gallery.slice(0, 4).map((g) => g.image);
+const fallback = [
+  { src: "/images/stock/gallery-reception.jpg", alt: "Reception", focalX: 50, focalY: 45 },
+  { src: "/images/stock/gallery-room.jpg", alt: "Treatment room", focalX: 50, focalY: 45 },
+  { src: "/images/stock/gallery-comfort.jpg", alt: "Comfort", focalX: 50, focalY: 45 },
+  { src: "/images/stock/gallery-light.jpg", alt: "Clinic", focalX: 50, focalY: 45 },
+];
+const clinicForExp = clinicImages.length >= 4 ? clinicImages : fallback;
+---
+<Base title="About" description="JABARI DENTAL is a premium dental clinic in Kampala, Uganda — modern, comfort-first dentistry built around you.">
+  <section class="bg-forest-deep text-ivory pt-24 pb-16 md:pt-32 md:pb-20">
+    <div class="container-page">
+      <p class="eyebrow text-gold-soft">About</p>
+      <h1 class="display-hero mt-5 max-w-4xl text-ivory text-balance">A better kind<br />of dental clinic.</h1>
+      <p class="lead text-ivory/80 mt-7 max-w-2xl">We started JABARI DENTAL to make dental care in Kampala feel calm, considered and genuinely human — without compromising on modern clinical standards.</p>
+    </div>
+  </section>
+
+  <section class="bg-linen">
+    <div class="container-page py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
+      <div data-reveal>
+        <h2 class="font-display text-3xl md:text-4xl text-ink text-balance">Care that respects<br />your time and comfort.</h2>
+        <p class="text-stone mt-6 leading-relaxed max-w-prose">From the first message to your follow-up, every step is designed to be clear and unhurried. We explain in plain language, plan for the long term, and never pressure you into treatment you don't understand.</p>
+        <p class="text-stone mt-4 leading-relaxed max-w-prose">Our team blends modern technique with a warm, personal approach — because good dentistry should also feel good to receive.</p>
+      </div>
+      <div data-reveal data-reveal-delay="1" class="aspect-[4/5] overflow-hidden rounded-lg shadow-lift">
+        <SmartImage image={fallback[1]} class="h-full" sizes="(min-width:1024px) 40vw, 100vw" />
+      </div>
+    </div>
+  </section>
+
+  <Trust />
+  <ClinicExperience images={clinicForExp} />
+  <TeamGrid team={team} />
+  <FinalCTA contact={contact} />
+</Base>

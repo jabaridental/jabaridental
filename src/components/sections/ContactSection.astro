@@ -1,0 +1,67 @@
+---
+import type { ContactSettings, DayHours, SpecialHours } from "@/lib/types";
+import { buildWhatsappUrl } from "@/lib/whatsapp";
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  contact: ContactSettings;
+  hours: DayHours[];
+  special: SpecialHours[];
+}
+const { contact, hours, special } = Astro.props;
+const wa = buildWhatsappUrl(contact.whatsapp, "Hello JABARI DENTAL, I have a question about your clinic.");
+const tel = `tel:+${contact.phone}`;
+const maps = contact.mapsUrl;
+
+const todaySpecial = special.find((s) => s.date === new Date().toISOString().slice(0, 10));
+---
+<section class="bg-linen" id="contact">
+  <div class="container-page py-20 md:py-28 grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+    <div data-reveal>
+      <p class="eyebrow">Contact</p>
+      <h2 class="display-section mt-4 text-balance">Let's start<br />the conversation.</h2>
+      <p class="lead mt-6 max-w-md">However you prefer to reach us — a call, a message or a visit — we are ready to help you take the next step.</p>
+
+      <div class="mt-10 grid sm:grid-cols-2 gap-4">
+        <a href={tel} class="flex items-center gap-3 p-5 rounded-md bg-ivory border border-ink/10 hover:border-forest transition-colors group">
+          <span class="w-11 h-11 rounded-full bg-forest/10 text-forest inline-flex items-center justify-center group-hover:bg-forest group-hover:text-ivory transition-colors"><Icon name="phone" size={18} /></span>
+          <span><span class="block text-xs uppercase tracking-wide text-stone">Call</span><span class="text-ink">+{contact.phone}</span></span>
+        </a>
+        <a href={wa} target="_blank" rel="noopener" class="flex items-center gap-3 p-5 rounded-md bg-ivory border border-ink/10 hover:border-forest transition-colors group">
+          <span class="w-11 h-11 rounded-full bg-forest/10 text-forest inline-flex items-center justify-center group-hover:bg-forest group-hover:text-ivory transition-colors"><Icon name="whatsapp" size={18} /></span>
+          <span><span class="block text-xs uppercase tracking-wide text-stone">WhatsApp</span><span class="text-ink">Message us</span></span>
+        </a>
+        {contact.email && (
+          <a href={`mailto:${contact.email}`} class="flex items-center gap-3 p-5 rounded-md bg-ivory border border-ink/10 hover:border-forest transition-colors group">
+            <span class="w-11 h-11 rounded-full bg-forest/10 text-forest inline-flex items-center justify-center group-hover:bg-forest group-hover:text-ivory transition-colors"><Icon name="external" size={18} /></span>
+            <span><span class="block text-xs uppercase tracking-wide text-stone">Email</span><span class="text-ink">{contact.email}</span></span>
+          </a>
+        )}
+        <a href={maps} target="_blank" rel="noopener" class="flex items-center gap-3 p-5 rounded-md bg-ivory border border-ink/10 hover:border-forest transition-colors group">
+          <span class="w-11 h-11 rounded-full bg-forest/10 text-forest inline-flex items-center justify-center group-hover:bg-forest group-hover:text-ivory transition-colors"><Icon name="pin" size={18} /></span>
+          <span><span class="block text-xs uppercase tracking-wide text-stone">Visit</span><span class="text-ink">{contact.addressVerified}</span></span>
+        </a>
+      </div>
+
+      <a href="/book" class="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-forest text-ivory px-7 py-4 text-sm font-medium hover:bg-forest-deep transition-colors w-full sm:w-auto">
+        Book an Appointment <Icon name="arrow-right" size={16} />
+      </a>
+    </div>
+
+    <div data-reveal data-reveal-delay="1" class="bg-ivory rounded-lg border border-ink/10 p-8 md:p-10">
+      <h3 class="eyebrow">Opening hours</h3>
+      <ul class="mt-6 space-y-3 text-sm">
+        {hours.map((h) => (
+          <li class="flex justify-between gap-6 border-b border-ink/5 pb-3">
+            <span class="text-ink">{h.label}</span>
+            <span class="tabular-nums text-stone">{h.closed ? "Closed" : `${h.open} – ${h.close}${h.open2 ? ` · ${h.open2}–${h.close2}` : ""}`}</span>
+          </li>
+        ))}
+      </ul>
+      {todaySpecial && (
+        <p class="mt-5 text-sm text-gold bg-gold/10 rounded-md px-4 py-3">Special hours {todaySpecial.date}: {todaySpecial.closed ? "Closed" : `${todaySpecial.open}–${todaySpecial.close}`}{todaySpecial.note ? ` — ${todaySpecial.note}` : ""}</p>
+      )}
+      <p class="mt-6 text-xs text-mist">Hours are set by the clinic and shown live at the top of this site.</p>
+    </div>
+  </div>
+</section>

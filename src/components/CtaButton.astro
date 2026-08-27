@@ -1,0 +1,33 @@
+---
+import Icon from "@/components/Icon.astro";
+import type { ContactSettings } from "@/lib/types";
+import { buildWhatsappUrl } from "@/lib/whatsapp";
+
+interface Props {
+  href?: string;
+  label: string;
+  variant?: "primary" | "secondary" | "ghost";
+  icon?: string;
+  class?: string;
+  external?: boolean;
+}
+const { href = "#", label, variant = "primary", icon, class: cls = "", external = false } = Astro.props;
+const base =
+  "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium transition-all duration-300 group";
+const variants = {
+  primary: "crystal-shimmer bg-forest text-ivory hover:bg-forest-deep hover:-translate-y-0.5 shadow-soft",
+  secondary: "border border-ink/20 text-ink hover:border-forest hover:text-forest",
+  ghost: "text-ink hover:text-forest underline underline-offset-4 decoration-ink/20 hover:decoration-forest",
+};
+---
+<a
+  href={href}
+  class={`${base} ${variants[variant]} ${cls}`}
+  {...(external ? { target: "_blank", rel: "noopener" } : {})}
+>
+  {icon && <Icon name={icon} size={17} />}
+  <span>{label}</span>
+  {icon === "arrow-right" && (
+    <Icon name="arrow-right" size={15} class="transition-transform duration-300 group-hover:translate-x-1" />
+  )}
+</a>

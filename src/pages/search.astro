@@ -1,0 +1,76 @@
+---
+import { getTreatments, getArticles } from "@/lib/store";
+import Base from "@/layouts/Base.astro";
+import Icon from "@/components/Icon.astro";
+
+export const prerender = false;
+
+const treatments = await getTreatments();
+const articles = await getArticles();
+const payload = [
+  ...treatments.map((t) => ({ type: "Treatment", title: t.name, url: `/treatments/${t.slug}`, excerpt: t.shortDescription })),
+  ...articles.map((a) => ({ type: "Article", title: a.title, url: `/articles/${a.slug}`, excerpt: a.excerpt })),
+];
+---
+<Base title="Search" description="Search JABARI DENTAL treatments and articles.">
+  <section class="bg-forest-deep text-ivory pt-24 pb-14 md:pt-32 md:pb-16">
+    <div class="container-page max-w-2xl">
+      <p class="eyebrow text-gold-soft">Search</p>
+      <h1 class="display-section mt-4 text-ivory">Find what you need.</h1>
+      <div class="mt-8 relative">
+        <Icon name="search" size={20} class="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/60" />
+        <input
+          type="search"
+          id="search-input"
+          placeholder="Search treatments and articles…"
+          autocomplete="off"
+          class="w-full rounded-full bg-ivory/10 text-ivory placeholder-ivory/50 pl-12 pr-5 py-4 focus:outline-none focus:bg-ivory/15 border border-ivory/20"
+          data-search-input
+          aria-label="Search"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-ivory">
+    <div class="container-page max-w-2xl py-12">
+      <p class="text-sm text-stone mb-6" data-search-count></p>
+      <ul class="space-y-2" data-search-results></ul>
+      <p class="text-stone mt-8 hidden" data-search-empty>No results. Try another word, or <a href="/contact" class="text-forest underline">get in touch</a>.</p>
+    </div>
+  </section>
+
+  <script type="application/json" data-search-data set:html={JSON.stringify(payload)}></script>
+  <script>
+    function initSearch() {
+      const input = document.querySelector<HTMLInputElement>("[data-search-input]");
+      const results = document.querySelector<HTMLElement>("[data-search-results]");
+      const count = document.querySelector<HTMLElement>("[data-search-count]");
+      const empty = document.querySelector<HTMLElement>("[data-search-empty]");
+      const dataEl = document.querySelector<HTMLElement>("[data-search-data]");
+      if (!input || !results || !dataEl) return;
+      const data: any[] = JSON.parse(dataEl.textContent || "[]");
+
+      function render(q: string) {
+        const query = q.trim().toLowerCase();
+        const matches = query
+          ? data.filter((d) => (d.title + " " + d.excerpt + " " + d.type).toLowerCase().includes(query))
+          : data;
+        results.innerHTML = matches
+          .map(
+            (d) => `<li><a href="${d.url}" class="group flex items-center justify-between gap-4 py-4 border-b border-ink/10 hover:border-forest">
+              <span><span class="block text-xs uppercase tracking-wide text-gold">${d.type}</span><span class="font-display text-xl text-ink group-hover:text-forest transition-colors">${d.title}</span></span>
+              <span class="text-ink/40 group-hover:translate-x-1 transition-transform"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a></li>`
+          )
+          .join("");
+        if (count) count.textContent = query ? `${matches.length} result${matches.length === 1 ? "" : "s"} for “${q}”` : `${data.length} items`;
+        if (empty) empty.classList.toggle("hidden", matches.length > 0);
+      }
+      input.addEventListener("input", () => render(input.value));
+      render("");
+      input.focus();
+    }
+    initSearch();
+  </script>
+</Base>

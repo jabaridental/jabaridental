@@ -1,0 +1,35 @@
+---
+import { getTreatments, getContact } from "@/lib/store";
+import Base from "@/layouts/Base.astro";
+import TreatmentGrid from "@/components/TreatmentGrid.astro";
+import FinalCTA from "@/components/sections/FinalCTA.astro";
+import CtaButton from "@/components/CtaButton.astro";
+
+export const prerender = false;
+
+const treatments = await getTreatments();
+const contact = await getContact();
+---
+<Base title="Treatments" description="A considered range of dental care in Kampala, planned around you — from general dentistry to implants and cosmetic work.">
+  <section class="bg-forest-deep text-ivory pt-24 pb-16 md:pt-32 md:pb-20">
+    <div class="container-page">
+      <p class="eyebrow text-gold-soft">Treatments</p>
+      <h1 class="display-hero mt-5 max-w-4xl text-ivory">Your smile.<br /><span class="italic text-gold-soft">Your care.</span></h1>
+      <p class="lead text-ivory/80 mt-7 max-w-xl">Every treatment begins with a conversation. Explore what we offer, then book a visit to plan what is right for you.</p>
+    </div>
+  </section>
+
+  <TreatmentGrid treatments={treatments} heading="Our treatments" subheading="Thoughtful, modern care across the full range of dentistry." />
+
+  <section class="bg-linen border-t hairline">
+    <div class="container-page py-16 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <p class="font-display text-2xl text-ink">Not sure which treatment you need?</p>
+      <div class="flex gap-3">
+        <CtaButton href="/book" label="Book a consultation" variant="primary" icon="calendar" />
+        <CtaButton href={`https://wa.me/${contact.whatsapp}`} label="WhatsApp us" variant="secondary" icon="whatsapp" external={true} />
+      </div>
+    </div>
+  </section>
+
+  <FinalCTA contact={contact} />
+</Base>
