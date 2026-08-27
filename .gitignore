@@ -6,7 +6,7 @@ node_modules/
 .env.local
 
 # Runtime content store (seeded from src/data/seed.ts on first run)
-data/
+/data/
 
 # Build output
 dist/
@@ -15,3 +15,8 @@ dist/
 # Editor / OS
 .DS_Store
 *.log
+
+# AI assistant workspace (not part of the site; exclude from deploys)
+.kilo/
+kilo.json
+AGENTS.md
