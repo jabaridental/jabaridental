@@ -1,4 +1,4 @@
-const CACHE = "jabari-v1";
+const CACHE = "jabari-v2";
 const OFFLINE_URL = "/offline.html";
 const PRECACHE = ["/offline.html", "/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png"];
 
