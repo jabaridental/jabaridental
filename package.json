@@ -9,6 +9,7 @@
     "build": "astro build",
     "build:cf": "astro build --config astro.cloudflare.mjs",
     "preview": "astro preview",
+    "deploy": "wrangler pages deploy dist",
     "check": "astro check",
     "gen:icons": "node scripts/gen-icons.mjs"
   },
