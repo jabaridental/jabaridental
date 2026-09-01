@@ -6,8 +6,8 @@
 #
 #   wrangler d1 create jabari-dental-db        # then paste the id below
 #
-# The D1 database name is stable: changing it invalidates existing data.
-name = "jabari-dental"
+# Both names are stable: changing them invalidates existing production data.
+name = "jabaridental"
 main = "./dist/_worker.js/index.js"
 compatibility_date = "2025-08-01"
 compatibility_flags = ["nodejs_compat"]
