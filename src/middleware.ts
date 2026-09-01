@@ -92,8 +92,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // augmented in src/env.d.ts.
   locals.platform = getPlatform(locals as any);
   // Mirror it into the no-arg façade so the existing `await getSite()` style
-  // calls in pages/components keep working.
-  setRequestLocals({ platform: locals.platform });
+  // calls in pages/components keep working. The no-arg path still flows
+  // through getPlatform() (in src/lib/db.ts), so we must keep `runtime` so
+  // getPlatform can reach the D1/R2 bindings.
+  setRequestLocals({ platform: locals.platform, runtime: (locals as any).runtime });
 
   // Generate a per-request CSP nonce. The HTML inline scripts that need it
   // pick it up via `Astro.locals.cspNonce`. This lets us drop 'unsafe-inline'
