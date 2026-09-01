@@ -259,5 +259,4 @@ astro.cloudflare.mjs       Production build target
 ---
 
 ## License
-
 Proprietary. All rights reserved by JABARI DENTAL.
