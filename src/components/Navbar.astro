@@ -1,6 +1,6 @@
 ---
 import type { SiteSettings, ContactSettings } from "@/lib/types";
-import { buildWhatsappUrl } from "@/lib/whatsapp";
+import { getContactLinks } from "@/lib/whatsapp";
 import Icon from "@/components/Icon.astro";
 
 interface Props {
@@ -19,9 +19,12 @@ const nav = [
   { label: "Contact", href: "/contact" },
 ];
 
-const wa = buildWhatsappUrl(contact.whatsapp, "Hello JABARI DENTAL, I would like to enquire about an appointment.");
-const tel = `tel:+${contact.phone}`;
-const maps = contact.mapsUrl;
+const { tel, waHref, maps } = getContactLinks(
+  contact.phone,
+  contact.whatsapp,
+  contact.mapsUrl,
+  contact.email
+);
 ---
 <header class="sticky top-0 z-50 bg-ivory/85 backdrop-blur-md border-b hairline">
   <nav class="container-page flex items-center justify-between h-[var(--header-h)]" aria-label="Primary">
@@ -59,10 +62,6 @@ const maps = contact.mapsUrl;
         <Icon name="phone" size={16} /> <span class="hidden xl:inline">Call</span>
       </a>
       <a
-        href={wa}
-        target="_blank"
-        rel="noopener"
-        class="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-charcoal/80 hover:text-ink"
         aria-label="WhatsApp the clinic"
       >
         <Icon name="whatsapp" size={16} /> <span class="hidden xl:inline">WhatsApp</span>
@@ -139,7 +138,7 @@ const maps = contact.mapsUrl;
       </a>
       <div class="grid grid-cols-2 gap-3">
         <a
-          href={wa}
+          href={waHref}
           target="_blank"
           rel="noopener"
           data-menu-link

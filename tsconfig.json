@@ -9,8 +9,8 @@
     "verbatimModuleSyntax": false,
     "allowJs": true,
     "jsx": "preserve",
-    "types": ["astro/client"]
+    "types": ["astro/client", "@cloudflare/workers-types", "node"]
   },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules"]
+  "exclude": ["dist", "node_modules", ".astro"]
 }

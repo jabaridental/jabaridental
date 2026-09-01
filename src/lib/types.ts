@@ -64,6 +64,8 @@ export type DayKey =
   | "sunday";
 
 export interface DayHours {
+  /** Stable id used by the studio to edit this row. */
+  id?: ID;
   day: DayKey;
   label: string;
   closed: boolean;
@@ -188,6 +190,8 @@ export interface Testimonial {
   approved: boolean;
   featured: boolean;
   published: boolean;
+  /** Optional manual ordering (set by the studio's reorder buttons). */
+  displayOrder?: number;
 }
 
 export interface Article {
@@ -249,3 +253,6 @@ export interface ContentMap {
   articles: Article[];
   faqs: Faq[];
 }
+
+/** Valid content collection names (the API routes import this). */
+export type CollectionKey = keyof ContentMap;

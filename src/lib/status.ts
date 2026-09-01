@@ -10,8 +10,12 @@ export interface KampalaParts {
 const DAY_KEYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
 
 // Returns Kampala local date/time parts from a JS Date (which is UTC-based).
-export function getKampalaParts(d: Date = new Date()): KampalaParts {
-  const fmt = new Intl.DateTimeFormat("en-US", {
+// Caches the Intl.DateTimeFormat instance so we don't reconstruct it on every
+// clock tick (which would otherwise run ~once per second).
+let _fmtCache: Intl.DateTimeFormat | null = null;
+function fmt(): Intl.DateTimeFormat {
+  if (_fmtCache) return _fmtCache;
+  _fmtCache = new Intl.DateTimeFormat("en-US", {
     timeZone: "Africa/Kampala",
     hour12: false,
     weekday: "long",
@@ -21,7 +25,11 @@ export function getKampalaParts(d: Date = new Date()): KampalaParts {
     hour: "2-digit",
     minute: "2-digit",
   });
-  const parts = fmt.formatToParts(d);
+  return _fmtCache;
+}
+
+export function getKampalaParts(d: Date = new Date()): KampalaParts {
+  const parts = fmt().formatToParts(d);
   const get = (t: string) => parts.find((p) => p.type === t)?.value || "";
   let hh = parseInt(get("hour"), 10);
   if (hh === 24) hh = 0;

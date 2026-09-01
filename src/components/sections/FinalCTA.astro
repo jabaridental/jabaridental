@@ -1,6 +1,6 @@
 ---
 import type { ContactSettings } from "@/lib/types";
-import { buildWhatsappUrl } from "@/lib/whatsapp";
+import { getContactLinks } from "@/lib/whatsapp";
 import Icon from "@/components/Icon.astro";
 
 interface Props {
@@ -8,7 +8,13 @@ interface Props {
   image?: { src: string; alt: string };
 }
 const { contact, image } = Astro.props;
-const wa = buildWhatsappUrl(contact.whatsapp, "Hello JABARI DENTAL, I would like to book an appointment.");
+const { waHref } = getContactLinks(
+  contact.phone,
+  contact.whatsapp,
+  contact.mapsUrl,
+  contact.email,
+  "Hello JABARI DENTAL, I would like to book an appointment."
+);
 const bg = image || { src: "/images/stock/hero.jpg", alt: "JABARI DENTAL clinic" };
 ---
 <section class="relative overflow-hidden bg-forest-deep">
@@ -22,7 +28,7 @@ const bg = image || { src: "/images/stock/hero.jpg", alt: "JABARI DENTAL clinic"
       <a href="/book" class="inline-flex items-center justify-center gap-2 rounded-full bg-ivory text-forest-deep px-7 py-4 text-sm font-medium hover:bg-white transition-colors">
         Book an Appointment <Icon name="arrow-right" size={16} />
       </a>
-      <a href={wa} target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 rounded-full border border-ivory/40 px-7 py-4 text-sm font-medium hover:bg-ivory/10 transition-colors">
+      <a href={waHref} target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 rounded-full border border-ivory/40 px-7 py-4 text-sm font-medium hover:bg-ivory/10 transition-colors">
         <Icon name="whatsapp" size={16} /> WhatsApp JABARI DENTAL
       </a>
     </div>

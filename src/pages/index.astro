@@ -25,7 +25,7 @@ const contact = await getContact();
 const hours = await getHours();
 const special = await getSpecialHours();
 const treatments = await getTreatments();
-const featured = treatments.find((t) => t.featured) || treatments[0];
+const featured = treatments.find((t) => t.featured && t.published && t.active) || treatments[0];
 const gallery = await getGallery();
 const beforeAfter = await getBeforeAfter();
 const team = await getTeam();
@@ -58,5 +58,5 @@ const clinicForExp = clinicImages.length >= 4 ? clinicImages : clinicFallback;
   <FAQ faqs={faqs} />
   <MapSection contact={contact} hours={hours} special={special} />
   <ContactSection contact={contact} hours={hours} special={special} />
-  <FinalCTA contact={contact} image={{ src: hero.image.src, alt: hero.image.alt }} />
+  <FinalCTA contact={contact} image={{ src: hero.image?.src || "/images/stock/og-default.jpg", alt: hero.image?.alt || "JABARI DENTAL clinic" }} />
 </Base>

@@ -1,56 +1,41 @@
 import type { APIRoute } from "astro";
-import { readRaw, writeRaw, updateItem, deleteItem, reorderItem } from "@/lib/store";
-import type { CollectionKey } from "@/lib/types";
+import { isCollectionKey, SINGLE, upsertSingle, updateItem, deleteItem, reorderItem } from "@/lib/db";
+import { validateCollectionBody } from "@/lib/schemas";
 
 export const prerender = false;
 
-const SINGLE = new Set(["site", "hero", "contact"]);
-const ARRAYS = new Set([
-  "announcements",
-  "offers",
-  "treatments",
-  "team",
-  "gallery",
-  "beforeAfter",
-  "testimonials",
-  "articles",
-  "faqs",
-  "social",
-  "specialHours",
-  "hours",
-]);
-
-function isKey(k: string): k is CollectionKey {
-  return SINGLE.has(k) || ARRAYS.has(k);
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 }
 
-export const PUT: APIRoute = async ({ params, request }) => {
+export const PUT: APIRoute = async ({ params, request, url, locals }) => {
   const key = params.collection as string;
   const id = params.id as string;
-  if (!isKey(key)) return new Response(JSON.stringify({ ok: false, error: "Unknown collection" }), { status: 400 });
+  if (!isCollectionKey(key)) return json({ ok: false, error: "Unknown collection" }, 400);
 
-  const url = new URL(request.url);
-  if (url.searchParams.get("reorder")) {
+  if (url.searchParams.has("reorder")) {
     const dir = url.searchParams.get("dir") === "up" ? "up" : "down";
-    const ok = await reorderItem(key, id, dir);
-    return new Response(JSON.stringify({ ok }), { headers: { "content-type": "application/json" } });
+    const ok = await reorderItem(key, id, dir, locals);
+    return json({ ok });
   }
 
-  if (SINGLE.has(key)) {
-    const body = await request.json().catch(() => ({}));
-    await writeRaw(key, { ...(await readRaw(key)), ...body });
-    return new Response(JSON.stringify({ ok: true, data: await readRaw(key) }), { headers: { "content-type": "application/json" } });
-  }
-  const body = await request.json().catch(() => ({}));
-  const item = await updateItem(key, id, body);
-  if (!item) return new Response(JSON.stringify({ ok: false, error: "Not found" }), { status: 404 });
-  return new Response(JSON.stringify({ ok: true, data: item }), { headers: { "content-type": "application/json" } });
+  const raw = await request.json().catch(() => ({}));
+  const validation = validateCollectionBody(key, raw);
+  if (!validation.ok) return json({ ok: false, error: validation.error }, 400);
+
+  const data = SINGLE.has(key)
+    ? await upsertSingle(key, validation.value, locals)
+    : await updateItem(key, id, validation.value, locals);
+  if (!data && !SINGLE.has(key)) return json({ ok: false, error: "Not found" }, 404);
+  return json({ ok: true, data });
 };
 
-export const DELETE: APIRoute = async ({ params }) => {
+export const DELETE: APIRoute = async ({ params, locals }) => {
   const key = params.collection as string;
   const id = params.id as string;
-  if (!isKey(key) || SINGLE.has(key)) return new Response(JSON.stringify({ ok: false, error: "Not allowed" }), { status: 400 });
-  const ok = await deleteItem(key, id);
-  return new Response(JSON.stringify({ ok }), { status: ok ? 200 : 404, headers: { "content-type": "application/json" } });
+  if (!isCollectionKey(key) || SINGLE.has(key)) {
+    return json({ ok: false, error: "Not allowed" }, 400);
+  }
+  const ok = await deleteItem(key, id, locals);
+  return json({ ok }, ok ? 200 : 404);
 };

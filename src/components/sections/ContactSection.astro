@@ -1,6 +1,6 @@
 ---
 import type { ContactSettings, DayHours, SpecialHours } from "@/lib/types";
-import { buildWhatsappUrl } from "@/lib/whatsapp";
+import { getContactLinks } from "@/lib/whatsapp";
 import Icon from "@/components/Icon.astro";
 
 interface Props {
@@ -9,9 +9,13 @@ interface Props {
   special: SpecialHours[];
 }
 const { contact, hours, special } = Astro.props;
-const wa = buildWhatsappUrl(contact.whatsapp, "Hello JABARI DENTAL, I have a question about your clinic.");
-const tel = `tel:+${contact.phone}`;
-const maps = contact.mapsUrl;
+const { tel, waHref, maps, emailHref, phoneDisplay } = getContactLinks(
+  contact.phone,
+  contact.whatsapp,
+  contact.mapsUrl,
+  contact.email,
+  "Hello JABARI DENTAL, I have a question about your clinic."
+);
 
 const todaySpecial = special.find((s) => s.date === new Date().toISOString().slice(0, 10));
 ---
@@ -25,14 +29,14 @@ const todaySpecial = special.find((s) => s.date === new Date().toISOString().sli
       <div class="mt-10 grid sm:grid-cols-2 gap-4">
         <a href={tel} class="flex items-center gap-3 p-5 rounded-md bg-ivory border border-ink/10 hover:border-forest transition-colors group">
           <span class="w-11 h-11 rounded-full bg-forest/10 text-forest inline-flex items-center justify-center group-hover:bg-forest group-hover:text-ivory transition-colors"><Icon name="phone" size={18} /></span>
-          <span><span class="block text-xs uppercase tracking-wide text-stone">Call</span><span class="text-ink">+{contact.phone}</span></span>
+          <span><span class="block text-xs uppercase tracking-wide text-stone">Call</span><span class="text-ink">{phoneDisplay}</span></span>
         </a>
-        <a href={wa} target="_blank" rel="noopener" class="flex items-center gap-3 p-5 rounded-md bg-ivory border border-ink/10 hover:border-forest transition-colors group">
+        <a href={waHref} target="_blank" rel="noopener" class="flex items-center gap-3 p-5 rounded-md bg-ivory border border-ink/10 hover:border-forest transition-colors group">
           <span class="w-11 h-11 rounded-full bg-forest/10 text-forest inline-flex items-center justify-center group-hover:bg-forest group-hover:text-ivory transition-colors"><Icon name="whatsapp" size={18} /></span>
           <span><span class="block text-xs uppercase tracking-wide text-stone">WhatsApp</span><span class="text-ink">Message us</span></span>
         </a>
-        {contact.email && (
-          <a href={`mailto:${contact.email}`} class="flex items-center gap-3 p-5 rounded-md bg-ivory border border-ink/10 hover:border-forest transition-colors group">
+        {emailHref && (
+          <a href={emailHref} class="flex items-center gap-3 p-5 rounded-md bg-ivory border border-ink/10 hover:border-forest transition-colors group">
             <span class="w-11 h-11 rounded-full bg-forest/10 text-forest inline-flex items-center justify-center group-hover:bg-forest group-hover:text-ivory transition-colors"><Icon name="external" size={18} /></span>
             <span><span class="block text-xs uppercase tracking-wide text-stone">Email</span><span class="text-ink">{contact.email}</span></span>
           </a>

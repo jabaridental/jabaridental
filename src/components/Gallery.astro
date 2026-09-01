@@ -48,7 +48,13 @@ const categories = ["All", ...Array.from(new Set(items.map((i) => i.category).fi
           class="group block w-full mb-5 break-inside-avoid overflow-hidden rounded-md relative"
           aria-label={`Open image: ${it.title}`}
         >
-          <SmartImage image={it.image} imgClass="group-hover:scale-105 transition-transform duration-700" sizes="(min-width:768px) 30vw, 45vw" />
+          <SmartImage
+            image={it.image}
+            imgClass="group-hover:scale-105 transition-transform duration-700"
+            sizes="(min-width:768px) 30vw, 45vw"
+            loading={i < 3 ? "eager" : "lazy"}
+            priority={i < 3}
+          />
           <span class="absolute inset-0 bg-forest-deep/0 group-hover:bg-forest-deep/30 transition-colors duration-500"></span>
           <span class="absolute bottom-3 left-3 right-3 text-ivory text-sm translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
             {it.title}

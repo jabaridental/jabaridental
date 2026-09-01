@@ -1,6 +1,6 @@
 ---
 import type { Hero, ContactSettings } from "@/lib/types";
-import { buildWhatsappUrl } from "@/lib/whatsapp";
+import { getContactLinks } from "@/lib/whatsapp";
 import SmartImage from "@/components/SmartImage.astro";
 import Icon from "@/components/Icon.astro";
 
@@ -9,9 +9,13 @@ interface Props {
   contact: ContactSettings;
 }
 const { hero, contact } = Astro.props;
-const wa = buildWhatsappUrl(contact.whatsapp, "Hello JABARI DENTAL, I would like to book an appointment.");
-const tel = `tel:+${contact.phone}`;
-const maps = contact.mapsUrl;
+const { tel, waHref, maps } = getContactLinks(
+  contact.phone,
+  contact.whatsapp,
+  contact.mapsUrl,
+  contact.email,
+  "Hello JABARI DENTAL, I would like to book an appointment."
+);
 ---
 <section class="relative min-h-[88vh] flex items-end overflow-hidden bg-forest-deep">
   <div class="absolute inset-0" data-parallax>
@@ -47,7 +51,7 @@ const maps = contact.mapsUrl;
 
     <div class="mt-12 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm text-ivory/80" data-reveal data-reveal-delay="4">
       <span class="inline-flex items-center gap-2"><Icon name="pin" size={16} class="text-gold-soft" /> {contact.addressVerified}</span>
-      <a href={wa} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-ivory">
+      <a href={waHref} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-ivory">
         <Icon name="whatsapp" size={16} class="text-gold-soft" /> {hero.whatsappLabel}
       </a>
       <span class="inline-flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-sage"></span> {hero.statusNote}</span>
@@ -59,7 +63,7 @@ const maps = contact.mapsUrl;
     <a href={tel} aria-label="Call" class="w-11 h-11 rounded-full bg-ivory/10 backdrop-blur hover:bg-ivory/20 text-ivory inline-flex items-center justify-center transition-colors">
       <Icon name="phone" size={18} />
     </a>
-    <a href={wa} target="_blank" rel="noopener" aria-label="WhatsApp" class="w-11 h-11 rounded-full bg-ivory/10 backdrop-blur hover:bg-ivory/20 text-ivory inline-flex items-center justify-center transition-colors">
+    <a href={waHref} target="_blank" rel="noopener" aria-label="WhatsApp" class="w-11 h-11 rounded-full bg-ivory/10 backdrop-blur hover:bg-ivory/20 text-ivory inline-flex items-center justify-center transition-colors">
       <Icon name="whatsapp" size={18} />
     </a>
       <a href={maps} target="_blank" rel="noopener" aria-label="Directions" class="w-11 h-11 rounded-full bg-ivory/10 backdrop-blur hover:bg-ivory/20 text-ivory inline-flex items-center justify-center transition-colors">
@@ -68,13 +72,13 @@ const maps = contact.mapsUrl;
     </div>
   </div>
 
-  <script is:inline>
+  <script nonce={Astro.locals.cspNonce} is:inline>
     const el = document.querySelector("[data-parallax]");
     if (el && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       let ticking = false;
       const update = () => {
         const y = window.scrollY;
-        el.style.transform = `translate3d(0, ${Math.min(y * 0.18, 160)}px, 0) scale(1.08)`;
+        el.style.transform = `translate3d(0, ${Math.min(y * 0.18, 160)}px, 0)`;
         ticking = false;
       };
       window.addEventListener(

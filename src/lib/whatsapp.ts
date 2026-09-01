@@ -5,6 +5,36 @@ export function buildWhatsappUrl(phone: string, message: string): string {
   return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
 }
 
+/**
+ * Centralised contact-link builder. Every component that needs tel / WhatsApp /
+ * maps URLs should call this so the formatting stays consistent and a future
+ * change (e.g. switching to a different deep-link format) only touches one place.
+ */
+export interface ContactLinks {
+  tel: string;
+  waHref: string;
+  maps: string;
+  emailHref: string;
+  phoneDisplay: string;
+}
+
+export function getContactLinks(
+  phone: string,
+  whatsapp: string,
+  mapsUrl: string,
+  email: string,
+  defaultMessage = "Hello JABARI DENTAL, I would like to enquire about an appointment."
+): ContactLinks {
+  const cleanWa = whatsapp.replace(/[^0-9]/g, "");
+  return {
+    tel: `tel:+${phone}`,
+    waHref: buildWhatsappUrl(cleanWa, defaultMessage),
+    maps: mapsUrl,
+    emailHref: email ? `mailto:${email}` : "",
+    phoneDisplay: `+${phone}`,
+  };
+}
+
 export interface BookingFields {
   service: string;
   date: string;

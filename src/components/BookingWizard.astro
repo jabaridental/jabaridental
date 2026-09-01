@@ -9,6 +9,7 @@ interface Props {
 const { contact, services } = Astro.props;
 const list = services.length ? services : ["General Dentistry", "Consultation", "Cosmetic Dentistry", "Other"];
 const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"];
+const todayISO = new Date().toISOString().slice(0, 10);
 ---
 <section class="bg-ivory" id="book-wizard">
   <div class="container-page py-20 md:py-28 max-w-3xl">
@@ -49,7 +50,7 @@ const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00"
         <fieldset data-step="1" class="hidden">
           <legend class="font-display text-2xl text-ink mb-1">Preferred date</legend>
           <p class="text-stone text-sm mb-5">Pick a day that suits you.</p>
-          <input type="date" name="date" class="w-full sm:w-auto rounded-md border border-ink/20 bg-ivory px-4 py-3 text-ink focus:border-forest" data-date />
+          <input type="date" name="date" min={todayISO} class="w-full sm:w-auto rounded-md border border-ink/20 bg-ivory px-4 py-3 text-ink focus:border-forest" data-date />
         </fieldset>
 
         <!-- Step 3: time -->
@@ -127,8 +128,10 @@ const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00"
   import type { BookingFields } from "@/lib/whatsapp";
 
   function initWizard() {
-    const root = document.querySelector<HTMLElement>("[data-wizard]");
-    if (!root) return;
+    const rootEl = document.querySelector<HTMLElement>("[data-wizard]");
+    if (!rootEl) return;
+    // local const keeps the non-null narrowing inside the nested functions below
+    const root = rootEl;
     const phone = root.dataset.phone || "256770590299";
     const steps = Array.from(root.querySelectorAll<HTMLElement>("[data-step]")).filter((s) => s.dataset.step !== "summary" && s.dataset.step !== "success");
     const summaryEl = root.querySelector<HTMLElement>("[data-step='summary']")!;
@@ -174,6 +177,11 @@ const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00"
       if (i === 2) {
         const t = val("time") || val("time-free");
         if (!t) return "Please choose or type a time.";
+        // Accept HH:MM (24h) or h:MM am/pm — anything else would produce a
+        // confusing WhatsApp message that the clinic has to interpret.
+        if (!/^([01]?\d|2[0-3]):[0-5]\d$|^(0?[1-9]|1[0-2]):[0-5]\d\s?(am|pm)$/i.test(t)) {
+          return "Please enter a valid time, e.g. 09:30 or 9:30 am.";
+        }
       }
       if (i === 3 && !val("name")) return "Please enter your name.";
       if (i === 4) {

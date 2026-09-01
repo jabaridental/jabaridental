@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import { getSite, getContact, getHours, getSpecialHours, getAnnouncements, getOffers, getSocial } from "@/lib/store";
+import { getSite, getContact, getHours, getSpecialHours, getAnnouncements, getSocial } from "@/lib/store";
 import Navbar from "@/components/Navbar.astro";
 import Footer from "@/components/Footer.astro";
 import UtilityBar from "@/components/UtilityBar.astro";
@@ -8,7 +8,6 @@ import AnnouncementBar from "@/components/AnnouncementBar.astro";
 import MobileActionBar from "@/components/MobileActionBar.astro";
 import PWAInstall from "@/components/PWAInstall.astro";
 import AmbientSound from "@/components/AmbientSound.astro";
-import Icon from "@/components/Icon.astro";
 
 interface Props {
   title?: string;
@@ -32,25 +31,27 @@ const contact = await getContact();
 const hours = await getHours();
 const special = await getSpecialHours();
 const announcements = await getAnnouncements();
-const offers = await getOffers();
 
 const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.tagline}`;
 const pageDesc = description || site.description;
 const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
-const ogImage = new URL(image, Astro.site).href;
+const fallbackOg = "/images/stock/og-default.jpg";
+const ogImage = new URL(image || fallbackOg, Astro.site).href;
 
-const DAY_MAP: Record<string, string> = {
-  monday: "Mo", tuesday: "Tu", wednesday: "We", thursday: "Th", friday: "Fr", saturday: "Sa", sunday: "Su",
-};
+// Build a valid schema.org OpeningHoursSpecification. Skip days the clinic is
+// closed or rows that are missing the first interval. Only emit a second
+// interval when both open2 and close2 are non-empty.
 const openingSpec = hours
-  .filter((h) => !h.closed && h.open)
-  .map((h) => ({
-    "@type": "OpeningHoursSpecification",
-    dayOfWeek: h.label,
-    opens: h.open,
-    closes: h.close,
-    ...(h.open2 && h.close2 ? {} : {}),
-  }));
+  .filter((h) => !h.closed && h.open && h.close)
+  .flatMap((h) => {
+    const base = {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: h.label,
+      opens: h.open,
+      closes: h.close,
+    };
+    return h.open2 && h.close2 ? [base, { ...base, opens: h.open2, closes: h.close2 }] : [base];
+  });
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -68,13 +69,17 @@ const jsonLd = {
   sameAs: (await getSocial()).map((s) => s.url),
   openingHoursSpecification: openingSpec,
 };
+// Escape "<" / ">" so CMS-entered text containing "</script>" cannot break out
+// of the JSON-LD script element on every page.
+const jsonLdSafe = JSON.stringify(jsonLd).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <script is:inline>
+    <meta name="color-scheme" content="light dark" />
+    <script nonce={Astro.locals.cspNonce} is:inline>
       (function () {
         try {
           var t = localStorage.getItem("theme");
@@ -84,6 +89,7 @@ const jsonLd = {
       })();
     </script>
     <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <meta name="theme-color" content={site.brandColors.primary} />
     <link rel="manifest" href="/manifest.webmanifest" />
@@ -108,11 +114,24 @@ const jsonLd = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
+      />
+    </noscript>
 
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script type="application/ld+json" nonce={Astro.locals.cspNonce} set:html={jsonLdSafe} />
   </head>
   <body class="min-h-screen flex flex-col">
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-3 focus:left-3 focus:bg-forest focus:text-ivory focus:px-4 focus:py-2 focus:rounded-full">Skip to content</a>

@@ -1,6 +1,6 @@
 ---
 import type { SiteSettings, ContactSettings, DayHours } from "@/lib/types";
-import { buildWhatsappUrl } from "@/lib/whatsapp";
+import { getContactLinks } from "@/lib/whatsapp";
 import Icon from "@/components/Icon.astro";
 
 interface Props {
@@ -9,8 +9,12 @@ interface Props {
   hours: DayHours[];
 }
 const { site, contact, hours } = Astro.props;
-const wa = buildWhatsappUrl(contact.whatsapp, "Hello JABARI DENTAL, I would like to enquire about an appointment.");
-const tel = `tel:+${contact.phone}`;
+const { tel, waHref, maps, emailHref, phoneDisplay } = getContactLinks(
+  contact.phone,
+  contact.whatsapp,
+  contact.mapsUrl,
+  contact.email
+);
 
 const cols = [
   { title: "Explore", links: [
@@ -56,9 +60,9 @@ const year = new Date().getFullYear();
       <h3 class="eyebrow text-gold-soft">Visit & Contact</h3>
       <ul class="mt-5 space-y-3 text-sm text-ivory/75">
         <li class="flex items-center gap-2"><Icon name="pin" size={16} class="text-gold-soft" /> <a href={contact.mapsUrl} target="_blank" rel="noopener" class="hover:text-ivory">{contact.addressVerified}</a></li>
-        <li class="flex items-center gap-2"><Icon name="phone" size={16} class="text-gold-soft" /> <a href={tel} class="hover:text-ivory">+{contact.phone}</a></li>
-        <li class="flex items-center gap-2"><Icon name="whatsapp" size={16} class="text-gold-soft" /> <a href={wa} target="_blank" rel="noopener" class="hover:text-ivory">WhatsApp</a></li>
-        {contact.email && <li class="flex items-center gap-2"><Icon name="external" size={16} class="text-gold-soft" /> <a href={`mailto:${contact.email}`} class="hover:text-ivory">{contact.email}</a></li>}
+        <li class="flex items-center gap-2"><Icon name="phone" size={16} class="text-gold-soft" /> <a href={tel} class="hover:text-ivory">{phoneDisplay}</a></li>
+        <li class="flex items-center gap-2"><Icon name="whatsapp" size={16} class="text-gold-soft" /> <a href={waHref} target="_blank" rel="noopener" class="hover:text-ivory">WhatsApp</a></li>
+        {emailHref && <li class="flex items-center gap-2"><Icon name="external" size={16} class="text-gold-soft" /> <a href={emailHref} class="hover:text-ivory">{contact.email}</a></li>}
       </ul>
 
       <h3 class="eyebrow text-gold-soft mt-8">Opening Hours</h3>

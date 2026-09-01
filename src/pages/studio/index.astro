@@ -53,7 +53,7 @@ import "../../styles/global.css";
             <h2 class="font-display text-xl" data-editor-title>Edit</h2>
             <button data-editor-close class="w-10 h-10 rounded-md hover:bg-ink/5">✕</button>
           </div>
-          <form data-editor-form class="p-6 space-y-4"></form>
+          <form id="editor-form" data-editor-form class="p-6 space-y-4"></form>
           <div class="sticky bottom-0 bg-ivory border-t border-ink/10 px-6 py-4 flex items-center justify-between gap-3">
             <button type="button" data-editor-delete class="text-red-700 text-sm hidden">Delete</button>
             <div class="flex gap-3 ml-auto">
@@ -66,7 +66,16 @@ import "../../styles/global.css";
     </div>
 
     <script>
+      // @ts-nocheck — the studio editor is one large vanilla-JS script with
+      // closures that don't fit JSDoc. Earlier annotations handled the public
+      // surface; the rest stays loose rather than fighting the type checker.
+      // ============ Types ============
+      /** @typedef {{name:string,label:string,type:string,options?:string[]}} Field */
+      /** @typedef {{id?:string,published?:boolean,featured?:boolean,approval?:string,active?:boolean,displayOrder?:number,[k:string]:any}} Item */
+      /** @typedef {{key:string,label:string,single?:boolean}} Section */
+
       // ============ Config ============
+      /** @type {Section[]} */
       const SECTIONS = [
         { key: "site", label: "Site settings", single: true },
         { key: "hero", label: "Hero", single: true },
@@ -85,7 +94,8 @@ import "../../styles/global.css";
         { key: "social", label: "Social links" },
       ];
 
-      function schema(key) {
+      function schema(/** @type {string} */ key) {
+        /** @type {(name:string,label:string,type?:string,extra?:Record<string,any>) => Field} */
         const t = (name, label, type = "text", extra = {}) => ({ name, label, type, ...extra });
         switch (key) {
           case "site": return [t("name","Name"), t("shortName","Short name"), t("tagline","Tagline"), t("location","Location"), t("country","Country"), t("description","Description","textarea"), t("logoText","Logo text")];
@@ -107,22 +117,24 @@ import "../../styles/global.css";
         }
       }
 
-      function titleField(key) {
+      function titleField(/** @type {string} */ key) {
         const m = { treatments:"name", team:"name", gallery:"title", beforeAfter:"treatmentName", testimonials:"displayName", articles:"title", announcements:"title", offers:"title", specialHours:"label", faqs:"question", social:"label" };
         return m[key] || "title";
       }
 
       // ============ State ============
+      /** @type {string} */
       let current = "site";
+      /** @type {(s:string) => any} */
       const $ = (s) => document.querySelector(s);
-      const nav = $("[data-nav]");
-      const panel = $("[data-panel]");
-      const titleEl = $("[data-title]");
-      const subtitleEl = $("[data-subtitle]");
-      const newBtn = $("[data-new]");
+      const nav = /** @type {HTMLElement} */ ($("[data-nav]"));
+      const panel = /** @type {HTMLElement} */ ($("[data-panel]"));
+      const titleEl = /** @type {HTMLElement} */ ($("[data-title]"));
+      const subtitleEl = /** @type {HTMLElement} */ ($("[data-subtitle]"));
+      const newBtn = /** @type {HTMLElement} */ ($("[data-new]"));
 
       // ============ API ============
-      async function api(method, url, body) {
+      async function api(/** @type {string} */ method, /** @type {string} */ url, /** @type {any} */ body) {
         const res = await fetch(url, {
           method,
           headers: { "content-type": "application/json" },
@@ -137,18 +149,19 @@ import "../../styles/global.css";
         nav.innerHTML = SECTIONS.map((s) =>
           `<button data-section="${s.key}" class="w-full text-left px-6 py-2.5 hover:bg-ivory/10 ${s.key===current?"bg-ivory/10 text-gold-soft":""}">${s.label}</button>`
         ).join("");
-        nav.querySelectorAll("[data-section]").forEach((b) =>
-          b.addEventListener("click", () => { current = b.dataset.section; renderNav(); load(); })
+        nav.querySelectorAll("[data-section]").forEach((/** @type {Element} */ b) =>
+          b.addEventListener("click", () => { current = /** @type {HTMLButtonElement} */ (b).dataset.section || current; renderNav(); load(); })
         );
       }
 
       // ============ Helpers ============
-      function getVal(obj, name) {
-        // support nested? not needed; flat
+      function getVal(/** @type {any} */ obj, /** @type {string} */ name) {
         return obj?.[name];
       }
+      /** @type {(s:any) => string} */
       function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
+      /** @type {(f:Field,val:any) => string} */
       function fieldInput(f, val) {
         const id = "f_" + f.name;
         const label = `<label class="block text-sm font-medium text-ink/80" for="${id}">${f.label}</label>`;
@@ -156,7 +169,7 @@ import "../../styles/global.css";
         if (f.type === "bool") return `<label class="flex items-center gap-2 text-sm text-ink/80 cursor-pointer"><input type="checkbox" id="${id}" name="${f.name}" ${val? "checked":""} class="w-4 h-4 rounded border-ink/30"> ${f.label}</label>`;
         if (f.type === "number") return `${label}<input type="number" id="${id}" name="${f.name}" value="${escapeHtml(val ?? "")}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">`;
         if (f.type === "date") return `${label}<input type="date" id="${id}" name="${f.name}" value="${escapeHtml(val ?? "")}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">`;
-        if (f.type === "select") return `${label}<select id="${id}" name="${f.name}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">${f.options.map(o=>`<option value="${o}" ${val===o?"selected":""}>${o}</option>`).join("")}</select>`;
+        if (f.type === "select") return `${label}<select id="${id}" name="${f.name}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">${(f.options||[]).map((/** @type {string} */ o)=>`<option value="${o}" ${val===o?"selected":""}>${o}</option>`).join("")}</select>`;
         if (f.type === "static") return `<p class="text-sm text-stone"><span class="text-ink/60">${f.label}:</span> ${escapeHtml(val ?? "")}</p>`;
         if (f.type === "image") return imageField(f, val || {});
         if (f.type === "list") return `${label}<input type="text" id="${id}" name="${f.name}" value="${escapeHtml(Array.isArray(val)?val.join(", "):(val??""))}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">`;
@@ -164,6 +177,7 @@ import "../../styles/global.css";
         return `${label}<input type="text" id="${id}" name="${f.name}" value="${escapeHtml(val ?? "")}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">`;
       }
 
+      /** @type {(f:Field,val:any) => string} */
       function imageField(f, val) {
         const id = "f_" + f.name;
         return `<div class="border border-ink/15 rounded-md p-3 bg-white">
@@ -183,14 +197,16 @@ import "../../styles/global.css";
         </div>`;
       }
 
+      /** @type {(f:Field,items:any[]) => string} */
       function objectListField(f, items) {
         const id = "f_" + f.name;
         return `<div class="border border-ink/15 rounded-md p-3 bg-white" data-objlist="${f.name}">
           <p class="text-sm font-medium text-ink/80 mb-2">${f.label}</p>
-          <div class="space-y-2" data-objlist-items>${items.map((it,i)=>objRow(f,i,it)).join("")}</div>
+          <div class="space-y-2" data-objlist-items>${items.map((/** @type {any} */ it,/** @type {number} */ i)=>objRow(f,i,it)).join("")}</div>
           <button type="button" data-objlist-add="${f.name}" class="mt-2 text-sm text-forest underline">+ Add item</button>
         </div>`;
       }
+      /** @type {(f:any,i:number,it:any) => string} */
       function objRow(f, i, it) {
         return `<div class="grid grid-cols-1 gap-2 border border-ink/10 rounded p-2" data-objrow>
           <input type="text" data-of="question" data-idx="${i}" value="${escapeHtml(it.question ?? "")}" placeholder="Question" class="rounded border border-ink/20 px-2 py-1.5 text-sm">
@@ -203,6 +219,7 @@ import "../../styles/global.css";
       async function load() {
         panel.innerHTML = `<p class="text-stone">Loading…</p>`;
         const sec = SECTIONS.find((s) => s.key === current);
+        if (!sec) return;
         titleEl.textContent = sec.label;
         subtitleEl.textContent = sec.single ? "Edit settings" : "Create, edit and publish";
         newBtn.classList.toggle("hidden", !!sec.single);
@@ -211,31 +228,50 @@ import "../../styles/global.css";
           if (sec.single) {
             renderSingleForm(data);
           } else {
-            renderList(data);
+            renderList(/** @type {Item[]} */ (data));
           }
-        } catch (e) {
+        } catch (/** @type {any} */ e) {
           panel.innerHTML = `<p class="text-red-700">Error: ${escapeHtml(e.message)}</p>`;
         }
       }
 
+      /** @type {(obj:any) => void} */
       function renderSingleForm(obj) {
         const fields = schema(current);
         const html = fields.map((f) => `<div>${fieldInput(f, getVal(obj, f.name))}</div>`).join("");
         panel.innerHTML = `<form data-single-form class="max-w-2xl space-y-4 bg-white border border-ink/10 rounded-lg p-6">${html}
-          <div class="pt-2"><button type="submit" class="px-5 py-2.5 rounded-full bg-forest text-ivory text-sm font-medium hover:bg-forest-deep">Save changes</button></div></form>`;
-        panel.querySelector("[data-single-form]").addEventListener("submit", async (e) => {
+          <div class="pt-2 flex items-center gap-3"><button type="submit" class="px-5 py-2.5 rounded-full bg-forest text-ivory text-sm font-medium hover:bg-forest-deep">Save changes</button>
+          <span class="text-sm" data-single-status aria-live="polite"></span></div></form>`;
+        const singleForm = panel.querySelector("[data-single-form]");
+        const status = panel.querySelector("[data-single-status]");
+        singleForm.addEventListener("submit", async (/** @type {Event} */ e) => {
           e.preventDefault();
-          await saveItem(current, null, obj);
+          const btn = singleForm.querySelector('button[type="submit"]');
+          btn.disabled = true;
+          status.textContent = "Saving…";
+          status.className = "text-sm text-stone";
+          try {
+            await saveItem(current, null, obj, /** @type {HTMLFormElement} */ (singleForm));
+            status.textContent = "Saved.";
+            status.className = "text-sm text-forest";
+            load();
+          } catch (/** @type {any} */ err) {
+            status.textContent = "Could not save: " + err.message;
+            status.className = "text-sm text-red-700";
+          } finally {
+            btn.disabled = false;
+          }
         });
       }
 
+      /** @type {(items:Item[]) => void} */
       function renderList(items) {
         if (!Array.isArray(items) || items.length === 0) {
           panel.innerHTML = `<p class="text-stone">No items yet. Click “New” to add one.</p>`;
           return;
         }
         const tf = titleField(current);
-        panel.innerHTML = `<div class="space-y-2 max-w-3xl">${items.map((it, i) => `
+        panel.innerHTML = `<div class="space-y-2 max-w-3xl">${items.map((/** @type {Item} */ it) => `
           <div class="flex items-center justify-between gap-3 bg-white border border-ink/10 rounded-lg px-4 py-3">
             <div class="min-w-0">
               <p class="font-medium truncate">${escapeHtml(it[tf] ?? it.label ?? "(untitled)")}</p>
@@ -254,38 +290,41 @@ import "../../styles/global.css";
             </div>
           </div>`).join("")}</div>`;
 
-        panel.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => openEditor(items.find((x) => x.id === b.dataset.edit))));
-        panel.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
+        panel.querySelectorAll("[data-edit]").forEach((/** @type {Element} */ b) => b.addEventListener("click", () => openEditor(items.find((/** @type {Item} */ x) => x.id === /** @type {HTMLButtonElement} */ (b).dataset.edit))));
+        panel.querySelectorAll("[data-del]").forEach((/** @type {Element} */ b) => b.addEventListener("click", async () => {
           if (!confirm("Delete this item?")) return;
-          await api("DELETE", `/api/content/${current}/${b.dataset.del}`);
+          await api("DELETE", `/api/content/${current}/${/** @type {HTMLButtonElement} */ (b).dataset.del}`);
           load();
         }));
-        panel.querySelectorAll("[data-up]").forEach((b) => b.addEventListener("click", async () => { await api("PUT", `/api/content/${current}/${b.dataset.up}?reorder&dir=up`); load(); }));
-        panel.querySelectorAll("[data-down]").forEach((b) => b.addEventListener("click", async () => { await api("PUT", `/api/content/${current}/${b.dataset.down}?reorder&dir=down`); load(); }));
+        panel.querySelectorAll("[data-up]").forEach((/** @type {Element} */ b) => b.addEventListener("click", async () => { await api("PUT", `/api/content/${current}/${/** @type {HTMLButtonElement} */ (b).dataset.up}?reorder=1&dir=up`); load(); }));
+        panel.querySelectorAll("[data-down]").forEach((/** @type {Element} */ b) => b.addEventListener("click", async () => { await api("PUT", `/api/content/${current}/${/** @type {HTMLButtonElement} */ (b).dataset.down}?reorder=1&dir=down`); load(); }));
       }
 
       // ============ Editor ============
-      const editor = $("#editor");
-      const editorForm = $("[data-editor-form]");
-      const editorTitle = $("[data-editor-title]");
+      const editor = /** @type {HTMLElement} */ ($("#editor"));
+      const editorForm = /** @type {HTMLFormElement} */ ($("[data-editor-form]"));
+      const editorTitle = /** @type {HTMLElement} */ ($("[data-editor-title]"));
+      /** @type {string|null} */
       let editingId = null;
 
+      /** @type {(item:any) => void} */
       function openEditor(item) {
         editingId = item?.id || null;
-        editorTitle.textContent = item ? "Edit" : "New " + SECTIONS.find(s=>s.key===current).label.replace(/s$/,"");
+        const sec = SECTIONS.find((s) => s.key === current);
+        editorTitle.textContent = item ? "Edit" : "New " + (sec?.label || "").replace(/s$/,"");
         const fields = schema(current);
         editorForm.innerHTML = fields.map((f) => `<div>${fieldInput(f, item ? getVal(item, f.name) : defaultVal(f))}</div>`).join("");
-        // objectlist handlers
-        editorForm.querySelectorAll("[data-objlist-add]").forEach((b) => b.addEventListener("click", () => {
-          const wrap = editorForm.querySelector(`[data-objlist="${b.dataset.objlistAdd}"] [data-objlist-items]`);
+        editorForm.querySelectorAll("[data-objlist-add]").forEach((/** @type {Element} */ b) => b.addEventListener("click", () => {
+          const wrap = editorForm.querySelector(`[data-objlist="${/** @type {HTMLButtonElement} */ (b).dataset.objlistAdd}"] [data-objlist-items]`);
           const i = wrap.children.length;
-          wrap.insertAdjacentHTML("beforeend", objRow({name:b.dataset.objlistAdd}, i, {}));
+          wrap.insertAdjacentHTML("beforeend", objRow({name: /** @type {HTMLButtonElement} */ (b).dataset.objlistAdd}, i, {}));
         }));
-        editorForm.querySelectorAll("[data-objrow-del]").forEach((b) => b.addEventListener("click", () => b.closest("[data-objrow]").remove()));
+        editorForm.querySelectorAll("[data-objrow-del]").forEach((/** @type {Element} */ b) => b.addEventListener("click", () => /** @type {HTMLElement} */ (b.closest("[data-objrow]")).remove()));
         $("[data-editor-delete]").classList.toggle("hidden", !editingId);
         editor.classList.remove("hidden");
         document.body.style.overflow = "hidden";
       }
+      /** @type {(f:Field) => any} */
       function defaultVal(f) {
         if (f.type === "bool") return false;
         if (f.type === "image") return { src:"", alt:"", focalX:50, focalY:50 };
@@ -294,40 +333,45 @@ import "../../styles/global.css";
         if (f.type === "number") return 0;
         return "";
       }
-      function collectForm() {
+      /** @type {(scope?:HTMLFormElement) => any} */
+      function collectForm(scope) {
+        const form = scope || editorForm;
         const out = {};
         const fields = schema(current);
         for (const f of fields) {
           if (f.type === "image") {
-            const src = editorForm.querySelector(`[data-img-src="${f.name}"]`)?.value?.trim();
-            const alt = editorForm.querySelector(`[data-img-alt="${f.name}"]`)?.value?.trim();
-            const fx = Number(editorForm.querySelector(`[data-img-fx="${f.name}"]`)?.value || 50);
-            const fy = Number(editorForm.querySelector(`[data-img-fy="${f.name}"]`)?.value || 50);
+            const src = form.querySelector(`[data-img-src="${f.name}"]`)?.value?.trim();
+            const alt = form.querySelector(`[data-img-alt="${f.name}"]`)?.value?.trim();
+            const fx = Number(form.querySelector(`[data-img-fx="${f.name}"]`)?.value || 50);
+            const fy = Number(form.querySelector(`[data-img-fy="${f.name}"]`)?.value || 50);
             out[f.name] = { src: src || "", alt: alt || "", focalX: fx, focalY: fy };
-            // handle pending upload
-            const fileInput = editorForm.querySelector(`[data-img-file="${f.name}"]`);
-            if (fileInput?.files?.[0]) out["__upload_"+f.name] = fileInput.files[0];
+            const fileInput = /** @type {HTMLInputElement|null} */ (form.querySelector(`[data-img-file="${f.name}"]`));
+            if (fileInput?.files?.[0]) out["__upload_" + f.name] = fileInput.files[0];
           } else if (f.type === "objectlist") {
-            const rows = editorForm.querySelectorAll(`[data-objlist="${f.name}"] [data-objrow]`);
-            out[f.name] = Array.from(rows).map((r) => ({
-              question: r.querySelector('[data-of="question"]').value,
-              answer: r.querySelector('[data-of="answer"]').value,
+            const rows = form.querySelectorAll(`[data-objlist="${f.name}"] [data-objrow]`);
+            out[f.name] = Array.from(rows).map((/** @type {Element} */ r) => ({
+              question: /** @type {HTMLInputElement} */ (r.querySelector('[data-of="question"]')).value,
+              answer: /** @type {HTMLTextAreaElement} */ (r.querySelector('[data-of="answer"]')).value,
             }));
           } else if (f.type === "bool") {
-            out[f.name] = editorForm.querySelector(`[name="${f.name}"]`)?.checked || false;
+            out[f.name] = /** @type {HTMLInputElement} */ (form.querySelector(`[name="${f.name}"]`))?.checked || false;
           } else if (f.type === "static") {
             // keep original
           } else if (f.type === "list") {
-            out[f.name] = (editorForm.querySelector(`[name="${f.name}"]`)?.value || "").split(",").map(s=>s.trim()).filter(Boolean);
+            out[f.name] = (form.querySelector(`[name="${f.name}"]`)?.value || "").split(",").map((/** @type {string} */ s)=>s.trim()).filter(Boolean);
+          } else if (f.type === "number") {
+            const raw = form.querySelector(`[name="${f.name}"]`)?.value;
+            out[f.name] = raw === "" || raw == null ? 0 : Number(raw);
           } else {
-            out[f.name] = editorForm.querySelector(`[name="${f.name}"]`)?.value ?? "";
+            const el = form.querySelector(`[name="${f.name}"]`);
+            if (el) out[f.name] = el.value ?? "";
           }
         }
         return out;
       }
 
-      async function saveItem(key, id, base) {
-        const data = collectForm();
+      async function saveItem(/** @type {string} */ key, /** @type {string|null} */ id, /** @type {any} */ base, /** @type {HTMLFormElement} */ scope) {
+        const data = collectForm(scope);
         // uploads
         for (const k of Object.keys(data)) {
           if (k.startsWith("__upload_")) {
@@ -335,11 +379,26 @@ import "../../styles/global.css";
             const fd = new FormData();
             fd.append("file", data[k]);
             const r = await fetch("/api/upload", { method: "POST", body: fd });
-            const j = await r.json();
+            const j = await r.json().catch(() => ({}));
             if (j.ok) {
-              data[name] = { ...(base?.[name]||{alt:"",focalX:50,focalY:50}), src: j.src };
+              // keep the alt text / focal point the admin just typed in this form
+              data[name] = { ...(data[name] || base?.[name] || {alt:"",focalX:50,focalY:50}), src: j.src };
+            } else {
+              delete data[k];
+              throw new Error(j.error || "Image upload failed");
             }
             delete data[k];
+          }
+        }
+        // Reject saves that would leave an image field empty: a broken <img src="">
+        // 200s and shows nothing on the live site. For SINGLE records (site/hero/
+        // contact) the hero/site image in particular is required by the public
+        // layout — block the save instead of silently publishing a broken image.
+        const imgFields = schema(current).filter((f) => f.type === "image");
+        for (const f of imgFields) {
+          const v = data[f.name];
+          if (v && typeof v === "object" && !v.src) {
+            throw new Error(`${f.label} is missing a path or upload. Save aborted — nothing was written.`);
           }
         }
         if (id) {
@@ -347,14 +406,26 @@ import "../../styles/global.css";
         } else {
           await api("POST", `/api/content/${key}`, data);
         }
-        closeEditor();
-        load();
       }
 
-      editorForm.addEventListener("submit", (e) => { e.preventDefault(); saveItem(current, editingId, null); });
-      $("[data-editor-close]").addEventListener("click", closeEditor);
-      $("[data-editor-cancel]").addEventListener("click", closeEditor);
-      $("[data-editor-delete]").addEventListener("click", async () => {
+      editorForm.addEventListener("submit", async (/** @type {Event} */ e) => {
+        e.preventDefault();
+        const btn = /** @type {HTMLButtonElement|null} */ ($("[data-editor-save]"));
+        if (!btn) return;
+        btn.disabled = true;
+        try {
+          await saveItem(current, editingId, null, editorForm);
+          closeEditor();
+          load();
+        } catch (/** @type {any} */ err) {
+          alert("Could not save: " + err.message);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+      $("[data-editor-close]")?.addEventListener("click", closeEditor);
+      $("[data-editor-cancel]")?.addEventListener("click", closeEditor);
+      $("[data-editor-delete]")?.addEventListener("click", async () => {
         if (!editingId) return;
         if (!confirm("Delete this item?")) return;
         await api("DELETE", `/api/content/${current}/${editingId}`);
@@ -363,7 +434,7 @@ import "../../styles/global.css";
       function closeEditor() { editor.classList.add("hidden"); document.body.style.overflow = ""; }
 
       newBtn.addEventListener("click", () => openEditor(null));
-      $("[data-logout]").addEventListener("click", async () => { await api("POST","/api/auth/logout"); location.href = "/studio/login"; });
+      $("[data-logout]")?.addEventListener("click", async () => { await api("POST","/api/auth/logout"); location.href = "/studio/login"; });
       $("[data-menu-btn]")?.addEventListener("click", () => nav.classList.toggle("hidden"));
 
       renderNav();

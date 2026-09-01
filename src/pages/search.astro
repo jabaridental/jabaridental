@@ -11,6 +11,12 @@ const payload = [
   ...treatments.map((t) => ({ type: "Treatment", title: t.name, url: `/treatments/${t.slug}`, excerpt: t.shortDescription })),
   ...articles.map((a) => ({ type: "Article", title: a.title, url: `/articles/${a.slug}`, excerpt: a.excerpt })),
 ];
+// JSON.stringify does not escape "<", so a title containing "</script>" could
+// break out of the script element. Escape the characters that matter.
+const payloadJson = JSON.stringify(payload)
+  .replace(/</g, "\\u003c")
+  .replace(/>/g, "\\u003e")
+  .replace(/&/g, "\\u0026");
 ---
 <Base title="Search" description="Search JABARI DENTAL treatments and articles.">
   <section class="bg-forest-deep text-ivory pt-24 pb-14 md:pt-32 md:pb-16">
@@ -40,7 +46,7 @@ const payload = [
     </div>
   </section>
 
-  <script type="application/json" data-search-data set:html={JSON.stringify(payload)}></script>
+  <script type="application/json" data-search-data set:html={payloadJson}></script>
   <script>
     function initSearch() {
       const input = document.querySelector<HTMLInputElement>("[data-search-input]");
@@ -49,17 +55,27 @@ const payload = [
       const empty = document.querySelector<HTMLElement>("[data-search-empty]");
       const dataEl = document.querySelector<HTMLElement>("[data-search-data]");
       if (!input || !results || !dataEl) return;
+      // capture in a local so the nested render() keeps the non-null narrowing
+      const resultsEl = results;
       const data: any[] = JSON.parse(dataEl.textContent || "[]");
+
+      // Content comes from the CMS, so escape it before injecting as HTML.
+      function esc(s: unknown): string {
+        return String(s ?? "").replace(
+          /[&<>"']/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string)
+        );
+      }
 
       function render(q: string) {
         const query = q.trim().toLowerCase();
         const matches = query
-          ? data.filter((d) => (d.title + " " + d.excerpt + " " + d.type).toLowerCase().includes(query))
+          ? data.filter((d) => ((d.title || "") + " " + (d.excerpt || "") + " " + (d.type || "")).toLowerCase().includes(query))
           : data;
-        results.innerHTML = matches
+        resultsEl.innerHTML = matches
           .map(
-            (d) => `<li><a href="${d.url}" class="group flex items-center justify-between gap-4 py-4 border-b border-ink/10 hover:border-forest">
-              <span><span class="block text-xs uppercase tracking-wide text-gold">${d.type}</span><span class="font-display text-xl text-ink group-hover:text-forest transition-colors">${d.title}</span></span>
+            (d) => `<li><a href="${esc(d.url)}" class="group flex items-center justify-between gap-4 py-4 border-b border-ink/10 hover:border-forest">
+              <span><span class="block text-xs uppercase tracking-wide text-gold">${esc(d.type)}</span><span class="font-display text-xl text-ink group-hover:text-forest transition-colors">${esc(d.title)}</span></span>
               <span class="text-ink/40 group-hover:translate-x-1 transition-transform"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </a></li>`
           )
@@ -67,7 +83,12 @@ const payload = [
         if (count) count.textContent = query ? `${matches.length} result${matches.length === 1 ? "" : "s"} for “${q}”` : `${data.length} items`;
         if (empty) empty.classList.toggle("hidden", matches.length > 0);
       }
-      input.addEventListener("input", () => render(input.value));
+      // Debounce keystrokes so filtering 50+ items doesn't run on every press.
+      let debounceId: number | undefined;
+      input.addEventListener("input", () => {
+        if (debounceId) window.clearTimeout(debounceId);
+        debounceId = window.setTimeout(() => render(input.value), 80);
+      });
       render("");
       input.focus();
     }

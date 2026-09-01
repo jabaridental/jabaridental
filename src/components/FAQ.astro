@@ -45,14 +45,24 @@ const { faqs } = Astro.props;
   function initFaq() {
     const root = document.querySelector("[data-faq]");
     if (!root) return;
-    root.querySelectorAll<HTMLElement>("[data-faq-item]").forEach((item) => {
+    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-faq-item]"));
+    // Pre-measure every panel's natural height once so opening a tall panel
+    // doesn't flicker: we used to read scrollHeight *after* setting
+    // max-height to 0, which returned the cached (collapsed) value.
+    const heights = new WeakMap<HTMLElement, number>();
+    items.forEach((item) => {
+      const panel = item.querySelector<HTMLElement>("[role='region']")!;
+      panel.style.maxHeight = "none";
+      heights.set(panel, panel.scrollHeight);
+      panel.style.maxHeight = "0px";
+    });
+    items.forEach((item) => {
       const btn = item.querySelector<HTMLButtonElement>("[data-faq-trigger]")!;
       const panel = item.querySelector<HTMLElement>("[role='region']")!;
-      const icon = btn.querySelector("[data-faq-icon]");
       btn.addEventListener("click", () => {
         const open = btn.getAttribute("aria-expanded") === "true";
         // close others
-        root.querySelectorAll<HTMLElement>("[data-faq-item]").forEach((other) => {
+        items.forEach((other) => {
           if (other !== item) {
             const ob = other.querySelector<HTMLButtonElement>("[data-faq-trigger]")!;
             const op = other.querySelector<HTMLElement>("[role='region']")!;
@@ -67,7 +77,7 @@ const { faqs } = Astro.props;
           btn.querySelector("[data-faq-icon]")?.replaceChildren(iconPlus());
         } else {
           btn.setAttribute("aria-expanded", "true");
-          panel.style.maxHeight = panel.scrollHeight + "px";
+          panel.style.maxHeight = (heights.get(panel) ?? panel.scrollHeight) + "px";
           btn.querySelector("[data-faq-icon]")?.replaceChildren(iconMinus());
         }
       });

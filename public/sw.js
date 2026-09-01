@@ -1,4 +1,5 @@
 const CACHE = "jabari-v2";
+const IMG_CACHE = "jabari-img-v1";
 const OFFLINE_URL = "/offline.html";
 const PRECACHE = ["/offline.html", "/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png"];
 
@@ -12,7 +13,11 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+      Promise.all(
+        keys
+          .filter((k) => k !== CACHE && k !== IMG_CACHE)
+          .map((k) => caches.delete(k))
+      )
     )
   );
   self.clients.claim();
@@ -39,6 +44,26 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Images -> dedicated stale-while-revalidate cache so repeat visits don't
+  // re-download the ~100KB stock gallery photos. Cap the cache by evicting
+  // oldest entries when it grows beyond 60 items.
+  if (req.destination === "image") {
+    event.respondWith(
+      caches.open(IMG_CACHE).then(async (cache) => {
+        const cached = await cache.match(req);
+        const network = fetch(req)
+          .then((res) => {
+            if (res && res.status === 200) cache.put(req, res.clone());
+            trimCache(cache, 60);
+            return res;
+          })
+          .catch(() => cached);
+        return cached || network;
+      })
+    );
+    return;
+  }
+
   // Static assets -> stale while revalidate
   event.respondWith(
     caches.match(req).then((cached) => {
@@ -55,3 +80,9 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
+async function trimCache(cache, max) {
+  const keys = await cache.keys();
+  if (keys.length <= max) return;
+  for (const k of keys.slice(0, keys.length - max)) await cache.delete(k);
+}

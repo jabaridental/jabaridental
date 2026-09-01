@@ -75,10 +75,12 @@ const maps = contact.mapsUrl;
 <script>
   import { computeStatus } from "@/lib/status";
   function initMapStatus() {
-    const sec = document.querySelector("[data-hours-json][data-special-json]");
-    const label = document.querySelector("[data-map-label]");
+    const sec = document.querySelector<HTMLElement>("[data-hours-json][data-special-json]");
+    const label = document.querySelector<HTMLElement>("[data-map-label]");
     const dot = document.querySelector<HTMLElement>("[data-map-dot]");
     if (!sec || !label) return;
+    // capture in locals so the nested tick() keeps the non-null narrowing
+    const labelEl = label;
     let hours: any[] = [], special: any[] = [];
     try {
       hours = JSON.parse(sec.dataset.hoursJson || "[]");
@@ -86,7 +88,7 @@ const maps = contact.mapsUrl;
     } catch {}
     function tick() {
       const s = computeStatus(hours, special);
-      label.textContent = `${s.label} · ${s.detail}`;
+      labelEl.textContent = `${s.label} · ${s.detail}`;
       if (dot) dot.style.background = s.open ? "#9fb09a" : "#d8c4a0";
     }
     tick();

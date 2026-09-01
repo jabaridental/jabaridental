@@ -56,7 +56,9 @@ const { testimonials } = Astro.props;
     if (!root) return;
     const slides = Array.from(root.querySelectorAll<HTMLElement>("[data-t-slide]"));
     const dots = Array.from(root.querySelectorAll<HTMLElement>("[data-t-dot]"));
+    if (slides.length < 2) return;
     let cur = 0;
+    let timer: number | undefined;
     function go(i: number) {
       cur = (i + slides.length) % slides.length;
       slides.forEach((s, idx) => {
@@ -72,8 +74,16 @@ const { testimonials } = Astro.props;
     root.querySelector("[data-t-prev]")?.addEventListener("click", () => go(cur - 1));
     root.querySelector("[data-t-next]")?.addEventListener("click", () => go(cur + 1));
     dots.forEach((d) => d.addEventListener("click", () => go(Number(d.dataset.tDot))));
-    let timer = setInterval(() => go(cur + 1), 7000);
-    root.addEventListener("mouseenter", () => clearInterval(timer));
+    // Auto-advance only when the user has not asked for reduced motion.
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      timer = window.setInterval(() => go(cur + 1), 7000);
+      root.addEventListener("mouseenter", () => {
+        if (timer) { window.clearInterval(timer); timer = undefined; }
+      });
+      root.addEventListener("mouseleave", () => {
+        if (!timer) timer = window.setInterval(() => go(cur + 1), 7000);
+      });
+    }
   }
   initTestimonials();
 </script>

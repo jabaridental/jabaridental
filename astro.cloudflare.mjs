@@ -6,15 +6,62 @@ import tailwindcss from "@tailwindcss/vite";
 
 const SITE = "https://jabaridental.com";
 
-// Build target for Cloudflare Pages.
-// Deploy with: npm run build:cf && wrangler pages deploy dist
+/**
+ * Production target: Cloudflare Workers.
+ *
+ * The Worker reads D1 (env.DB) and R2 (env.MEDIA_BUCKET) from wrangler.toml.
+ * Local development should use `wrangler dev` (or `npm run dev:cf`) so the
+ * same bindings are exposed; `astro dev` alone will surface a clear
+ * "D1 binding missing" error if a getter is called.
+ *
+ * Hard rule: refuse to build without AUTH_SECRET and ADMIN_SECRET present in
+ * the build environment — otherwise the studio would accept any login (the
+ * dev fallback secret is public). Both are wired through wrangler.toml +
+ * `wrangler secret put` for production, and through env vars for local builds.
+ *
+ * Build: `npm run build:cf`
+ * Deploy: `wrangler deploy` (NOT `wrangler pages deploy` — we are a Worker,
+ * not a Pages project, since we need D1/R2 bindings via wrangler.toml).
+ */
+const REQUIRED = ["AUTH_SECRET", "ADMIN_SECRET"];
+for (const k of REQUIRED) {
+  if (!process.env[k]) {
+    console.error(
+      `\n  Refusing Cloudflare build: ${k} is not set.\n` +
+        `  Set it via:\n` +
+        `    - wrangler secret put ${k}   (production)\n` +
+        `    - export ${k}=...            (local)\n`
+    );
+    process.exit(1);
+  }
+  const v = process.env[k] || "";
+  if (k === "AUTH_SECRET" && v.length < 32) {
+    console.error(`\n  Refusing Cloudflare build: AUTH_SECRET is shorter than 32 characters.\n`);
+    process.exit(1);
+  }
+}
+
 export default defineConfig({
   site: SITE,
   output: "server",
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    // imageService: 'cloudflare' would serve images through Cloudflare Images
+    // — we don't use it because our images live in R2 and are addressed via
+    // the public hostname.
+  }),
+  security: {
+    checkOrigin: true,
+    allowedDomains: [
+      { hostname: "jabaridental.com" },
+      { hostname: "www.jabaridental.com" },
+      { hostname: "localhost" },
+      // Allow Cloudflare preview URLs during initial deploys so the team can
+      // verify a deployment before the custom domain is attached.
+      { hostname: "*.workers.dev" },
+    ],
+  },
   prefetch: {
-    prefetchAll: true,
-    defaultStrategy: "viewport",
+    defaultStrategy: "hover",
   },
   integrations: [
     sitemap({
@@ -22,12 +69,13 @@ export default defineConfig({
         !page.includes("/studio") &&
         !page.includes("/api/") &&
         !page.includes("/404"),
+      customPages: ["https://jabaridental.com/sitemap-content.xml"],
     }),
   ],
   vite: {
     plugins: [tailwindcss()],
   },
-  dev: {
+  server: {
     port: 4321,
   },
   build: {

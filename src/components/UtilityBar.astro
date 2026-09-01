@@ -68,13 +68,16 @@ const initialTime = formatKampalaTime();
       if (label) label.textContent = status.label;
       if (detail) detail.textContent = `· ${status.detail}`;
       if (dot) dot.style.background = status.open ? "var(--color-sage)" : "#d8c4a0";
-      if (clock) clock.textContent = formatKampalaTime();
+      // Only touch the DOM when the displayed minute actually changes — once
+      // per minute instead of every tick. recomputeStatus can still fire on
+      // the longer timer below to pick up day-boundary transitions.
+      const t = formatKampalaTime();
+      if (clock && t !== clock.textContent) clock.textContent = t;
     }
     tick();
+    // status can change at the minute boundary (opening/closing transitions),
+    // so poll every 20s for cheap re-evaluation.
     setInterval(tick, 1000 * 20);
-    setInterval(() => {
-      if (clock) clock.textContent = formatKampalaTime();
-    }, 1000);
   }
   initUtility();
 

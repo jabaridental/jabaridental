@@ -1,16 +1,27 @@
 # Dependencies
 node_modules/
 
-# Local env (secrets)
+# Local env (secrets) — never committed.
 .env
 .env.local
 
-# Runtime content store (seeded from src/data/seed.ts on first run)
+# Local content import source. Used ONLY by scripts/import-json-to-d1.mjs
+# as a one-time data migration source. Production NEVER reads data/*.json:
+# content lives in Cloudflare D1 and is exposed via src/lib/db.ts.
 /data/
 
-# Build output
+# Generated images that should not be rebuilt from this repo. The repo
+# keeps _originals/* so the optimize step is reproducible; the working
+# images are generated artefacts.
+/public/images/stock/_originals/
+/public/images/uploads/
+
+# Build output (Cloudflare Worker / client bundle).
 dist/
 .astro/
+
+# Drizzle Kit cache.
+drizzle/
 
 # Editor / OS
 .DS_Store

@@ -1,4 +1,4 @@
-import type { ContentMap } from "./types";
+import type { ContentMap } from "../lib/types";
 
 const ph = (file: string, alt: string) => ({
   src: `/images/stock/${file}.jpg`,

@@ -1,45 +1,36 @@
 import type { APIRoute } from "astro";
-import { readRaw, writeRaw, createItem, listCollection } from "@/lib/store";
-import type { CollectionKey } from "@/lib/types";
+import { isCollectionKey, listAll, upsertSingle } from "@/lib/db";
+import { SINGLE } from "@/lib/db";
+import { validateCollectionBody } from "@/lib/schemas";
 
 export const prerender = false;
 
-const SINGLE = new Set(["site", "hero", "contact"]);
-const ARRAYS = new Set([
-  "announcements",
-  "offers",
-  "treatments",
-  "team",
-  "gallery",
-  "beforeAfter",
-  "testimonials",
-  "articles",
-  "faqs",
-  "social",
-  "specialHours",
-  "hours",
-]);
-
-function isKey(k: string): k is CollectionKey {
-  return SINGLE.has(k) || ARRAYS.has(k);
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
 }
 
-export const GET: APIRoute = async ({ params }) => {
+export const GET: APIRoute = async ({ params, locals }) => {
   const key = params.collection as string;
-  if (!isKey(key)) return new Response(JSON.stringify({ ok: false, error: "Unknown collection" }), { status: 400 });
-  const data = await readRaw(key);
-  return new Response(JSON.stringify({ ok: true, data }), { headers: { "content-type": "application/json" } });
+  if (!isCollectionKey(key)) return json({ ok: false, error: "Unknown collection" }, 400);
+  const data = await listAll(key, locals);
+  if (SINGLE.has(key)) {
+    // listAll returns an array; for SINGLE the admin wants an object.
+    return json({ ok: true, data: (data as any[])[0] ?? null });
+  }
+  return json({ ok: true, data });
 };
 
-export const POST: APIRoute = async ({ params, request }) => {
+export const POST: APIRoute = async ({ params, request, locals }) => {
   const key = params.collection as string;
-  if (!isKey(key)) return new Response(JSON.stringify({ ok: false, error: "Unknown collection" }), { status: 400 });
-  if (SINGLE.has(key)) {
-    const body = await request.json().catch(() => ({}));
-    await writeRaw(key, { ...(await readRaw(key)), ...body });
-    return new Response(JSON.stringify({ ok: true, data: await readRaw(key) }), { headers: { "content-type": "application/json" } });
-  }
-  const body = await request.json().catch(() => ({}));
-  const item = await createItem(key, body);
-  return new Response(JSON.stringify({ ok: true, data: item }), { status: 201, headers: { "content-type": "application/json" } });
+  if (!isCollectionKey(key)) return json({ ok: false, error: "Unknown collection" }, 400);
+  const raw = await request.json().catch(() => ({}));
+  const validation = validateCollectionBody(key, raw);
+  if (!validation.ok) return json({ ok: false, error: validation.error }, 400);
+  const data = SINGLE.has(key)
+    ? await upsertSingle(key, validation.value, locals)
+    : await import("@/lib/db").then((m) => m.createItem(key, validation.value, locals));
+  return json({ ok: true, data }, SINGLE.has(key) ? 200 : 201);
 };

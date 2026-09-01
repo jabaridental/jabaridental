@@ -1,5 +1,5 @@
 ---
-import { getContact, getHours, getSpecialHours, getTeam, getGallery } from "@/lib/store";
+import { getContact, getTeam, getGallery } from "@/lib/store";
 import Base from "@/layouts/Base.astro";
 import SmartImage from "@/components/SmartImage.astro";
 import Trust from "@/components/sections/Trust.astro";
@@ -10,8 +10,6 @@ import FinalCTA from "@/components/sections/FinalCTA.astro";
 export const prerender = false;
 
 const contact = await getContact();
-const hours = await getHours();
-const special = await getSpecialHours();
 const team = await getTeam();
 const gallery = await getGallery();
 const clinicImages = gallery.slice(0, 4).map((g) => g.image);
