@@ -23,12 +23,19 @@
  *   node scripts/deploy.mjs full        -- preflight + everything
  *   node scripts/deploy.mjs deploy      -- build + wrangler deploy only (safe to re-run)
  *
+ * Token-based path (no `wrangler login`):
+ *   This script shells out to the wrangler CLI, which still wants OAuth.
+ *   For CI / headless / throwaway environments, use scripts/deploy-rest.mjs
+ *   instead, which talks to the Cloudflare REST API directly using
+ *   CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID. Both scripts use the same
+ *   prerequisites and the same migration / import / deploy sequence.
+ *
  * Exit codes: 0 success, non-zero on any failure. Errors are recoverable; the
  * script never makes a destructive change without printing what it's about to
  * do and waiting on `wrangler`'s own prompts.
  */
 import { execSync, spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const ROOT = resolve(process.cwd());
@@ -78,12 +85,19 @@ function requireWrangler() {
 }
 
 function requireWranglerAuth() {
+  // Prefer the token-based path if CLOUDFLARE_API_TOKEN is set, since
+  // `wrangler whoami` requires OAuth login even when a token is present.
+  if (process.env.CLOUDFLARE_API_TOKEN) {
+    ok("CLOUDFLARE_API_TOKEN set; will use scripts/deploy-rest.mjs flow when ready");
+    info("(wrangler still wants OAuth for `whoami`; the REST script bypasses that.)");
+    return;
+  }
   try {
     const out = sh("npx --no-install wrangler whoami").trim();
     if (!out || out.includes("not authenticated") || out.includes("You are not")) {
       fail("wrangler is installed but not authenticated.");
-      info("Run this in your terminal: npx wrangler login");
-      info("Then re-run this script.");
+      info("Either run `npx wrangler login` in your terminal,");
+      info("or set CLOUDFLARE_API_TOKEN and use `node scripts/deploy-rest.mjs` instead.");
       process.exit(1);
     }
     // Take the first line of `wrangler whoami` output as the account label.
@@ -119,7 +133,7 @@ function d1Exists() {
 
 function d1IdValid() {
   // Heuristic: if wrangler.toml's database_id is the placeholder, refuse.
-  const txt = require("node:fs").readFileSync(resolve(ROOT, "wrangler.toml"), "utf8");
+  const txt = readFileSync(resolve(ROOT, "wrangler.toml"), "utf8");
   return !/database_id\s*=\s*"REPLACE_WITH_D1_ID_FROM_WRANGLER"/.test(txt);
 }
 
@@ -132,16 +146,20 @@ function r2Exists() {
   }
 }
 
-function secretsSet() {
-  // `wrangler secret list` requires auth + project linkage. If it errors we
-  // assume the operator hasn't created the Worker yet; the deploy step will
-  // surface a clear error if a secret is missing.
-  try {
-    sh("npx --no-install wrangler secret list 2>&1 || true");
-    return true;
-  } catch {
-    return false;
+function secretsLookConfigured() {
+  // The Cloudflare build guard already refuses to compile without real
+  // AUTH_SECRET and ADMIN_SECRET. We surface the same rule here so the
+  // operator sees a clear error early if they forgot to export them.
+  const auth = process.env.AUTH_SECRET || "";
+  const admin = process.env.ADMIN_SECRET || "";
+  const bad = [];
+  if (!auth || auth === "dev-only-insecure-secret-change-me" || auth.length < 32) {
+    bad.push("AUTH_SECRET (32+ chars, not the placeholder)");
   }
+  if (!admin || admin === "change-me-in-production") {
+    bad.push("ADMIN_SECRET (not the placeholder)");
+  }
+  return bad;
 }
 
 function preflight() {
@@ -151,10 +169,24 @@ function preflight() {
   requireWranglerAuth();
   requireWranglerConfig();
 
+  const secretIssues = secretsLookConfigured();
+  if (secretIssues.length) {
+    fail("Build-time secrets are not configured for this shell:");
+    for (const s of secretIssues) fail(`  - ${s}`);
+    info("Set them in your shell, or in CI as protected secrets:");
+    info("  $env:AUTH_SECRET = (New-Guid).Guid + (New-Guid).Guid   # 32+ chars");
+    info("  $env:ADMIN_SECRET = 'your-studio-password'");
+    info("In production these are set via `wrangler secret put`, but the");
+    info("build runs locally first and needs them in process.env.");
+    process.exit(1);
+  }
+  ok("AUTH_SECRET + ADMIN_SECRET look real");
+
   if (!d1Exists()) {
     fail("D1 database `jabari-dental-db` not found in your account.");
     info("Create it with: npx wrangler d1 create jabari-dental-db");
     info("Then paste the returned id into wrangler.toml `database_id = \"...\"`");
+    info("Or run `node scripts/deploy-rest.mjs` to do both in one step.");
     process.exit(1);
   }
   ok("D1 database exists");
@@ -173,7 +205,7 @@ function preflight() {
   }
   ok("R2 bucket exists");
 
-  info("(Reminder) AUTH_SECRET and ADMIN_SECRET are set via:");
+  info("(Reminder) AUTH_SECRET and ADMIN_SECRET are set on the remote Worker via:");
   info("    npx wrangler secret put AUTH_SECRET");
   info("    npx wrangler secret put ADMIN_SECRET");
   info("This script does not verify them because wrangler hides secret values.");
@@ -182,10 +214,8 @@ function preflight() {
 function buildWorker() {
   head("Build");
   // The Cloudflare config guard will exit 1 if AUTH_SECRET / ADMIN_SECRET
-  // are not in process.env. We pass them through from the wrangler-secret
-  // preview only when available locally; production deploys get them from
-  // the Cloudflare dashboard instead.
-  const env = { ...process.env };
+  // are not in process.env. The preflight already validated them, so we
+  // just inherit the current env and let the child process see them.
   shInteractive("npm run build", "astro build (Cloudflare target)");
   ok("Worker bundle at dist/_worker.js/");
 }

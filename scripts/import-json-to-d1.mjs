@@ -23,20 +23,14 @@
  * Never run this against an existing production database without reading the
  * diff first — the data in D1 represents the clinic's live content.
  */
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { join, resolve } from "node:path";
-import { z } from "zod";
 
 const ROOT = resolve(process.cwd());
 const DATA_DIR = join(ROOT, "data");
 const ENV = (process.argv[2] || process.env.IMPORT_ENV || "local"); // local | remote
 const FORCE = process.env.FORCE === "1";
-
-// Minimal Zod mirrors of the D1 column shapes. We don't import the runtime
-// schemas because this script runs in Node and the TS app is bundled.
-const imageRef = z.object({ src: z.string(), alt: z.string().default(""), focalX: z.number().default(50), focalY: z.number().default(50) }).passthrough();
-const yesNo = (v) => (v ? 1 : 0);
 
 function bool(v) {
   if (typeof v === "boolean") return v ? 1 : 0;
@@ -49,17 +43,6 @@ function sqlEscape(v) {
   if (typeof v === "boolean") return v ? 1 : 0;
   if (typeof v === "number") return Number.isFinite(v) ? v : null;
   return String(v);
-}
-
-function rows(table, cols, items) {
-  if (!items.length) return [];
-  const out = [];
-  for (const it of items) {
-    const values = cols.map((c) => sqlEscape(c.value(it)));
-    out.push(`INSERT OR ${FORCE ? "REPLACE" : "IGNORE"} INTO ${table} (${cols.map((c) => c.col).join(",")}) VALUES (${cols.map(() => "?").join(",")})`.replace(/\?/g, () => "?"));
-    // We can't easily bind dynamically above; emit parameterized SQL instead.
-  }
-  return out;
 }
 
 const COLLECTIONS = {

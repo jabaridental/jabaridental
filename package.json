@@ -9,6 +9,7 @@
     "build": "astro build --config astro.cloudflare.mjs",
     "preview": "astro preview --config astro.cloudflare.mjs",
     "deploy": "wrangler deploy",
+    "deploy:rest": "node scripts/deploy-rest.mjs",
     "check": "astro check",
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",

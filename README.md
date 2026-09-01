@@ -44,9 +44,50 @@ npm run dev:cf             # exposes the same bindings as production
 
 ---
 
-## Production deployment (one-time)
+## Production deployment
 
-These steps are also bundled into `scripts/deploy.mjs`:
+There are two paths. Use the **token path** in CI / headless environments; use the **wrangler path** when you have an interactive shell with `wrangler login`.
+
+### Path A — token-based (no browser, no `wrangler login`)
+
+```bash
+# 0. One-time: create a scoped API token at
+#    https://dash.cloudflare.com/profile/api-tokens
+#    Permissions required:
+#      - Account > Workers Scripts: Edit
+#      - Account > D1: Edit
+#      - Account > R2: Edit
+#      - Account > Account Settings: Read
+#    Find your account id at https://dash.cloudflare.com (it's in the URL).
+
+# 1. Export them for this shell (PowerShell shown; bash equivalent: export ...)
+$env:CLOUDFLARE_API_TOKEN  = "..."
+$env:CLOUDFLARE_ACCOUNT_ID = "3f741aa105bcbe71a5173a52be5251ef"  # 32-char hex
+
+# 2. Build the Worker bundle (also requires AUTH_SECRET + ADMIN_SECRET — see .env.example)
+$env:AUTH_SECRET  = (New-Guid).Guid + (New-Guid).Guid            # 32+ random chars
+$env:ADMIN_SECRET = "your-studio-password"
+npm run build
+
+# 3. One-shot: create D1, create R2, patch wrangler.toml, apply migrations,
+#    import data/*.json, deploy the Worker.
+node scripts/deploy-rest.mjs --import
+```
+
+`deploy-rest.mjs` accepts flags:
+
+| Flag | Effect |
+|---|---|
+| `--build` / `-b` | Build the Worker bundle before deploying |
+| `--import` | Run `scripts/import-json-to-d1.mjs --remote` after migrations |
+| `--no-migrate` | Skip the migration apply step |
+| `--no-deploy` | Stop after migrations + import |
+| env `DRY_RUN=1` | Print every API call without making it |
+| env `SKIP_DEPLOY=1` | Same as `--no-deploy` |
+| env `FORCE_D1_RECREATE=1` | DESTRUCTIVE — wipe + recreate D1 |
+| env `FORCE_R2_RECREATE=1` | DESTRUCTIVE — wipe + recreate R2 |
+
+### Path B — interactive wrangler (fallback)
 
 ```bash
 # 0. Verify prerequisites
@@ -62,7 +103,7 @@ npx wrangler d1 create jabari-dental-db
 # 3. Create the R2 bucket
 npx wrangler r2 bucket create jabari-dental-media
 
-# 4. Apply D1 migrations (locally first, then remote)
+# 4. Apply D1 migrations
 npm run db:migrate:remote
 
 # 5. One-time data import (only if you have data/*.json from the filesystem era)
