@@ -31,3 +31,6 @@ drizzle/
 .kilo/
 kilo.json
 AGENTS.md
+
+# Playwright MCP browser session cache
+.playwright-mcp/
