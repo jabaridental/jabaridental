@@ -8,7 +8,7 @@
 #   wrangler r2 bucket create jabari-dental-media
 #
 # Both names are stable: changing them invalidates existing production data.
-name = "jabari-dental"
+name = "jabaridental"
 main = "./dist/_worker.js/index.js"
 compatibility_date = "2025-08-01"
 compatibility_flags = ["nodejs_compat"]
