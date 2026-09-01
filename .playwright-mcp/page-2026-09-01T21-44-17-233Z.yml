@@ -1,0 +1,636 @@
+- generic [active] [ref=f50e8]:
+  - generic [ref=f50e13]:
+    - navigation [aria-hidden] [ref=f50e14]:
+      - generic [ref=f50e16]:
+        - link [ref=f50e17] [cursor=pointer]:
+          - /url: /
+        - button [ref=f50e24] [cursor=pointer]:
+          - generic [ref=f50e25]: Jabaridental@protonmail.com's Account
+        - button [ref=f50e30] [cursor=pointer]
+      - navigation [ref=f50e33]:
+        - generic [ref=f50e37]:
+          - button [ref=f50e39] [cursor=pointer]:
+            - generic [ref=f50e41]:
+              - generic [ref=f50e44]: Quick search...
+              - generic [ref=f50e45]: Ctrl K
+          - list [ref=f50e46]:
+            - listitem [ref=f50e47]:
+              - link [ref=f50e48] [cursor=pointer]:
+                - /url: /3f741aa105bcbe71a5173a52be5251ef/home
+                - generic [ref=f50e49]: Account home
+            - listitem [ref=f50e55]:
+              - generic [ref=f50e56]:
+                - button [expanded] [ref=f50e57] [cursor=pointer]:
+                  - generic [ref=f50e58]: Recents
+                - list [ref=f50e64]:
+                  - listitem [ref=f50e66]:
+                    - link [ref=f50e67] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/d1
+                      - generic [ref=f50e68]:
+                        - generic [ref=f50e69]: D1 SQLite Database
+                        - generic [ref=f50e70]: Storage & database…
+                    - button [ref=f50e73] [cursor=pointer]
+                  - listitem [ref=f50e82]:
+                    - link [ref=f50e83] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/members
+                      - generic [ref=f50e84]:
+                        - generic [ref=f50e85]: Members
+                        - generic [ref=f50e86]: Manage account
+                    - button [ref=f50e89] [cursor=pointer]
+                  - listitem [ref=f50e98]:
+                    - link [ref=f50e99] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/api-tokens
+                      - generic [ref=f50e100]:
+                        - generic [ref=f50e101]: Account API tokens
+                        - generic [ref=f50e102]: Manage account
+                    - button [ref=f50e105] [cursor=pointer]
+                  - listitem [ref=f50e114]:
+                    - link [ref=f50e115] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/zero-trust/landing-page
+                      - generic [ref=f50e116]:
+                        - generic [ref=f50e117]: Zero Trust
+                        - generic [ref=f50e118]: Protect & connect
+                    - button [ref=f50e121] [cursor=pointer]
+                  - listitem [ref=f50e130]:
+                    - link [ref=f50e131] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/services/view/jabaridental/production/builds/5b396930-978d-4506-9971-c3fb7561c1e5
+                      - generic [ref=f50e132]:
+                        - generic [ref=f50e133]: jabaridental
+                        - generic [ref=f50e134]: Workers
+                    - button [ref=f50e137] [cursor=pointer]
+            - listitem [ref=f50e146]:
+              - generic [ref=f50e147]:
+                - button [ref=f50e148] [cursor=pointer]:
+                  - generic [ref=f50e149]: Domains
+                - list [ref=f50e154]:
+                  - listitem [ref=f50e156]:
+                    - link [ref=f50e157] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/domains/overview
+                      - generic [ref=f50e158]: Overview
+                  - listitem [ref=f50e160]:
+                    - link [ref=f50e161] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/domains/registrations
+                      - generic [ref=f50e162]: Registrations
+                  - listitem [ref=f50e164]:
+                    - link [ref=f50e165] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/domains/transfers
+                      - generic [ref=f50e166]: Transfers
+            - generic [ref=f50e168]:
+              - generic [ref=f50e169]: Observe
+              - list [ref=f50e172]:
+                - listitem [ref=f50e173]:
+                  - generic [ref=f50e174]:
+                    - button [ref=f50e175] [cursor=pointer]:
+                      - generic [ref=f50e176]: Investigate
+                    - list [ref=f50e182]:
+                      - generic [ref=f50e184]:
+                        - listitem [ref=f50e185]:
+                          - button [ref=f50e186] [cursor=pointer]:
+                            - generic [ref=f50e187]: Log Explorer
+                        - list [ref=f50e189]:
+                          - listitem [ref=f50e191]:
+                            - link [ref=f50e192] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/log-explorer/log-search
+                              - generic [ref=f50e193]: Log search
+                      - listitem [ref=f50e195]:
+                        - link [ref=f50e196] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/trace
+                          - generic [ref=f50e197]: Trace
+                      - listitem [ref=f50e199]:
+                        - link [ref=f50e200] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/logs
+                          - generic [ref=f50e201]: Logpush
+                - listitem [ref=f50e203]:
+                  - generic [ref=f50e204]:
+                    - button [ref=f50e205] [cursor=pointer]:
+                      - generic [ref=f50e206]: Analytics
+                    - list [ref=f50e212]:
+                      - listitem [ref=f50e214]:
+                        - link [ref=f50e215] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/dashboards
+                          - generic [ref=f50e216]: Dashboards
+                      - listitem [ref=f50e218]:
+                        - link [ref=f50e219] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/analytics
+                          - generic [ref=f50e220]: Account analytics
+                      - listitem [ref=f50e222]:
+                        - link [ref=f50e223] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/web-analytics
+                          - generic [ref=f50e224]: Web analytics
+            - generic [ref=f50e226]:
+              - generic [ref=f50e227]: Build
+              - list [ref=f50e230]:
+                - listitem [ref=f50e231]:
+                  - generic [ref=f50e232]:
+                    - button [expanded] [ref=f50e233] [cursor=pointer]:
+                      - generic [ref=f50e234]: Compute
+                    - list [ref=f50e241]:
+                      - listitem [ref=f50e243]:
+                        - link [ref=f50e244] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers-and-pages
+                          - generic [ref=f50e245]: Workers & Pages
+                      - listitem [ref=f50e247]:
+                        - link [ref=f50e248] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/observability
+                          - generic [ref=f50e249]: Observability
+                      - listitem [ref=f50e251]:
+                        - link [ref=f50e252] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers-for-platforms
+                          - generic [ref=f50e253]: Workers for Platforms
+                      - listitem [ref=f50e255]:
+                        - link [ref=f50e256] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/containers
+                          - generic [ref=f50e257]: Containers
+                      - listitem [ref=f50e259]:
+                        - link [ref=f50e260] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/durable-objects
+                          - generic [ref=f50e261]: Durable Objects
+                      - listitem [ref=f50e263]:
+                        - link [ref=f50e264] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/queues
+                          - generic [ref=f50e265]: Queues
+                      - listitem [ref=f50e267]:
+                        - link [ref=f50e268] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/workflows
+                          - generic [ref=f50e269]: Workflows
+                      - listitem [ref=f50e271]:
+                        - link [ref=f50e272] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/browser-run
+                          - generic [ref=f50e273]: Browser Run
+                      - listitem [ref=f50e275]:
+                        - link [ref=f50e276] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/vpc
+                          - generic [ref=f50e277]: VPC
+                      - generic [ref=f50e279]:
+                        - listitem [ref=f50e280]:
+                          - button [ref=f50e281] [cursor=pointer]:
+                            - generic [ref=f50e282]: Email Service
+                        - list [ref=f50e284]:
+                          - listitem [ref=f50e286]:
+                            - link [ref=f50e287] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/email-service/sending
+                              - generic [ref=f50e288]: Email Sending
+                          - listitem [ref=f50e290]:
+                            - link [ref=f50e291] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/email-service/routing
+                              - generic [ref=f50e292]: Email Routing
+                      - listitem [ref=f50e294]:
+                        - link [ref=f50e295] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/plans
+                          - generic [ref=f50e296]: Workers plans
+                      - listitem [ref=f50e298]:
+                        - link [ref=f50e299] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/flagship
+                          - generic [ref=f50e300]: Flagship
+                - listitem [ref=f50e302]:
+                  - generic [ref=f50e303]:
+                    - button [ref=f50e304] [cursor=pointer]:
+                      - generic [ref=f50e305]: AI
+                    - list [ref=f50e310]:
+                      - listitem [ref=f50e312]:
+                        - link [ref=f50e313] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/ai/models
+                          - generic [ref=f50e314]: Models
+                      - listitem [ref=f50e316]:
+                        - link [ref=f50e317] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/ai/workers-ai
+                          - generic [ref=f50e318]: Workers AI
+                      - listitem [ref=f50e320]:
+                        - link [ref=f50e321] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/ai/ai-gateway
+                          - generic [ref=f50e322]: AI Gateway
+                      - listitem [ref=f50e324]:
+                        - link [ref=f50e325] [cursor=pointer]:
+                          - /url: https://dash.cloudflare.com/3f741aa105bcbe71a5173a52be5251ef/one/access-controls/ai-controls/mcp-server-portal
+                          - generic [ref=f50e326]: MCP Portals
+                      - listitem [ref=f50e328]:
+                        - link [ref=f50e329] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/ai/vectorize
+                          - generic [ref=f50e330]: Vectorize
+                      - listitem [ref=f50e332]:
+                        - link [ref=f50e333] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/ai/ai-search
+                          - generic [ref=f50e334]: AI Search
+                      - listitem [ref=f50e336]:
+                        - link [ref=f50e337] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/agents
+                          - generic [ref=f50e338]: Agents
+                - listitem [ref=f50e340]:
+                  - generic [ref=f50e341]:
+                    - button [ref=f50e342] [cursor=pointer]:
+                      - generic [ref=f50e343]: Storage & databases
+                    - list [ref=f50e349]:
+                      - listitem [ref=f50e351]:
+                        - link [ref=f50e352] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/r2/overview
+                          - generic [ref=f50e353]: R2 Object Storage
+                      - listitem [ref=f50e355]:
+                        - link [ref=f50e356] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/data-catalog
+                          - generic [ref=f50e357]: R2 Data Catalog
+                      - listitem [ref=f50e359]:
+                        - link [ref=f50e360] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/hyperdrive
+                          - generic [ref=f50e361]: Postgres & MySQL (Hyperdrive)
+                      - listitem [ref=f50e363]:
+                        - link [ref=f50e364] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/kv/namespaces
+                          - generic [ref=f50e365]: Workers KV
+                      - listitem [ref=f50e367]:
+                        - link [ref=f50e368] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/d1
+                          - generic [ref=f50e369]: D1 SQLite Database
+                      - listitem [ref=f50e371]:
+                        - link [ref=f50e372] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/analytics-engine
+                          - generic [ref=f50e373]: Analytics Engine
+                      - generic [ref=f50e375]:
+                        - listitem [ref=f50e376]:
+                          - button [ref=f50e377] [cursor=pointer]:
+                            - generic [ref=f50e378]: Pipelines
+                        - list [ref=f50e380]:
+                          - listitem [ref=f50e382]:
+                            - link [ref=f50e383] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/pipelines/overview
+                              - generic [ref=f50e384]: Pipelines
+                      - listitem [ref=f50e386]:
+                        - link [ref=f50e387] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/secrets-store
+                          - generic [ref=f50e388]: Secrets Store
+                - listitem [ref=f50e390]:
+                  - generic [ref=f50e391]:
+                    - button [ref=f50e392] [cursor=pointer]:
+                      - generic [ref=f50e393]: Media
+                    - list [ref=f50e399]:
+                      - generic [ref=f50e401]:
+                        - listitem [ref=f50e402]:
+                          - button [ref=f50e403] [cursor=pointer]:
+                            - generic [ref=f50e404]: Stream
+                        - list [ref=f50e406]:
+                          - listitem [ref=f50e408]:
+                            - link [ref=f50e409] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/stream/plans
+                              - generic [ref=f50e410]: Plans
+                      - generic [ref=f50e412]:
+                        - listitem [ref=f50e413]:
+                          - button [ref=f50e414] [cursor=pointer]:
+                            - generic [ref=f50e415]: Images
+                        - list [ref=f50e417]:
+                          - listitem [ref=f50e419]:
+                            - link [ref=f50e420] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/images/transformations
+                              - generic [ref=f50e421]: Transformations
+                          - listitem [ref=f50e423]:
+                            - link [ref=f50e424] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/images/hosted
+                              - generic [ref=f50e425]: Hosted images
+                          - listitem [ref=f50e427]:
+                            - link [ref=f50e428] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/images/plans
+                              - generic [ref=f50e429]: Plans
+                      - generic [ref=f50e431]:
+                        - listitem [ref=f50e432]:
+                          - button [ref=f50e433] [cursor=pointer]:
+                            - generic [ref=f50e434]: Realtime
+                        - list [ref=f50e436]:
+                          - listitem [ref=f50e438]:
+                            - link [ref=f50e439] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/realtime/kit
+                              - generic [ref=f50e440]: RealtimeKit
+                          - listitem [ref=f50e442]:
+                            - link [ref=f50e443] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/realtime/turn
+                              - generic [ref=f50e444]: TURN Server
+                          - listitem [ref=f50e446]:
+                            - link [ref=f50e447] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/realtime/sfu
+                              - generic [ref=f50e448]: Serverless SFU
+                          - listitem [ref=f50e450]:
+                            - link [ref=f50e451] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/realtime/moq
+                              - generic [ref=f50e452]: MoQ Relay
+            - generic [ref=f50e454]:
+              - generic [ref=f50e455]: Protect & connect
+              - list [ref=f50e458]:
+                - listitem [ref=f50e459]:
+                  - generic [ref=f50e460]:
+                    - button [ref=f50e461] [cursor=pointer]:
+                      - generic [ref=f50e462]: Application security
+                    - list [ref=f50e468]:
+                      - listitem [ref=f50e470]:
+                        - link [ref=f50e471] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/security-center
+                          - generic [ref=f50e472]: Security insights
+                      - listitem [ref=f50e474]:
+                        - link [ref=f50e475] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/application-security/waf
+                          - generic [ref=f50e476]: WAF
+                      - listitem [ref=f50e478]:
+                        - link [ref=f50e479] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/application-security/botbase
+                          - generic [ref=f50e480]: BotBase
+                      - listitem [ref=f50e482]:
+                        - link [ref=f50e483] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/application-security/investigate
+                          - generic [ref=f50e484]: Investigate
+                      - listitem [ref=f50e486]:
+                        - link [ref=f50e487] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/security-center/inventory
+                          - generic [ref=f50e488]: Infrastructure
+                      - listitem [ref=f50e490]:
+                        - link [ref=f50e491] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/turnstile
+                          - generic [ref=f50e492]: Turnstile
+                - listitem [ref=f50e494]:
+                  - link [ref=f50e495] [cursor=pointer]:
+                    - /url: /3f741aa105bcbe71a5173a52be5251ef/zero-trust/landing-page
+                    - generic [ref=f50e496]: Zero Trust
+                - listitem [ref=f50e502]:
+                  - generic [ref=f50e503]:
+                    - button [ref=f50e504] [cursor=pointer]:
+                      - generic [ref=f50e505]: Networking
+                    - list [ref=f50e510]:
+                      - listitem [ref=f50e512]:
+                        - link [ref=f50e513] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/magic-networks/overview
+                          - generic [ref=f50e514]: Overview
+                      - generic [ref=f50e516]:
+                        - listitem [ref=f50e517]:
+                          - button [ref=f50e518] [cursor=pointer]:
+                            - generic [ref=f50e519]: Insights
+                        - list [ref=f50e521]:
+                          - listitem [ref=f50e523]:
+                            - link [ref=f50e524] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/networking-insights/analytics/network-analytics/flow-analytics
+                              - generic [ref=f50e525]: Network flow
+                      - listitem [ref=f50e527]:
+                        - link [ref=f50e528] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/tunnels
+                          - generic [ref=f50e529]: Tunnels
+                      - listitem [ref=f50e531]:
+                        - link [ref=f50e532] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/mesh
+                          - generic [ref=f50e533]: Mesh
+                      - listitem [ref=f50e535]:
+                        - link [ref=f50e536] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/magic-networks/routes
+                          - generic [ref=f50e537]: Routes
+                      - generic [ref=f50e539]:
+                        - listitem [ref=f50e540]:
+                          - button [ref=f50e541] [cursor=pointer]:
+                            - generic [ref=f50e542]: IP addresses
+                        - list [ref=f50e544]:
+                          - listitem [ref=f50e546]:
+                            - link [ref=f50e547] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/ip-addresses/address-space
+                              - generic [ref=f50e548]: Address space
+                          - listitem [ref=f50e550]:
+                            - link [ref=f50e551] [cursor=pointer]:
+                              - /url: /3f741aa105bcbe71a5173a52be5251ef/ip-addresses/proxy-ips
+                              - generic [ref=f50e552]: Address maps
+                - listitem [ref=f50e554]:
+                  - generic [ref=f50e555]:
+                    - button [ref=f50e556] [cursor=pointer]:
+                      - generic [ref=f50e557]: Delivery & performance
+                    - list [ref=f50e562]:
+                      - listitem [ref=f50e564]:
+                        - link [ref=f50e565] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/bulk-redirects
+                          - generic [ref=f50e566]: Bulk redirects
+                      - listitem [ref=f50e568]:
+                        - link [ref=f50e569] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/load-balancing
+                          - generic [ref=f50e570]: Load Balancing
+                      - listitem [ref=f50e572]:
+                        - link [ref=f50e573] [cursor=pointer]:
+                          - /url: /3f741aa105bcbe71a5173a52be5251ef/tag-management/zaraz
+                          - generic [ref=f50e574]: Web tag management
+            - listitem [ref=f50e578]:
+              - generic [ref=f50e579]:
+                - button [ref=f50e580] [cursor=pointer]:
+                  - generic [ref=f50e581]: Manage account
+                - list [ref=f50e587]:
+                  - listitem [ref=f50e589]:
+                    - link [ref=f50e590] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/members
+                      - generic [ref=f50e591]: Members
+                  - listitem [ref=f50e593]:
+                    - link [ref=f50e594] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/billing
+                      - generic [ref=f50e595]: Billing
+                  - listitem [ref=f50e597]:
+                    - link [ref=f50e598] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/api-tokens
+                      - generic [ref=f50e599]: Account API tokens
+                  - listitem [ref=f50e601]:
+                    - link [ref=f50e602] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/oauth-clients
+                      - generic [ref=f50e603]: OAuth clients
+                  - listitem [ref=f50e605]:
+                    - link [ref=f50e606] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/audit-log
+                      - generic [ref=f50e607]: Audit logs
+                  - listitem [ref=f50e609]:
+                    - link [ref=f50e610] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/notifications
+                      - generic [ref=f50e611]: Notifications
+                  - listitem [ref=f50e613]:
+                    - link [ref=f50e614] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/shared-configurations
+                      - generic [ref=f50e615]: Shared config
+                  - listitem [ref=f50e617]:
+                    - link [ref=f50e618] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/blocked-content
+                      - generic [ref=f50e619]: Blocked content
+                  - listitem [ref=f50e621]:
+                    - link [ref=f50e622] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/abuse-reports
+                      - generic [ref=f50e623]: Abuse reports
+                  - listitem [ref=f50e625]:
+                    - link [ref=f50e626] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/carbon
+                      - generic [ref=f50e627]: Carbon Impact Report
+                  - listitem [ref=f50e629]:
+                    - link [ref=f50e630] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/configurations
+                      - generic [ref=f50e631]: Configurations
+                  - listitem [ref=f50e633]:
+                    - link [ref=f50e634] [cursor=pointer]:
+                      - /url: /3f741aa105bcbe71a5173a52be5251ef/tags
+                      - generic [ref=f50e635]: Tagged Resources
+    - generic [ref=f50e637]:
+      - banner [ref=f50e638]:
+        - button "Toggle sidebar navigation" [ref=f50e639] [cursor=pointer]:
+          - generic [ref=f50e640]: Open sidebar
+        - navigation "breadcrumb" [ref=f50e645]:
+          - generic [ref=f50e646]:
+            - link "Workers & Pages" [ref=f50e647] [cursor=pointer]:
+              - /url: /3f741aa105bcbe71a5173a52be5251ef/workers-and-pages
+            - generic [ref=f50e654]: jabaridental
+        - generic [ref=f50e656]:
+          - button [ref=f50e657] [cursor=pointer]
+          - link [ref=f50e660] [cursor=pointer]:
+            - /url: /?to=/:account/support
+          - button "User menu" [ref=f50e663] [cursor=pointer]
+      - generic [ref=f50e666]:
+        - navigation [ref=f50e667]:
+          - generic [ref=f50e668]:
+            - tablist [ref=f50e670]:
+              - tab "Overview" [ref=f50e671] [cursor=pointer]
+              - tab "Metrics" [ref=f50e672] [cursor=pointer]
+              - tab "Deployments" [selected] [ref=f50e673] [cursor=pointer]
+              - tab "Bindings" [ref=f50e674] [cursor=pointer]
+              - tab "Observability" [ref=f50e675] [cursor=pointer]
+              - tab "Domains" [ref=f50e676] [cursor=pointer]
+              - tab "Access" [ref=f50e677] [cursor=pointer]
+              - tab "Settings" [ref=f50e678] [cursor=pointer]
+            - button [aria-hidden]
+            - button "Scroll tabs right" [ref=f50e679] [cursor=pointer]
+          - button "More actions" [ref=f50e684] [cursor=pointer]
+        - generic [ref=f50e689]:
+          - generic [ref=f50e690]:
+            - banner [ref=f50e691]:
+              - link "Back to builds" [ref=f50e692] [cursor=pointer]:
+                - /url: /3f741aa105bcbe71a5173a52be5251ef/workers/services/view/jabaridental/production/builds
+              - generic [ref=f50e696]:
+                - 'heading "Build #71c37914" [level=1] [ref=f50e699]':
+                  - text: Build
+                  - generic [ref=f50e700]: "#71c37914"
+                - generic [ref=f50e701]:
+                  - paragraph [ref=f50e702]: 54s
+                  - button "Retry build" [ref=f50e703] [cursor=pointer]
+            - generic [ref=f50e708]:
+              - generic [ref=f50e709]:
+                - generic [ref=f50e710]:
+                  - generic [ref=f50e711]:
+                    - generic [ref=f50e712]: jabaridental
+                    - link "9ef3a09" [ref=f50e714] [cursor=pointer]:
+                      - /url: https://github.com/jabaridental/jabaridental/commit/9ef3a099c679af5dac577f0c948f6e7b050edcec
+                  - generic [ref=f50e715]:
+                    - generic [ref=f50e716]: Set D1 database_id to real jabari-dental-db uuid
+                    - generic [ref=f50e717]: by almarehan
+                  - paragraph [ref=f50e718]:
+                    - time [ref=f50e721]: 57s ago
+                - button "Build settings jabaridental/jabaridental" [ref=f50e722]:
+                  - generic [ref=f50e723]: Build settings
+                  - generic [ref=f50e727]: jabaridental/jabaridental
+              - list [ref=f50e730]:
+                - listitem [ref=f50e731]:
+                  - heading "Build command" [level=4] [ref=f50e732]
+                  - generic [ref=f50e733]: npm run build
+                - listitem [ref=f50e734]:
+                  - heading "Deploy command" [level=4] [ref=f50e735]
+                  - generic [ref=f50e736]: npx wrangler versions upload
+                - listitem [ref=f50e737]:
+                  - heading "Root directory" [level=4] [ref=f50e738]
+                  - generic [ref=f50e739]: /
+                - listitem [ref=f50e740]:
+                  - heading "Build token" [level=4] [ref=f50e741]
+                  - paragraph [ref=f50e742]: jabaridental build token
+                - listitem [ref=f50e743]:
+                  - heading "Build variables" [level=4] [ref=f50e744]
+                  - paragraph [ref=f50e745]: AUTH_SECRET, ADMIN_SECRET
+          - generic [ref=f50e746]:
+            - generic [ref=f50e747]:
+              - generic [ref=f50e749]:
+                - generic [ref=f50e750]:
+                  - paragraph [ref=f50e751]: Initializing
+                  - button [ref=f50e752] [cursor=pointer]:
+                    - paragraph [ref=f50e753]: 2s
+                  - paragraph [ref=f50e756]:
+                    - generic [ref=f50e757]: 00:41:39.225
+                - generic [ref=f50e758]:
+                  - paragraph [ref=f50e759]: Cloning
+                  - button [ref=f50e760] [cursor=pointer]:
+                    - paragraph [ref=f50e761]: 5s
+                  - paragraph [ref=f50e764]:
+                    - generic [ref=f50e765]: 00:41:41.277
+                - generic [ref=f50e766]:
+                  - paragraph [ref=f50e767]: Installing
+                  - button [ref=f50e768] [cursor=pointer]:
+                    - paragraph [ref=f50e769]: 28s
+                  - paragraph [ref=f50e772]:
+                    - generic [ref=f50e773]: 00:41:46.182
+                - generic [ref=f50e774]:
+                  - paragraph [ref=f50e775]: Building
+                  - button [ref=f50e776] [cursor=pointer]:
+                    - paragraph [ref=f50e777]: 8s
+                  - paragraph [ref=f50e780]:
+                    - generic [ref=f50e781]: 00:42:14.594
+                - generic [ref=f50e782]:
+                  - paragraph [ref=f50e783]: Deploying
+                  - button [ref=f50e784] [cursor=pointer]:
+                    - paragraph [ref=f50e785]: 11s
+                  - paragraph [ref=f50e788]:
+                    - generic [ref=f50e789]: 00:42:22.505
+              - generic [ref=f50e791]:
+                - button "Download log" [ref=f50e792] [cursor=pointer]
+                - button "Copy build log" [ref=f50e797] [cursor=pointer]
+            - list [ref=f50e804]:
+              - listitem [ref=f50e892]:
+                - generic [ref=f50e893]: 00:41:39.225
+                - generic [ref=f50e896]: Initializing build environment...
+              - listitem [ref=f50e897]:
+                - generic [ref=f50e898]: 00:41:40.955
+                - generic [ref=f50e901]: "Success: Finished initializing build environment"
+              - listitem [ref=f50e902]:
+                - generic [ref=f50e903]: 00:41:41.467
+                - generic [ref=f50e906]: Cloning repository...
+              - listitem [ref=f50e907]:
+                - generic [ref=f50e908]: 00:41:46.271
+                - generic [ref=f50e911]: "Detected the following tools from environment: npm@10.9.2, nodejs@24.18.0"
+              - listitem [ref=f50e912]:
+                - generic [ref=f50e913]: 00:41:46.273
+                - generic [ref=f50e916]: Restoring from dependencies cache
+              - listitem [ref=f50e917]:
+                - generic [ref=f50e918]: 00:41:46.274
+                - generic [ref=f50e921]: Restoring from build output cache
+              - listitem [ref=f50e922]:
+                - generic [ref=f50e923]: 00:41:46.441
+                - generic [ref=f50e926]: "Installing project dependencies: npm clean-install --progress=false"
+              - listitem [ref=f50e927]:
+                - generic [ref=f50e928]: 00:41:53.414
+                - generic [ref=f50e931]: "npm warn deprecated tsconfck@3.1.6: unmaintained"
+              - listitem [ref=f50e932]:
+                - generic [ref=f50e933]: 00:41:53.576
+                - generic [ref=f50e936]: "npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.hirok.io"
+              - listitem [ref=f50e937]:
+                - generic [ref=f50e938]: 00:41:53.783
+                - generic [ref=f50e941]: "npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.hirok.io"
+              - listitem [ref=f50e942]:
+                - generic [ref=f50e943]: 00:41:39.225
+                - generic [ref=f50e946]: Initializing build environment...
+              - listitem [ref=f50e947]:
+                - generic [ref=f50e948]: 00:41:40.955
+                - generic [ref=f50e951]: "Success: Finished initializing build environment"
+              - listitem [ref=f50e952]:
+                - generic [ref=f50e953]: 00:41:41.467
+                - generic [ref=f50e956]: Cloning repository...
+      - contentinfo [ref=f50e870]:
+        - list [ref=f50e872]:
+          - listitem [ref=f50e873]:
+            - link "Support" [ref=f50e874] [cursor=pointer]:
+              - /url: https://support.cloudflare.com
+          - listitem [ref=f50e875]:
+            - link "System status" [ref=f50e876] [cursor=pointer]:
+              - /url: https://www.cloudflarestatus.com
+          - listitem [ref=f50e877]:
+            - link "Careers" [ref=f50e878] [cursor=pointer]:
+              - /url: https://www.cloudflare.com/careers/
+          - listitem [ref=f50e879]:
+            - link "Terms of Use" [ref=f50e880] [cursor=pointer]:
+              - /url: https://www.cloudflare.com/website-terms/
+          - listitem [ref=f50e881]:
+            - link "Report Security Issues" [ref=f50e882] [cursor=pointer]:
+              - /url: https://www.cloudflare.com/disclosure/
+          - listitem [ref=f50e883]:
+            - link "Privacy Policy" [ref=f50e884] [cursor=pointer]:
+              - /url: https://www.cloudflare.com/privacypolicy/
+          - listitem [ref=f50e885]:
+            - button [ref=f50e886] [cursor=pointer]:
+              - img "A blue and white pill with a checkmark and an x, representing privacy choices" [ref=f50e887]
+              - text: Cookie Preferences
+          - listitem [ref=f50e888]:
+            - generic [ref=f50e889]: © 2026 Cloudflare, Inc.
+  - generic:
+    - region "Notifications"

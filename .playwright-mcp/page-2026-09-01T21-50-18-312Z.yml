@@ -1,0 +1,185 @@
+- generic [ref=f81e2]:
+  - generic [ref=f81e3]:
+    - link "Skip to content" [ref=f81e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner "Global navigation menu" [ref=f81e8]:
+      - generic [ref=f81e9]:
+        - generic [ref=f81e10]:
+          - button "Open menu" [ref=f81e12] [cursor=pointer]
+          - link "Homepage (g then d)" [ref=f81e15] [cursor=pointer]:
+            - /url: /
+        - generic [ref=f81e18]:
+          - navigation "Breadcrumbs" [ref=f81e19]:
+            - list [ref=f81e20]:
+              - listitem [ref=f81e21]:
+                - link "jabaridental" [ref=f81e22] [cursor=pointer]:
+                  - /url: /jabaridental
+              - listitem [ref=f81e24]:
+                - link "jabaridental" [ref=f81e25] [cursor=pointer]:
+                  - /url: /jabaridental/jabaridental
+                - button "Switch repository (alt shift r)" [ref=f81e26] [cursor=pointer]
+          - button "Open quick search dialog, type / to search" [ref=f81e31] [cursor=pointer]:
+            - generic [ref=f81e33]:
+              - generic:
+                - text: Type
+                - generic: /
+                - text: to search
+        - generic [ref=f81e34]:
+          - generic [ref=f81e35]:
+            - generic [ref=f81e38]:
+              - link "Chat with Copilot" [ref=f81e40] [cursor=pointer]:
+                - /url: /copilot
+              - button "Open Copilot…" [ref=f81e45] [cursor=pointer]
+            - button "Create new..." [ref=f81e47] [cursor=pointer]
+            - generic [ref=f81e49]:
+              - link "All issues" [ref=f81e50] [cursor=pointer]:
+                - /url: /issues
+              - link "All pull requests" [ref=f81e54] [cursor=pointer]:
+                - /url: /pulls
+              - link "All repositories" [ref=f81e57] [cursor=pointer]:
+                - /url: /repos
+          - link "You have no unread notifications (g then n)" [ref=f81e60] [cursor=pointer]:
+            - /url: /notifications
+          - button "Open user navigation menu" [ref=f81e64] [cursor=pointer]:
+            - img "User avatar" [ref=f81e65]
+      - heading "Repository navigation" [level=2] [ref=f81e66]
+      - navigation "Repository" [ref=f81e67]:
+        - list [ref=f81e68]:
+          - listitem [ref=f81e69]:
+            - link "Code" [ref=f81e70] [cursor=pointer]:
+              - /url: /jabaridental/jabaridental
+          - listitem [ref=f81e75]:
+            - link "Issues" [ref=f81e76] [cursor=pointer]:
+              - /url: /jabaridental/jabaridental/issues
+          - listitem [ref=f81e82]:
+            - link "Pull requests" [ref=f81e83] [cursor=pointer]:
+              - /url: /jabaridental/jabaridental/pulls
+          - listitem [ref=f81e88]:
+            - link "Agents" [ref=f81e89] [cursor=pointer]:
+              - /url: /jabaridental/jabaridental/agents?author=jabaridental
+          - listitem [ref=f81e95]:
+            - link "Actions" [ref=f81e96] [cursor=pointer]:
+              - /url: /jabaridental/jabaridental/actions
+          - listitem [ref=f81e101]:
+            - link "Projects" [ref=f81e102] [cursor=pointer]:
+              - /url: /jabaridental/jabaridental/projects
+          - listitem [ref=f81e107]:
+            - link "Wiki" [ref=f81e108] [cursor=pointer]:
+              - /url: /jabaridental/jabaridental/wiki
+          - listitem [ref=f81e113]:
+            - link "Security and quality" [ref=f81e114] [cursor=pointer]:
+              - /url: /jabaridental/jabaridental/security
+          - listitem [ref=f81e119]:
+            - link "Insights" [ref=f81e120] [cursor=pointer]:
+              - /url: /jabaridental/jabaridental/pulse
+          - listitem [ref=f81e125]:
+            - link "Settings" [ref=f81e126] [cursor=pointer]:
+              - /url: /jabaridental/jabaridental/settings
+  - main [ref=f81e134]:
+    - generic [ref=f81e136]:
+      - 'heading "Actions: jabaridental/jabaridental" [level=1] [ref=f81e137]'
+      - generic [ref=f81e140]:
+        - generic [ref=f81e141]:
+          - generic [ref=f81e142]:
+            - heading "Actions" [level=2] [ref=f81e143]
+            - link "New workflow" [ref=f81e144] [cursor=pointer]:
+              - /url: /jabaridental/jabaridental/actions/new
+          - navigation "Actions Workflows" [ref=f81e150]:
+            - list [ref=f81e152]:
+              - listitem [ref=f81e153]:
+                - link "All workflows" [ref=f81e154] [cursor=pointer]:
+                  - /url: /jabaridental/jabaridental/actions
+              - listitem [aria-hidden] [ref=f81e156]
+              - listitem [ref=f81e157]:
+                - list "Workflows" [ref=f81e161]:
+                  - listitem [ref=f81e162]:
+                    - link "Deploy to Cloudflare" [ref=f81e163] [cursor=pointer]:
+                      - /url: /jabaridental/jabaridental/actions/workflows/deploy.yml
+                    - button "Pin Deploy to Cloudflare" [ref=f81e165] [cursor=pointer]
+              - listitem [aria-hidden] [ref=f81e166]
+              - listitem [ref=f81e167]:
+                - generic [ref=f81e170]:
+                  - heading "Management" [level=3] [ref=f81e172]
+                  - list "Management" [ref=f81e173]:
+                    - listitem [ref=f81e174]:
+                      - link "Caches" [ref=f81e175] [cursor=pointer]:
+                        - /url: /jabaridental/jabaridental/actions/caches
+                    - listitem [ref=f81e177]:
+                      - link "Attestations" [ref=f81e178] [cursor=pointer]:
+                        - /url: /jabaridental/jabaridental/attestations
+                    - listitem [ref=f81e180]:
+                      - link "Runners" [ref=f81e181] [cursor=pointer]:
+                        - /url: /jabaridental/jabaridental/actions/runners
+                    - listitem [ref=f81e183]:
+                      - link "Usage metrics" [ref=f81e184] [cursor=pointer]:
+                        - /url: /jabaridental/jabaridental/actions/metrics/usage
+                    - listitem [ref=f81e186]:
+                      - link "Performance metrics" [ref=f81e187] [cursor=pointer]:
+                        - /url: /jabaridental/jabaridental/actions/metrics/performance
+        - generic [ref=f81e191]:
+          - generic [ref=f81e192]:
+            - generic [ref=f81e193]:
+              - heading "All workflows" [level=2] [ref=f81e195]
+              - search [ref=f81e201]:
+                - combobox "Filter workflow runs" [ref=f81e202]
+            - generic [ref=f81e203]: Showing runs from all workflows
+          - generic [ref=f81e204]:
+            - generic [ref=f81e205]:
+              - strong [ref=f81e208]: 2 workflow runs
+              - generic [ref=f81e209]:
+                - button "Workflow" [ref=f81e213] [cursor=pointer]
+                - button "Event" [ref=f81e219] [cursor=pointer]
+                - button "Status" [ref=f81e225] [cursor=pointer]
+                - button "Branch" [ref=f81e231] [cursor=pointer]
+                - button "Actor" [ref=f81e237] [cursor=pointer]
+            - generic [ref=f81e240]:
+              - generic [ref=f81e242]:
+                - generic [ref=f81e243]:
+                  - 'link "failed: Run 2 of Deploy to Cloudflare. Rename project from ''jabari-dental'' to ''jabaridental''" [ref=f81e244] [cursor=pointer]':
+                    - /url: /jabaridental/jabaridental/actions/runs/33559116186
+                    - img "failed:" [ref=f81e246]
+                    - generic [ref=f81e248]: Rename project from 'jabari-dental' to 'jabaridental'
+                  - generic [ref=f81e249]:
+                    - text: "Deploy to Cloudflare #2:"
+                    - generic [ref=f81e250]:
+                      - text: Commit
+                      - link "e65b326" [ref=f81e251] [cursor=pointer]:
+                        - /url: /jabaridental/jabaridental/commit/e65b326ca5f3b062759804156c2f84d8ba0fa988
+                      - text: pushed by
+                      - link "jabaridental" [ref=f81e252] [cursor=pointer]:
+                        - /url: /jabaridental
+                - link "main" [ref=f81e254] [cursor=pointer]:
+                  - /url: /jabaridental/jabaridental/tree/refs/heads/main
+                - generic [ref=f81e256]:
+                  - generic [ref=f81e257]:
+                    - generic "Sep 2, 2026, 00:05 GMT+3" [ref=f81e262]: 44 minutes ago
+                    - generic [ref=f81e263]:
+                      - img "Run duration" [ref=f81e264]
+                      - text: 27s
+                  - group [ref=f81e267]:
+                    - img "Show options" [ref=f81e269] [cursor=pointer]
+              - generic [ref=f81e272]:
+                - generic [ref=f81e273]:
+                  - 'link "failed: Run 1 of Deploy to Cloudflare. first commit" [ref=f81e274] [cursor=pointer]':
+                    - /url: /jabaridental/jabaridental/actions/runs/33552693713
+                    - img "failed:" [ref=f81e276]
+                    - generic [ref=f81e278]: first commit
+                  - generic [ref=f81e279]:
+                    - text: "Deploy to Cloudflare #1:"
+                    - generic [ref=f81e280]:
+                      - text: Commit
+                      - link "4cee5a2" [ref=f81e281] [cursor=pointer]:
+                        - /url: /jabaridental/jabaridental/commit/4cee5a292b36916ee1c89adf596bb66225eed43b
+                      - text: pushed by
+                      - link "jabaridental" [ref=f81e282] [cursor=pointer]:
+                        - /url: /jabaridental
+                - link "main" [ref=f81e284] [cursor=pointer]:
+                  - /url: /jabaridental/jabaridental/tree/refs/heads/main
+                - generic [ref=f81e286]:
+                  - generic [ref=f81e287]:
+                    - generic "Sep 1, 2026, 22:59 GMT+3" [ref=f81e292]: Sep 1, 22:59 GMT+3
+                    - generic [ref=f81e293]:
+                      - img "Run duration" [ref=f81e294]
+                      - text: 28s
+                  - group [ref=f81e297]:
+                    - img "Show options" [ref=f81e299] [cursor=pointer]
