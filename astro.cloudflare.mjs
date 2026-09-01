@@ -73,7 +73,11 @@ export default defineConfig({
     }),
   ],
   vite: {
-    plugins: [tailwindcss()],
+    // @tailwindcss/vite's plugin types are nominally compatible but TypeScript
+    // narrows the hoisted Vite version to a different Plugin<any> identity than
+    // the one Astro's bundled Vite exports. The plugin works at runtime — this
+    // is purely a TS-narrowing quirk across dual Vite copies.
+    plugins: [/** @type {any} */ (tailwindcss())],
   },
   server: {
     port: 4321,

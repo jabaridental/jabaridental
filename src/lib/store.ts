@@ -11,7 +11,7 @@
 import * as db from "./db";
 
 /** Minimal subset of Astro's `Locals` that the store needs. */
-type LocalsLike = { platform: import("./platform").PlatformEnv };
+type LocalsLike = { platform: import("./platform").PlatformEnv; runtime?: { env?: unknown } };
 
 let _locals: LocalsLike | null = null;
 
@@ -24,7 +24,10 @@ function l(): LocalsLike {
   return _locals;
 }
 
-// Re-export the DB getters with the no-arg, request-scoped form.
+// Re-export the DB getters with the no-arg, request-scoped form. The shape
+// passed to db.getX() satisfies the `{ runtime?: { env?: unknown } }`
+// parameter type because the db helpers extract the platform from
+// `locals.runtime.env` via getPlatform().
 export const getSite                 = () => db.getSite(l());
 export const getHero                 = () => db.getHero(l());
 export const getContact              = () => db.getContact(l());

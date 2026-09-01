@@ -230,7 +230,10 @@ function rowToSpecialHours(r: any): SpecialHours {
 //   - API routes:       `await getX(locals)` (also full App.Locals)
 // The store façade in ./store.ts also passes its trimmed LocalsLike.
 // We accept any object that has a `platform` field, so all callers work.
-type AnyLocals = { platform: import("./platform").PlatformEnv } | { runtime?: { env?: unknown } };
+type AnyLocals =
+  | { platform: import("./platform").PlatformEnv; runtime?: { env?: unknown } }
+  | { runtime?: { env?: unknown } }
+  | undefined;
 
 function envOf(locals?: AnyLocals) {
   if (!locals) return getPlatform();
@@ -242,7 +245,7 @@ async function mustDb(env: PlatformEnv) {
   return env.db;
 }
 
-export async function getSite(locals?: { runtime?: { env?: unknown } }): Promise<SiteSettings> {
+export async function getSite(locals?: AnyLocals): Promise<SiteSettings> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const r = await env.db.prepare("SELECT * FROM site WHERE id = ?").bind("site").first<any>();
@@ -255,7 +258,7 @@ export async function getSite(locals?: { runtime?: { env?: unknown } }): Promise
   };
 }
 
-export async function getHero(locals?: { runtime?: { env?: unknown } }): Promise<Hero> {
+export async function getHero(locals?: AnyLocals): Promise<Hero> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const r = await env.db.prepare("SELECT * FROM hero WHERE id = ?").bind("hero").first<any>();
@@ -270,7 +273,7 @@ export async function getHero(locals?: { runtime?: { env?: unknown } }): Promise
   };
 }
 
-export async function getContact(locals?: { runtime?: { env?: unknown } }): Promise<ContactSettings> {
+export async function getContact(locals?: AnyLocals): Promise<ContactSettings> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const r = await env.db.prepare("SELECT * FROM contact WHERE id = ?").bind("contact").first<any>();
@@ -282,21 +285,21 @@ export async function getContact(locals?: { runtime?: { env?: unknown } }): Prom
   };
 }
 
-export async function getHours(locals?: { runtime?: { env?: unknown } }): Promise<DayHours[]> {
+export async function getHours(locals?: AnyLocals): Promise<DayHours[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const { results } = await env.db.prepare("SELECT * FROM hours ORDER BY id ASC").all<any>();
   return (results ?? []).map(rowToDayHours);
 }
 
-export async function getSpecialHours(locals?: { runtime?: { env?: unknown } }): Promise<SpecialHours[]> {
+export async function getSpecialHours(locals?: AnyLocals): Promise<SpecialHours[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const { results } = await env.db.prepare("SELECT * FROM special_hours ORDER BY date ASC").all<any>();
   return (results ?? []).map(rowToSpecialHours);
 }
 
-export async function getSocial(locals?: { runtime?: { env?: unknown } }): Promise<SocialLink[]> {
+export async function getSocial(locals?: AnyLocals): Promise<SocialLink[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const { results } = await env.db
@@ -305,7 +308,7 @@ export async function getSocial(locals?: { runtime?: { env?: unknown } }): Promi
   return (results ?? []).map(rowToSocial);
 }
 
-export async function getAnnouncements(locals?: { runtime?: { env?: unknown } }): Promise<Announcement[]> {
+export async function getAnnouncements(locals?: AnyLocals): Promise<Announcement[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const today = new Date().toISOString().slice(0, 10);
@@ -317,7 +320,7 @@ export async function getAnnouncements(locals?: { runtime?: { env?: unknown } })
   return (results ?? []).map(rowToAnnouncement);
 }
 
-export async function getOffers(locals?: { runtime?: { env?: unknown } }): Promise<Offer[]> {
+export async function getOffers(locals?: AnyLocals): Promise<Offer[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const today = new Date().toISOString().slice(0, 10);
@@ -329,7 +332,7 @@ export async function getOffers(locals?: { runtime?: { env?: unknown } }): Promi
   return (results ?? []).map(rowToOffer);
 }
 
-export async function getTreatments(onlyPublished = true, locals?: { runtime?: { env?: unknown } }): Promise<Treatment[]> {
+export async function getTreatments(onlyPublished = true, locals?: AnyLocals): Promise<Treatment[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const where = onlyPublished ? "WHERE published = 1 AND active = 1" : "";
@@ -339,7 +342,7 @@ export async function getTreatments(onlyPublished = true, locals?: { runtime?: {
   return (results ?? []).map(rowToTreatment);
 }
 
-export async function getTeam(locals?: { runtime?: { env?: unknown } }): Promise<TeamMember[]> {
+export async function getTeam(locals?: AnyLocals): Promise<TeamMember[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const { results } = await env.db
@@ -348,7 +351,7 @@ export async function getTeam(locals?: { runtime?: { env?: unknown } }): Promise
   return (results ?? []).map(rowToTeam);
 }
 
-export async function getGallery(locals?: { runtime?: { env?: unknown } }): Promise<GalleryItem[]> {
+export async function getGallery(locals?: AnyLocals): Promise<GalleryItem[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const { results } = await env.db
@@ -357,7 +360,7 @@ export async function getGallery(locals?: { runtime?: { env?: unknown } }): Prom
   return (results ?? []).map(rowToGallery);
 }
 
-export async function getBeforeAfter(locals?: { runtime?: { env?: unknown } }): Promise<BeforeAfterCase[]> {
+export async function getBeforeAfter(locals?: AnyLocals): Promise<BeforeAfterCase[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const { results } = await env.db
@@ -368,7 +371,7 @@ export async function getBeforeAfter(locals?: { runtime?: { env?: unknown } }): 
   return (results ?? []).map(rowToBeforeAfter);
 }
 
-export async function getTestimonials(locals?: { runtime?: { env?: unknown } }): Promise<Testimonial[]> {
+export async function getTestimonials(locals?: AnyLocals): Promise<Testimonial[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const { results } = await env.db
@@ -379,7 +382,7 @@ export async function getTestimonials(locals?: { runtime?: { env?: unknown } }):
   return (results ?? []).map(rowToTestimonial);
 }
 
-export async function getArticles(onlyPublished = true, locals?: { runtime?: { env?: unknown } }): Promise<Article[]> {
+export async function getArticles(onlyPublished = true, locals?: AnyLocals): Promise<Article[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const where = onlyPublished ? "WHERE published = 1" : "";
@@ -389,7 +392,7 @@ export async function getArticles(onlyPublished = true, locals?: { runtime?: { e
   return (results ?? []).map(rowToArticle);
 }
 
-export async function getFaqs(locals?: { runtime?: { env?: unknown } }): Promise<Faq[]> {
+export async function getFaqs(locals?: AnyLocals): Promise<Faq[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const { results } = await env.db
@@ -426,7 +429,7 @@ function newId(): string {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
 }
 
-export async function listAll(key: CollectionKey, locals?: { runtime?: { env?: unknown } }): Promise<any[]> {
+export async function listAll(key: CollectionKey, locals?: AnyLocals): Promise<any[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const tbl = tableFor(key);
@@ -438,7 +441,7 @@ export async function listAll(key: CollectionKey, locals?: { runtime?: { env?: u
  * Replace the single row for `key` (site/hero/contact) with a merged object.
  * The studio PUT/POST for SINGLE collections funnels through here.
  */
-export async function upsertSingle(key: CollectionKey, body: Record<string, any>, locals?: { runtime?: { env?: unknown } }): Promise<any> {
+export async function upsertSingle(key: CollectionKey, body: Record<string, any>, locals?: AnyLocals): Promise<any> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   if (key === "site") {
@@ -477,7 +480,7 @@ export async function upsertSingle(key: CollectionKey, body: Record<string, any>
   throw new Error(`upsertSingle called for non-single collection: ${key}`);
 }
 
-export async function createItem(key: CollectionKey, body: Record<string, any>, locals?: { runtime?: { env?: unknown } }): Promise<any> {
+export async function createItem(key: CollectionKey, body: Record<string, any>, locals?: AnyLocals): Promise<any> {
   if (SINGLE.has(key)) return upsertSingle(key, body, locals);
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
@@ -495,7 +498,7 @@ export async function createItem(key: CollectionKey, body: Record<string, any>, 
   return { id, ...body };
 }
 
-export async function updateItem(key: CollectionKey, id: string, body: Record<string, any>, locals?: { runtime?: { env?: unknown } }): Promise<any | undefined> {
+export async function updateItem(key: CollectionKey, id: string, body: Record<string, any>, locals?: AnyLocals): Promise<any | undefined> {
   if (SINGLE.has(key)) return upsertSingle(key, body, locals);
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
@@ -509,7 +512,7 @@ export async function updateItem(key: CollectionKey, id: string, body: Record<st
   return { id, ...body, updatedAt: now };
 }
 
-export async function deleteItem(key: CollectionKey, id: string, locals?: { runtime?: { env?: unknown } }): Promise<boolean> {
+export async function deleteItem(key: CollectionKey, id: string, locals?: AnyLocals): Promise<boolean> {
   if (SINGLE.has(key)) return false;
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
@@ -526,7 +529,7 @@ export async function deleteItem(key: CollectionKey, id: string, locals?: { runt
  * explicit BEGIN/COMMIT through the D1 HTTP API — the prepare/batch API does
  * run statements sequentially.)
  */
-export async function reorderItem(key: CollectionKey, id: string, dir: "up" | "down", locals?: { runtime?: { env?: unknown } }): Promise<boolean> {
+export async function reorderItem(key: CollectionKey, id: string, dir: "up" | "down", locals?: AnyLocals): Promise<boolean> {
   if (SINGLE.has(key)) return false;
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");

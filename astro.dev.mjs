@@ -40,7 +40,7 @@ export default defineConfig({
       customPages: ["https://jabaridental.com/sitemap-content.xml"],
     }),
   ],
-  vite: { plugins: [tailwindcss()] },
+  vite: { plugins: [/** @type {any} */ (tailwindcss())] },
   server: { port: 4321 },
   build: { inlineStylesheets: "auto" },
 });
