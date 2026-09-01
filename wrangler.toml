@@ -5,9 +5,8 @@
 # create the resources with:
 #
 #   wrangler d1 create jabari-dental-db        # then paste the id below
-#   wrangler r2 bucket create jabari-dental-media
 #
-# Both names are stable: changing them invalidates existing production data.
+# The D1 database name is stable: changing it invalidates existing data.
 name = "jabari-dental"
 main = "./dist/_worker.js/index.js"
 compatibility_date = "2025-08-01"
