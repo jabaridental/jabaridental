@@ -9,10 +9,12 @@ const SITE = "https://jabaridental.com";
 /**
  * Production target: Cloudflare Workers.
  *
- * The Worker reads D1 (env.DB) and R2 (env.MEDIA_BUCKET) from wrangler.toml.
- * Local development should use `wrangler dev` (or `npm run dev:cf`) so the
- * same bindings are exposed; `astro dev` alone will surface a clear
- * "D1 binding missing" error if a getter is called.
+ * The Worker reads D1 (env.DB) from wrangler.toml. Media is served via
+ * MEDIA_PUBLIC_BASE_URL (e.g. a CDN, R2 public bucket, or repo path); the
+ * Worker itself no longer writes to R2. Local development should use
+ * `wrangler dev` (or `npm run dev:cf`) so the same bindings are exposed;
+ * `astro dev` alone will surface a clear "D1 binding missing" error if a
+ * getter is called.
  *
  * Hard rule: refuse to build without AUTH_SECRET and ADMIN_SECRET present in
  * the build environment — otherwise the studio would accept any login (the

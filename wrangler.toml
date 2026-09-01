@@ -25,14 +25,6 @@ binding = "DB"
 database_name = "jabari-dental-db"
 database_id = "REPLACE_WITH_D1_ID_FROM_WRANGLER"
 
-# ---- R2 media bucket binding ----------------------------------------------
-# The application reads `env.MEDIA_BUCKET` (see src/lib/platform.ts).
-# `MEDIA_PUBLIC_BASE_URL` is the public origin serving the R2 bucket — point
-# it at a custom media hostname (recommended) or the r2.dev subdomain.
-[[r2_buckets]]
-binding = "MEDIA_BUCKET"
-bucket_name = "jabari-dental-media"
-
 [vars]
 MEDIA_PUBLIC_BASE_URL = "https://media.jabaridental.com"
 

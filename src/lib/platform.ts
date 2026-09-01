@@ -1,7 +1,7 @@
 /**
  * Runtime environment abstraction.
  *
- * The production target is Cloudflare Workers: bindings (DB, MEDIA_BUCKET,
+ * The production target is Cloudflare Workers: bindings (DB,
  * MEDIA_PUBLIC_BASE_URL) are injected by the Astro Cloudflare adapter via
  * `Astro.locals.runtime.env`.
  *
@@ -11,19 +11,17 @@
  *     no binding is present (offline mode). Production never reads JSON.
  *
  * IMPORTANT: this module is the ONLY place that touches Cloudflare-specific
- * globals. Everything else in the app talks to `getDb()` / `getMedia()` /
+ * globals. Everything else in the app talks to `getDb()` /
  * `getPublicAssetUrl()`.
  */
 
-import type { D1Database, R2Bucket } from "@cloudflare/workers-types";
+import type { D1Database } from "@cloudflare/workers-types";
 
 /** Shape of the bindings the Worker exposes. Mirrors wrangler.toml. */
 export interface CloudflareBindings {
   /** D1 database binding. Name must match `[d1_databases].binding` in wrangler.toml. */
   DB: D1Database;
-  /** R2 bucket binding. Name must match `[[r2_buckets]].binding` in wrangler.toml. */
-  MEDIA_BUCKET: R2Bucket;
-  /** Public origin serving R2 objects, e.g. https://media.jabaridental.com */
+  /** Public origin serving media (e.g. R2 public hostname, CDN, or repo path). */
   MEDIA_PUBLIC_BASE_URL?: string;
   /** Optional override for `AUTH_SECRET` in production. */
   AUTH_SECRET?: string;
@@ -36,7 +34,6 @@ export interface PlatformEnv {
   /** Whether we are running inside a Cloudflare Worker with bindings. */
   isCloudflare: boolean;
   db?: D1Database;
-  mediaBucket?: R2Bucket;
   mediaPublicBaseUrl: string;
   // Per-call secrets — kept on the platform object so callers don't reach
   // into process.env themselves.
@@ -54,11 +51,10 @@ const DEFAULT_MEDIA_BASE = "https://media.jabaridental.com";
  */
 export function getPlatform(locals?: { runtime?: { env?: unknown } }): PlatformEnv {
   const cfEnv = (locals?.runtime?.env as unknown as CloudflareBindings | undefined) ?? undefined;
-  if (cfEnv && cfEnv.DB && cfEnv.MEDIA_BUCKET) {
+  if (cfEnv && cfEnv.DB) {
     return {
       isCloudflare: true,
       db: cfEnv.DB,
-      mediaBucket: cfEnv.MEDIA_BUCKET,
       mediaPublicBaseUrl: stripSlash(cfEnv.MEDIA_PUBLIC_BASE_URL || DEFAULT_MEDIA_BASE),
       authSecret: cfEnv.AUTH_SECRET,
       adminSecret: cfEnv.ADMIN_SECRET,
@@ -70,7 +66,6 @@ export function getPlatform(locals?: { runtime?: { env?: unknown } }): PlatformE
   return {
     isCloudflare: false,
     db: undefined,
-    mediaBucket: undefined,
     mediaPublicBaseUrl: stripSlash(proc.MEDIA_PUBLIC_BASE_URL || DEFAULT_MEDIA_BASE),
     authSecret: proc.AUTH_SECRET,
     adminSecret: proc.ADMIN_SECRET,

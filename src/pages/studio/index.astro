@@ -372,24 +372,6 @@ import "../../styles/global.css";
 
       async function saveItem(/** @type {string} */ key, /** @type {string|null} */ id, /** @type {any} */ base, /** @type {HTMLFormElement} */ scope) {
         const data = collectForm(scope);
-        // uploads
-        for (const k of Object.keys(data)) {
-          if (k.startsWith("__upload_")) {
-            const name = k.replace("__upload_", "");
-            const fd = new FormData();
-            fd.append("file", data[k]);
-            const r = await fetch("/api/upload", { method: "POST", body: fd });
-            const j = await r.json().catch(() => ({}));
-            if (j.ok) {
-              // keep the alt text / focal point the admin just typed in this form
-              data[name] = { ...(data[name] || base?.[name] || {alt:"",focalX:50,focalY:50}), src: j.src };
-            } else {
-              delete data[k];
-              throw new Error(j.error || "Image upload failed");
-            }
-            delete data[k];
-          }
-        }
         // Reject saves that would leave an image field empty: a broken <img src="">
         // 200s and shows nothing on the live site. For SINGLE records (site/hero/
         // contact) the hero/site image in particular is required by the public
