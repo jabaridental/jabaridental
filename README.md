@@ -216,8 +216,9 @@ There is **no local filesystem dependency** in production. Content lives in D1, 
 src/
   db/schema.ts            Drizzle schema (15 content tables)
   lib/
-    platform.ts           Single source of truth for env.DB / getPublicAssetUrl()
+    platform.ts           Single source of truth for env.DB / env.MEDIA_BUCKET / getPublicAssetUrl()
     db.ts                 D1-backed store with the same public API as the previous file store
+    media.ts              R2 upload (MIME allow-list, magic-byte sniff, 10 MB cap, no SVG)
     auth.ts               HMAC session cookie, reads Cloudflare secret first
     schemas.ts            Zod schemas for every content-collection body
     store.ts              No-arg façade so pages/components don't need to change

@@ -24,6 +24,16 @@ binding = "DB"
 database_name = "jabari-dental-db"
 database_id = "56b86e4d-14ad-432e-b427-d67cc3b786f2"
 
+# ---- R2 media bucket binding ----------------------------------------------
+# The studio uploads images here via /api/upload. R2 is a flat namespace, so
+# keys are date-prefixed (uploads/YYYY/MM/<random>.<ext>). The public delivery
+# URL is built from MEDIA_PUBLIC_BASE_URL — see src/lib/platform.ts and
+# src/lib/media.ts. To enable R2 in a new account: dashboard → R2 → enable,
+# then `wrangler r2 bucket create jabari-dental-media`.
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "jabari-dental-media"
+
 [vars]
 MEDIA_PUBLIC_BASE_URL = "https://media.jabaridental.com"
 

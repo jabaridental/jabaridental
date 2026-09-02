@@ -152,7 +152,6 @@ test("ACCEPTANCE 2: article survives a redeploy", async ({ browser }) => {
 // Test 3: Upload gallery image -> verify public -> re-verify after redeploy
 // ----------------------------------------------------------------------------
 test("ACCEPTANCE 3: gallery upload survives a redeploy", async ({ browser }) => {
-  test.skip(true, "Uploads are disabled — image paths are managed out-of-band.");
   const title = unique("E2E Gallery");
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
