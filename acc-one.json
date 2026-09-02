@@ -1,0 +1,10 @@
+{
+  "result": null,
+  "success": false,
+  "errors": [
+    {
+      "code": 1010,
+      "error": "auth.forbidden"
+    }
+  ]
+}

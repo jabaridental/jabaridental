@@ -1,0 +1,65 @@
+{
+  "result": {
+    "placement": {},
+    "compatibility_date": "2025-08-01",
+    "compatibility_flags": [
+      "nodejs_compat"
+    ],
+    "usage_model": "standard",
+    "tags": [],
+    "tail_consumers": [],
+    "logpush": false,
+    "observability": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "redact_query_string": false,
+      "logs": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "persist": true,
+        "invocation_logs": true
+      },
+      "traces": {
+        "enabled": false,
+        "persist": true,
+        "head_sampling_rate": 1
+      }
+    },
+    "annotations": {
+      "workers/triggered_by": "version_upload"
+    },
+    "bindings": [
+      {
+        "name": "ADMIN_SECRET",
+        "type": "secret_text"
+      },
+      {
+        "name": "ASSETS",
+        "type": "assets"
+      },
+      {
+        "name": "AUTH_SECRET",
+        "type": "secret_text"
+      },
+      {
+        "database_id": "56b86e4d-14ad-432e-b427-d67cc3b786f2",
+        "id": "56b86e4d-14ad-432e-b427-d67cc3b786f2",
+        "name": "DB",
+        "type": "d1"
+      },
+      {
+        "bucket_name": "jabari-dental-media",
+        "name": "MEDIA_BUCKET",
+        "type": "r2_bucket"
+      },
+      {
+        "name": "MEDIA_PUBLIC_BASE_URL",
+        "text": "https://media.jabaridental.com",
+        "type": "plain_text"
+      }
+    ]
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}

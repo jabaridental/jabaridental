@@ -1,0 +1,16 @@
+HTTP/1.1 302 Found
+Date: Wed, 02 Sep 2026 14:06:35 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+Www-Authenticate: Cloudflare-Access resource_metadata="https://jabaridental.com/.well-known/cloudflare-access-protected-resource/"
+Set-Cookie: CF_AppSession=83ed0475d076e4d0; Expires=Thu, 03 Sep 2026 14:06:35 GMT; Path=/; Secure; HttpOnly
+Access-Control-Allow-Credentials: true
+Expires: Thu, 01 Jan 1970 00:00:01 GMT
+Cache-Control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Location: https://gentle-river-8513.cloudflareaccess.com/cdn-cgi/access/login/jabaridental.com?kid=73a750e1a33d8279c2261df1120313eb915afbd544757ab48f61ff560f2c024e&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjQ4MmYxNTFkMTA3NzE4OGU1ODc0N2VkODljN2YzNjU0MmRjNDcwYTgyYTZjOTJmOTQ2ZjI2MDg0NjVhYzMyOGEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjczYTc1MGUxYTMzZDgyNzljMjI2MWRmMTEyMDMxM2ViOTE1YWZiZDU0NDc1N2FiNDhmNjFmZjU2MGYyYzAyNGUiLCJob3N0bmFtZSI6ImphYmFyaWRlbnRhbC5jb20iLCJyZWRpcmVjdF91cmwiOiIvIiwic2VydmljZV90b2tlbl9zdGF0dXMiOmZhbHNlLCJpc193YXJwIjp0cnVlLCJpc19nYXRld2F5IjpmYWxzZSwiZXhwIjoxNzg4MzU4Mjk1LCJuYmYiOjE3ODgzNTc5OTUsImlhdCI6MTc4ODM1Nzk5NSwiYXV0aF9zdGF0dXMiOiJOT05FIiwibXRsc19hdXRoIjp7ImNlcnRfaXNzdWVyX2RuIjoiIiwiY2VydF9zZXJpYWwiOiIiLCJjZXJ0X2lzc3Vlcl9za2kiOiIiLCJjZXJ0X3ByZXNlbnRlZCI6ZmFsc2UsImNvbW1vbl9uYW1lIjoiIiwiYXV0aF9zdGF0dXMiOiJOT05FIn0sInJlYWxfY291bnRyeSI6IlVHIiwiYXBwX3Nlc3Npb25faGFzaCI6IjIxZDFjNmU4ZDQzODdhNWU1YTFiOWU5NThlYWVkMDY4MjRhNDJmZTA0NmFjMTk4ZmMxMmU5OGU1ZTM5MTE5ZWIifQ.IrarWSMnP-YiDZw7Kjkv4wp5brJEMC9UlMtSSCrqcGq-Jpvsb2bw3Io2hrjdMoTmpnifXBK07lo3JdUPufhY0sd82Ef0JzAkuSqShm4vVTCgo1MeBlTiMDMGmCagV0Z9gA-0Eu4Tpi0-OihkjiauLW-5AGOeaTiYXn6_ENWnrlefGW_ldV2GKWt4gTPHZeZ3Pw4TE3ZRnXG-V08wS87NjFHLm7w0nVRnymtlFZ76mR5R8Ouw4maJedSGDSxZb3kQEIOGjmozLNN34USIAtFmrnw5gUd1oQwDmeNqjcK764Ov_Qzxv4w6_F1YQV4AgF6pIzD_jawBnQzxsa54xPZcbA&redirect_url=%2F
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Q0njFRpCkdOlgI7I1xNF%2B1Bo88AevmQBHJ1m72ecL7cZcZjnAxtKcms9QBz94jd3UNuCaGfC12Em3GIs7mF1EhB9O%2FQVfyCPHrsVmCT743ITAmy3WSDJMPaQ1zY559446Uh8wakIYh9uyr5wGNxr"}]}
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Server: cloudflare
+CF-RAY: a34d1380dfc0f6ec-JNB
+alt-svc: h3=":443"; ma=86400
+

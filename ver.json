@@ -1,0 +1,89 @@
+{
+  "result": {
+    "id": "fff87d18-c863-44ea-aedd-3386d157adcf",
+    "number": 23,
+    "metadata": {
+      "created_on": "2026-09-02T14:04:58.711756Z",
+      "source": "wrangler",
+      "author_id": "b04894d2c0ce0b3e8bdf1685c48412e1",
+      "author_email": "jabaridental@protonmail.com",
+      "has_preview": true
+    },
+    "annotations": {
+      "workers/triggered_by": "version_upload"
+    },
+    "resources": {
+      "script": {
+        "etag": "cb9e0f3734958e87fb98c1952879919d9cdc693621a85292fb77c640249733da",
+        "handlers": [
+          "fetch"
+        ],
+        "named_handlers": [
+          {
+            "name": "pageMap",
+            "handlers": [
+              "get",
+              "set",
+              "has",
+              "delete",
+              "clear",
+              "entries",
+              "forEach",
+              "keys",
+              "size",
+              "values",
+              "getOrInsert",
+              "getOrInsertComputed"
+            ]
+          }
+        ],
+        "last_deployed_from": "wrangler"
+      },
+      "script_runtime": {
+        "assets": {
+          "not_found_handling": "none",
+          "serve_directly": true,
+          "raw_run_worker_first": false
+        },
+        "compatibility_date": "2025-08-01",
+        "compatibility_flags": [
+          "nodejs_compat"
+        ],
+        "usage_model": "standard"
+      },
+      "bindings": [
+        {
+          "name": "ADMIN_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "name": "ASSETS",
+          "type": "assets"
+        },
+        {
+          "name": "AUTH_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "database_id": "56b86e4d-14ad-432e-b427-d67cc3b786f2",
+          "id": "56b86e4d-14ad-432e-b427-d67cc3b786f2",
+          "name": "DB",
+          "type": "d1"
+        },
+        {
+          "bucket_name": "jabari-dental-media",
+          "name": "MEDIA_BUCKET",
+          "type": "r2_bucket"
+        },
+        {
+          "name": "MEDIA_PUBLIC_BASE_URL",
+          "text": "https://media.jabaridental.com",
+          "type": "plain_text"
+        }
+      ]
+    }
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}
