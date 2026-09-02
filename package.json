@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "dev:cf": "wrangler dev",
-    "build": "astro build --config astro.cloudflare.mjs",
+    "build": "astro build --config astro.cloudflare.mjs && node scripts/write-assetsignore.mjs",
     "preview": "astro preview --config astro.cloudflare.mjs",
     "deploy": "wrangler deploy",
     "deploy:rest": "node scripts/deploy-rest.mjs",

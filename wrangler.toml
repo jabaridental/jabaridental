@@ -12,6 +12,16 @@ main = "./dist/_worker.js/index.js"
 compatibility_date = "2025-08-01"
 compatibility_flags = ["nodejs_compat"]
 
+# ---- Custom domain --------------------------------------------------------
+# Attached in production (via Workers custom domains). Keep these in the
+# config so `wrangler deploy` in CI matches the remote state; wrangler would
+# otherwise delete hostnames it doesn't know about. Both hostnames serve the
+# same Worker; src/middleware.ts redirects www -> apex.
+routes = [
+  { pattern = "jabaridental.com", zone_name = "jabaridental.com", custom_domain = true },
+  { pattern = "www.jabaridental.com", zone_name = "jabaridental.com", custom_domain = true },
+]
+
 # ---- Static assets ---------------------------------------------------------
 # @astrojs/cloudflare v12 emits the Worker bundle into dist/_worker.js/ and the
 # client assets (public/ + dist/_astro) directly into dist/. This block tells
@@ -53,14 +63,5 @@ MEDIA_PUBLIC_BASE_URL = "https://media.jabaridental.com"
 #   wrangler secret put AUTH_SECRET
 #   wrangler secret put ADMIN_SECRET
 # DO NOT commit real values.
-
-# ---- Custom domain --------------------------------------------------------
-# After the first deploy, attach the production hostname in the Cloudflare
-# dashboard or via `wrangler routes add`. Two hostnames are listed; pick
-# exactly one as canonical and redirect the other (see src/middleware.ts).
-# routes = [
-#   { pattern = "jabaridental.com/*",      custom_domain = true },
-#   { pattern = "www.jabaridental.com/*",  custom_domain = true },
-# ]
 #
 # Cron / triggers: not used.
