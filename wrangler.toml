@@ -12,6 +12,18 @@ main = "./dist/_worker.js/index.js"
 compatibility_date = "2025-08-01"
 compatibility_flags = ["nodejs_compat"]
 
+# ---- Static assets ---------------------------------------------------------
+# @astrojs/cloudflare v12 emits the Worker bundle into dist/_worker.js/ and the
+# client assets (public/ + dist/_astro) directly into dist/. This block tells
+# wrangler to upload dist/ as Workers Static Assets and route requests:
+#   - exact matches (/_astro/*, /images/*, /favicon.ico, ...) -> asset
+#   - everything else -> the SSR Worker (dist/_routes.json controls this)
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "none"
+run_worker_first = false
+
 # Production observability — safe to leave on.
 [observability]
 enabled = true

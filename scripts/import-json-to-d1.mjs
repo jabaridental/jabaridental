@@ -287,15 +287,21 @@ const COLLECTIONS = {
 };
 
 function execWrangler(sql, params) {
-  // We use the wrangler CLI to keep this script dependency-free. wrangler
-  // accepts inline SQL via --command and parameters via positional args.
+  // We use the wrangler CLI to keep this script dependency-free. wrangler's
+  // `--command` flag does NOT bind parameters, so we inline the values into
+  // the template's trailing "VALUES (?,?,...,?)" clause, SQL-escaping strings.
   const flag = ENV === "remote" ? "--remote" : "--local";
-  const args = params.map((p) => {
+  const inline = params.map((p) => {
     if (p === null || p === undefined) return "NULL";
-    if (typeof p === "string") return `'${String(p).replace(/'/g, "''")}'`;
-    return String(p);
-  }).join(" ");
-  const cmd = `npx wrangler d1 execute DB ${flag} --command=${JSON.stringify(`${sql} VALUES (${args});`)}`;
+    if (typeof p === "number" && Number.isFinite(p)) return String(p);
+    return `'${String(p).replace(/'/g, "''")}'`;
+  }).join(", ");
+  if (!/VALUES\s*\(\s*\?(?:\s*,\s*\?)*\s*\)\s*$/i.test(sql)) {
+    process.stderr.write(`[import] template does not end with a placeholder VALUES clause: ${sql}\n`);
+    return false;
+  }
+  const stmt = sql.replace(/VALUES\s*\(\s*\?(?:\s*,\s*\?)*\s*\)\s*$/i, `VALUES (${inline})`) + ";";
+  const cmd = `npx wrangler d1 execute DB ${flag} --command=${JSON.stringify(stmt)}`;
   try {
     execSync(cmd, { stdio: ["ignore", "pipe", "pipe"], encoding: "utf8" });
     return true;
