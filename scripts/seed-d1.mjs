@@ -1,133 +1,107 @@
 #!/usr/bin/env node
 /**
- * Seed an empty D1 database with the JABARI DENTAL starter content.
+ * Seed a D1 database with the FULL JABARI DENTAL starter content — all 15
+ * collections (site, hero, contact, social, hours, specialHours,
+ * announcements, offers, treatments, team, gallery, beforeAfter,
+ * testimonials, articles, faqs).
  *
- * IMPORTANT: never run this against an existing production database that
- * contains real clinic content — it WILL overwrite rows. The script reads
- * the existing JSON files in data/ (gitignored) and emits INSERT OR REPLACE
- * statements.
+ * The previous seeder only wrote site/hero/contact/treatments and passed
+ * dotted paths ("brandColors.primary") straight to the DB as NULL — which is
+ * why "some of the seed data" never appeared after deploying. This version:
  *
- * For migrating existing content from JSON into a fresh D1, prefer
- * scripts/import-json-to-d1.mjs, which uses INSERT OR IGNORE and preserves
- * existing rows.
+ *   1. Loads the in-tree seed from src/data/seed.ts (transpiled with esbuild,
+ *      already installed as an Astro/Vite dependency — no new packages).
+ *   2. Writes the content to data/*.json so there are editable JSON sources
+ *      for `npm run import:json`.
+ *   3. Generates ONE SQL file (INSERT OR REPLACE for every collection) and
+ *      executes it with a single `wrangler d1 execute DB --file=...` call
+ *      (the old script spawned one wrangler process per row).
+ *
+ * WARNING: INSERT OR REPLACE overwrites rows with the same id. Never run this
+ * against a production database that already contains real clinic content you
+ * want to keep. For a safe merge that preserves existing rows, use
+ * `npm run import:json` (INSERT OR IGNORE) instead.
  *
  * Usage:
  *   node scripts/seed-d1.mjs --local
  *   node scripts/seed-d1.mjs --remote
  */
-import { readFileSync, existsSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+import esbuild from "esbuild";
+import { COLLECTIONS, setEnv, setForce, stmtToSql } from "./import-json-to-d1.mjs";
 
 const ROOT = resolve(process.cwd());
-const DATA_DIR = join(ROOT, "data");
 const SEED_FILE = join(ROOT, "src", "data", "seed.ts");
+const DATA_DIR = join(ROOT, "data");
+const SQL_FILE = join(ROOT, ".seed-d1.tmp.sql");
 const ENV = (process.argv[2] || "--local").replace(/^--/, "");
 if (ENV !== "local" && ENV !== "remote") {
   console.error("usage: node scripts/seed-d1.mjs --local | --remote");
   process.exit(2);
 }
 
-if (!existsSync(SEED_FILE)) {
-  console.error(`[seed] missing ${SEED_FILE}`);
-  process.exit(2);
+/** Load SEED from the TypeScript source (esbuild strips the type-only import). */
+async function loadSeed() {
+  const src = readFileSync(SEED_FILE, "utf8");
+  const { code } = esbuild.transformSync(src, { loader: "ts", format: "esm" });
+  const tmp = join(ROOT, ".seed-src.tmp.mjs");
+  writeFileSync(tmp, code, "utf8");
+  try {
+    const mod = await import(pathToFileURL(tmp).href);
+    return mod.SEED;
+  } finally {
+    rmSync(tmp, { force: true });
+  }
 }
 
-// We import the TS seed via the same pattern the import script uses: parse
-// the JSON files in data/ if they exist, otherwise fall back to the in-tree
-// seed by shelling out to a small TS evaluator. In practice, for a fresh
-// install, the JSON files will be present after the user runs the project
-// once locally. The cleanest cross-environment approach is to keep both.
-let source = DATA_DIR;
-if (!existsSync(DATA_DIR) || !existsSync(join(DATA_DIR, "site.json"))) {
-  console.error(`[seed] data/ directory is empty or missing (${DATA_DIR}).`);
-  console.error("       For a fresh install, populate it from src/data/seed.ts first.");
+setEnv(ENV);
+setForce(true); // a seeder intentionally overwrites its own ids (OR REPLACE)
+
+const SEED = await loadSeed();
+if (!SEED || !SEED.site) {
+  console.error(`[seed] could not load SEED from ${SEED_FILE}`);
   process.exit(3);
 }
 
-function wrangler(sql, params = []) {
-  const flag = ENV === "remote" ? "--remote" : "--local";
-  const args = params.map((p) => {
-    if (p === null || p === undefined) return "NULL";
-    if (typeof p === "string") return `'${String(p).replace(/'/g, "''")}'`;
-    return String(p);
-  }).join(", ");
-  const cmd = `npx wrangler d1 execute DB ${flag} --command=${JSON.stringify(`${sql} VALUES (${args});`)}`;
-  try {
-    execSync(cmd, { stdio: ["ignore", "pipe", "pipe"], encoding: "utf8" });
-    return true;
-  } catch (e) {
-    process.stderr.write(`[seed] ${e.message}\n`);
-    return false;
+// 1) Write the data/*.json sources (same filenames the import script reads).
+mkdirSync(DATA_DIR, { recursive: true });
+for (const [name, cfg] of Object.entries(COLLECTIONS)) {
+  const value = SEED[name];
+  if (value === undefined) {
+    console.warn(`[seed] warning: SEED.${name} is missing — skipped`);
+    continue;
   }
+  writeFileSync(join(DATA_DIR, cfg.file), JSON.stringify(value, null, 2) + "\n", "utf8");
+}
+console.log(`[seed] wrote JSON sources to ${DATA_DIR}`);
+
+// 2) Build one SQL file covering every collection.
+const statements = [];
+const counts = {};
+for (const [name, cfg] of Object.entries(COLLECTIONS)) {
+  const value = SEED[name];
+  if (value === undefined) continue;
+  const items = cfg.single ? [value] : (Array.isArray(value) ? value : []);
+  for (const item of items) statements.push(stmtToSql(cfg.build(item)));
+  counts[name] = items.length;
+}
+if (statements.length === 0) {
+  console.error("[seed] nothing to seed — SEED produced no statements");
+  process.exit(3);
+}
+writeFileSync(SQL_FILE, statements.join("\n") + "\n", "utf8");
+
+// 3) Execute in a single wrangler call (-y skips the remote-apply prompt).
+const flag = ENV === "remote" ? "--remote" : "--local";
+console.log(`[seed] executing ${statements.length} statements against the ${ENV} D1 database...`);
+try {
+  execSync(`npx wrangler d1 execute DB ${flag} --file=${JSON.stringify(SQL_FILE)} -y`, { stdio: "inherit" });
+} finally {
+  rmSync(SQL_FILE, { force: true });
 }
 
-function readJSON(name) {
-  return JSON.parse(readFileSync(join(DATA_DIR, name), "utf8"));
-}
-
-function insertSingle(name, sql, obj, fields) {
-  const params = fields.map((f) => {
-    if (f === "image" || f === "beforeImage" || f === "afterImage" || f === "imageMobile" || f === "featuredImage" || f === "socialImage" || f === "photo") {
-      return JSON.stringify(obj[f] ?? { src: "", alt: "", focalX: 50, focalY: 50 });
-    }
-    return obj[f];
-  });
-  return wrangler(sql, params);
-}
-
-function insertRows(name, sql, list, build) {
-  let n = 0;
-  for (const item of list) {
-    const stmt = build(item);
-    if (wrangler(stmt.sql, stmt.params)) n++;
-  }
-  return n;
-}
-
-console.log(`[seed] target = ${ENV}`);
-console.log(`[seed] reading from ${DATA_DIR}`);
-
-// site
-insertSingle("site",
-  "INSERT OR REPLACE INTO site (id,name,short_name,tagline,location,country,description,brand_primary,brand_accent,logo_text) VALUES (?,?,?,?,?,?,?,?,?,?)",
-  readJSON("site.json"),
-  ["site","name","shortName","tagline","location","country","description","brandColors.primary","brandColors.accent","logoText"]
-);
-// hero
-insertSingle("hero",
-  "INSERT OR REPLACE INTO hero (id,eyebrow,headline,headline_accent,subhead,primary_cta_label,secondary_cta_label,whatsapp_label,status_note,image,image_mobile) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-  readJSON("hero.json"),
-  ["hero","eyebrow","headline","headlineAccent","subhead","primaryCtaLabel","secondaryCtaLabel","whatsappLabel","statusNote","image","imageMobile"]
-);
-// contact
-insertSingle("contact",
-  "INSERT OR REPLACE INTO contact (id,phone,whatsapp,email,maps_url,address_verified,address_note) VALUES (?,?,?,?,?,?,?)",
-  readJSON("contact.json"),
-  ["contact","phone","whatsapp","email","mapsUrl","addressVerified","addressNote"]
-);
-
-const buildInsert = {
-  treatments(item) {
-    return {
-      sql: "INSERT OR REPLACE INTO treatments (id,slug,name,category,short_description,long_description,icon,duration,price,price_visible,faqs,image,seo_title,seo_description,featured,active,published,display_order,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      params: [
-        item.id, item.slug, item.name, item.category,
-        item.shortDescription, item.longDescription,
-        item.icon, item.duration, item.price,
-        item.priceVisible ? 1 : 0,
-        JSON.stringify(item.faqs || []),
-        JSON.stringify(item.image),
-        item.seoTitle, item.seoDescription,
-        item.featured ? 1 : 0,
-        item.active ? 1 : 0,
-        item.published ? 1 : 0,
-        item.displayOrder,
-        item.createdAt, item.updatedAt,
-      ],
-    };
-  },
-};
-
-insertRows("treatments", "", readJSON("treatments.json"), buildInsert.treatments);
+for (const [name, n] of Object.entries(counts)) console.log(`[seed]   ${name}: ${n} row(s)`);
 console.log("[seed] done.");

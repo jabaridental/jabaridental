@@ -124,7 +124,7 @@ jabaridental/
 │   │   ├── TestimonialCarousel.astro, BeforeAfterSlider.astro
 │   │   ├── FAQ.astro, BookingWizard.astro, FeaturedTreatment.astro
 │   │   ├── CtaButton.astro, SmartImage.astro, Icon.astro
-│   │   ├── PWAInstall.astro, AmbientSound.astro
+│   │   └── PWAInstall.astro
 │   └── pages/
 │       ├── index.astro            # Home
 │       ├── about.astro

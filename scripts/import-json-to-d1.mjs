@@ -56,7 +56,7 @@ function sqlEscape(v) {
   return String(v);
 }
 
-const COLLECTIONS = {
+export const COLLECTIONS = {
   site: {
     file: "site.json",
     single: true,
@@ -297,21 +297,29 @@ const COLLECTIONS = {
   },
 };
 
+/**
+ * Turn a {sql, params} template into a final SQL statement with the values
+ * inlined (wrangler's --command / --file do not bind parameters).
+ * Exported for scripts/seed-d1.mjs, which batches statements into one file.
+ */
+export function stmtToSql(stmt) {
+  const inline = stmt.params.map((p) => {
+    if (p === null || p === undefined) return "NULL";
+    if (typeof p === "number" && Number.isFinite(p)) return String(p);
+    return `'${String(p).replace(/'/g, "''")}'`;
+  }).join(", ");
+  if (!/VALUES\s*\(\s*\?(?:\s*,\s*\?)*\s*\)\s*$/i.test(stmt.sql)) {
+    throw new Error(`template does not end with a placeholder VALUES clause: ${stmt.sql}`);
+  }
+  return stmt.sql.replace(/VALUES\s*\(\s*\?(?:\s*,\s*\?)*\s*\)\s*$/i, `VALUES (${inline})`) + ";";
+}
+
 function execWrangler(sql, params) {
   // We use the wrangler CLI to keep this script dependency-free. wrangler's
   // `--command` flag does NOT bind parameters, so we inline the values into
   // the template's trailing "VALUES (?,?,...,?)" clause, SQL-escaping strings.
   const flag = ENV === "remote" ? "--remote" : "--local";
-  const inline = params.map((p) => {
-    if (p === null || p === undefined) return "NULL";
-    if (typeof p === "number" && Number.isFinite(p)) return String(p);
-    return `'${String(p).replace(/'/g, "''")}'`;
-  }).join(", ");
-  if (!/VALUES\s*\(\s*\?(?:\s*,\s*\?)*\s*\)\s*$/i.test(sql)) {
-    process.stderr.write(`[import] template does not end with a placeholder VALUES clause: ${sql}\n`);
-    return false;
-  }
-  const stmt = sql.replace(/VALUES\s*\(\s*\?(?:\s*,\s*\?)*\s*\)\s*$/i, `VALUES (${inline})`) + ";";
+  const stmt = stmtToSql({ sql, params });
   const cmd = `npx wrangler d1 execute DB ${flag} --command=${JSON.stringify(stmt)}`;
   try {
     execSync(cmd, { stdio: ["ignore", "pipe", "pipe"], encoding: "utf8" });
@@ -322,7 +330,7 @@ function execWrangler(sql, params) {
   }
 }
 
-function importCollection(name, cfg) {
+export function importCollection(name, cfg) {
   const path = join(DATA_DIR, cfg.file);
   let raw;
   try {
@@ -346,16 +354,25 @@ function importCollection(name, cfg) {
   return ok;
 }
 
-console.log(`[import] target env = ${ENV}${FORCE ? " (FORCE overwrite)" : " (skip on conflict)"}`);
-console.log(`[import] reading from ${DATA_DIR}`);
-try { statSync(DATA_DIR); } catch {
-  console.error(`[import] data directory not found: ${DATA_DIR}`);
-  console.error("Run from the project root or pass a --data-dir override.");
-  process.exit(2);
+async function main() {
+  console.log(`[import] target env = ${ENV}${FORCE ? " (FORCE overwrite)" : " (skip on conflict)"}`);
+  console.log(`[import] reading from ${DATA_DIR}`);
+  try { statSync(DATA_DIR); } catch {
+    console.error(`[import] data directory not found: ${DATA_DIR}`);
+    console.error("Run from the project root or pass a --data-dir override.");
+    process.exit(2);
+  }
+
+  let total = 0;
+  for (const [name, cfg] of Object.entries(COLLECTIONS)) {
+    total += importCollection(name, cfg);
+  }
+  console.log(`[import] done. ${total} rows processed.`);
 }
 
-let total = 0;
-for (const [name, cfg] of Object.entries(COLLECTIONS)) {
-  total += importCollection(name, cfg);
+// Only run the CLI flow when executed directly (`node scripts/import-json-to-d1.mjs`),
+// NOT when imported as a module by scripts/seed-d1.mjs.
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+if (isMain) {
+  await main();
 }
-console.log(`[import] done. ${total} rows processed.`);
