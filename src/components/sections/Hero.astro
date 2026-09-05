@@ -18,7 +18,7 @@ const { tel, waHref, maps } = getContactLinks(
 );
 ---
 <section class="relative min-h-[88vh] flex items-end overflow-hidden bg-forest-deep">
-  <div class="absolute inset-0" data-parallax>
+  <div class="absolute inset-0">
     <SmartImage image={hero.image} priority={true} rounded="" imgClass="hero-zoom" class="h-full w-full" />
     <div class="absolute inset-0 bg-gradient-to-t from-forest-deep/85 via-forest-deep/35 to-forest-deep/20"></div>
     <div class="absolute inset-0 bg-gradient-to-r from-forest-deep/70 to-transparent"></div>
@@ -71,27 +71,4 @@ const { tel, waHref, maps } = getContactLinks(
       </a>
     </div>
   </div>
-
-  <script nonce={Astro.locals.cspNonce} is:inline>
-    const el = document.querySelector("[data-parallax]");
-    if (el && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      let ticking = false;
-      const update = () => {
-        const y = window.scrollY;
-        el.style.transform = `translate3d(0, ${Math.min(y * 0.18, 160)}px, 0)`;
-        ticking = false;
-      };
-      window.addEventListener(
-        "scroll",
-        () => {
-          if (!ticking) {
-            ticking = true;
-            requestAnimationFrame(update);
-          }
-        },
-        { passive: true }
-      );
-      update();
-    }
-  </script>
 </section>

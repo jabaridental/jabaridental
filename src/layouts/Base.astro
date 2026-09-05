@@ -7,7 +7,6 @@ import UtilityBar from "@/components/UtilityBar.astro";
 import AnnouncementBar from "@/components/AnnouncementBar.astro";
 import MobileActionBar from "@/components/MobileActionBar.astro";
 import PWAInstall from "@/components/PWAInstall.astro";
-import AmbientSound from "@/components/AmbientSound.astro";
 
 interface Props {
   title?: string;
@@ -116,22 +115,9 @@ const jsonLdSafe = JSON.stringify(jsonLd).replace(/</g, "\\u003c").replace(/>/g,
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
-    />
-    <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
-      media="print"
-      onload="this.media='all'"
     />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap"
-      />
-    </noscript>
 
     <script type="application/ld+json" nonce={Astro.locals.cspNonce} set:html={jsonLdSafe} />
   </head>
@@ -149,7 +135,6 @@ const jsonLdSafe = JSON.stringify(jsonLd).replace(/</g, "\\u003c").replace(/>/g,
     <Footer site={site} contact={contact} hours={hours} />
     <MobileActionBar contact={contact} />
     <PWAInstall />
-    <AmbientSound />
 
     <script>
       // Register service worker

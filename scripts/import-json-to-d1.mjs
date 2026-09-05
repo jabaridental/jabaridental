@@ -26,11 +26,22 @@
 import { readFileSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const ROOT = resolve(process.cwd());
 const DATA_DIR = join(ROOT, "data");
-const ENV = (process.argv[2] || process.env.IMPORT_ENV || "local"); // local | remote
-const FORCE = process.env.FORCE === "1";
+let ENV = process.argv[2] || process.env.IMPORT_ENV || "local"; // local | remote
+let FORCE = process.env.FORCE === "1";
+
+/** Override the target environment ("local" | "remote"). Used by seed-d1.mjs. */
+export function setEnv(env) {
+  ENV = env;
+}
+
+/** Toggle INSERT OR REPLACE semantics. Used by seed-d1.mjs (always REPLACE). */
+export function setForce(v) {
+  FORCE = !!v;
+}
 
 function bool(v) {
   if (typeof v === "boolean") return v ? 1 : 0;

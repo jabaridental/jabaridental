@@ -3,7 +3,7 @@ import { verifyToken, COOKIE_NAME } from "@/lib/auth";
 import { getPlatform } from "@/lib/platform";
 import { setRequestLocals } from "@/lib/store";
 
-const PUBLIC_API = ["/api/auth/login", "/api/auth/logout", "/api/me"];
+const PUBLIC_API = ["/api/auth/login", "/api/auth/logout", "/api/me", "/api/health"];
 
 // Generate a per-request CSP nonce. 16 random bytes → base64 ≈ 22 chars.
 function generateNonce(): string {
@@ -53,6 +53,26 @@ function getR2HostForCsp(): string {
   try { return new URL(url).origin; } catch { return ""; }
 }
 
+/**
+ * Astro bundles <script> tags used in components and pages; when the resulting
+ * chunk is small, Astro INLINES it into the HTML as <script type="module"> —
+ * WITHOUT any nonce attribute. Under a nonce-based script-src CSP those
+ * scripts are blocked (this silently killed the service-worker registration,
+ * the mobile nav, the FAQ accordion, the gallery, the testimonial carousel,
+ * the PWA install button, etc.).
+ *
+ * Astro does not currently stamp nonces on its own inlined scripts, so we do
+ * it here: every inline <script> (one without a src= attribute) that lacks a
+ * nonce gets the per-request nonce. Tags that already carry one (theme
+ * bootstrap, JSON-LD) and external bundles (src=) are left untouched.
+ */
+function addNonceToInlineScripts(html: string, nonce: string): string {
+  return html.replace(/<script(?![^>]*\bsrc=)([^>]*)>/gi, (match, attrs: string) => {
+    if (/\bnonce\s*=/i.test(attrs)) return match;
+    return `<script nonce="${nonce}"${attrs}>`;
+  });
+}
+
 function applySecurityHeaders(res: Response, isHttps: boolean, path: string, nonce: string): Response {
   const h = res.headers;
   // Don't clobber headers an upstream proxy/CDN may have set intentionally.
@@ -78,7 +98,20 @@ function applySecurityHeaders(res: Response, isHttps: boolean, path: string, non
       );
     }
   }
-  return res;
+  if (!isHtml) return res;
+
+  // Buffer the HTML and stamp the nonce onto Astro's inlined scripts. The
+  // nonce in the CSP header and the ones on the tags therefore always match,
+  // including when the response is served from the CDN cache (headers and
+  // body are cached together).
+  return res.text().then((body) => {
+    const patched = addNonceToInlineScripts(body, nonce);
+    return new Response(patched, {
+      status: res.status,
+      statusText: res.statusText,
+      headers: res.headers,
+    });
+  });
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
