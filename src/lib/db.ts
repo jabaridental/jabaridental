@@ -464,36 +464,48 @@ export async function upsertSingle(key: CollectionKey, body: Record<string, any>
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   if (key === "site") {
-    await env.db.prepare(`UPDATE site SET
-      name=?, short_name=?, tagline=?, location=?, country=?, description=?,
-      brand_primary=?, brand_accent=?, logo_text=?
-      WHERE id='site'`).bind(
-        body.name, body.shortName, body.tagline, body.location, body.country,
-        body.description, body.brandColors?.primary ?? "#003C80",
-        body.brandColors?.accent ?? "#b08d57", body.logoText
-      ).run();
+    await env.db.prepare(
+      `INSERT INTO site (id,name,short_name,tagline,location,country,description,brand_primary,brand_accent,logo_text)
+       VALUES ('site',?,?,?,?,?,?,?,?,?)
+       ON CONFLICT(id) DO UPDATE SET
+         name=excluded.name, short_name=excluded.short_name, tagline=excluded.tagline,
+         location=excluded.location, country=excluded.country, description=excluded.description,
+         brand_primary=excluded.brand_primary, brand_accent=excluded.brand_accent, logo_text=excluded.logo_text`
+    ).bind(
+      body.name, body.shortName, body.tagline, body.location, body.country,
+      body.description, body.brandColors?.primary ?? "#003C80",
+      body.brandColors?.accent ?? "#b08d57", body.logoText
+    ).run();
     return getSite(locals);
   }
   if (key === "hero") {
-    await env.db.prepare(`UPDATE hero SET
-      eyebrow=?, headline=?, headline_accent=?, subhead=?,
-      primary_cta_label=?, secondary_cta_label=?, whatsapp_label=?,
-      status_note=?, image=?, image_mobile=?
-      WHERE id='hero'`).bind(
-        body.eyebrow, body.headline, body.headlineAccent, body.subhead,
-        body.primaryCtaLabel, body.secondaryCtaLabel, body.whatsappLabel,
-        body.statusNote, JSON.stringify(body.image ?? { src: "", alt: "", focalX: 50, focalY: 50 }),
-        body.imageMobile ? JSON.stringify(body.imageMobile) : null
-      ).run();
+    await env.db.prepare(
+      `INSERT INTO hero (id,eyebrow,headline,headline_accent,subhead,primary_cta_label,secondary_cta_label,whatsapp_label,status_note,image,image_mobile)
+       VALUES ('hero',?,?,?,?,?,?,?,?,?,?)
+       ON CONFLICT(id) DO UPDATE SET
+         eyebrow=excluded.eyebrow, headline=excluded.headline, headline_accent=excluded.headline_accent,
+         subhead=excluded.subhead, primary_cta_label=excluded.primary_cta_label, secondary_cta_label=excluded.secondary_cta_label,
+         whatsapp_label=excluded.whatsapp_label, status_note=excluded.status_note,
+         image=excluded.image, image_mobile=excluded.image_mobile`
+    ).bind(
+      body.eyebrow, body.headline, body.headlineAccent, body.subhead,
+      body.primaryCtaLabel, body.secondaryCtaLabel, body.whatsappLabel,
+      body.statusNote, JSON.stringify(body.image ?? { src: "", alt: "", focalX: 50, focalY: 50 }),
+      body.imageMobile ? JSON.stringify(body.imageMobile) : null
+    ).run();
     return getHero(locals);
   }
   if (key === "contact") {
-    await env.db.prepare(`UPDATE contact SET
-      phone=?, whatsapp=?, email=?, maps_url=?, address_verified=?, address_note=?
-      WHERE id='contact'`).bind(
-        body.phone, body.whatsapp, body.email ?? "",
-        body.mapsUrl, body.addressVerified, body.addressNote
-      ).run();
+    await env.db.prepare(
+      `INSERT INTO contact (id,phone,whatsapp,email,maps_url,address_verified,address_note)
+       VALUES ('contact',?,?,?,?,?,?)
+       ON CONFLICT(id) DO UPDATE SET
+         phone=excluded.phone, whatsapp=excluded.whatsapp, email=excluded.email,
+         maps_url=excluded.maps_url, address_verified=excluded.address_verified, address_note=excluded.address_note`
+    ).bind(
+      body.phone, body.whatsapp, body.email ?? "",
+      body.mapsUrl, body.addressVerified, body.addressNote
+    ).run();
     return getContact(locals);
   }
   throw new Error(`upsertSingle called for non-single collection: ${key}`);

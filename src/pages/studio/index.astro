@@ -56,6 +56,7 @@ import "../../styles/global.css";
           <form id="editor-form" data-editor-form class="p-6 space-y-4"></form>
           <div class="sticky bottom-0 bg-ivory border-t border-ink/10 px-6 py-4 flex items-center justify-between gap-3">
             <button type="button" data-editor-delete class="text-red-700 text-sm hidden">Delete</button>
+            <button type="button" data-ba-manage class="hidden px-4 py-2.5 rounded-full border border-gold text-forest text-sm font-medium hover:bg-gold/10">📸 Before / After photos</button>
             <div class="flex gap-3 ml-auto">
               <button type="button" data-editor-cancel class="px-4 py-2.5 rounded-full border border-ink/20 text-sm hover:border-ink">Cancel</button>
               <button type="submit" form="editor-form" data-editor-save class="px-5 py-2.5 rounded-full bg-forest text-ivory text-sm font-medium hover:bg-forest-deep">Save</button>
@@ -118,7 +119,7 @@ import "../../styles/global.css";
       }
 
       function titleField(/** @type {string} */ key) {
-        const m = { treatments:"name", team:"name", gallery:"title", beforeAfter:"treatmentName", testimonials:"displayName", articles:"title", announcements:"title", offers:"title", specialHours:"label", faqs:"question", social:"label" };
+        const m = { treatments:"name", team:"name", gallery:"title", beforeAfter:"treatmentName", testimonials:"displayName", articles:"title", announcements:"title", offers:"title", hours:"label", specialHours:"label", faqs:"question", social:"label" };
         return m[key] || "title";
       }
 
@@ -270,12 +271,22 @@ import "../../styles/global.css";
           panel.innerHTML = `<p class="text-stone">No items yet. Click “New” to add one.</p>`;
           return;
         }
+        // Opening hours always display Monday-first regardless of how the rows
+        // came back from the DB.
+        if (current === "hours") {
+          const order = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
+          items = [...items].sort((a/** @type {any} */, b/** @type {any} */) => {
+            const ia = order.indexOf(a?.day); const ib = order.indexOf(b?.day);
+            return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+          });
+        }
         const tf = titleField(current);
         panel.innerHTML = `<div class="space-y-2 max-w-3xl">${items.map((/** @type {Item} */ it) => `
           <div class="flex items-center justify-between gap-3 bg-white border border-ink/10 rounded-lg px-4 py-3">
             <div class="min-w-0">
               <p class="font-medium truncate">${escapeHtml(it[tf] ?? it.label ?? "(untitled)")}</p>
               <div class="flex gap-2 mt-1 text-xs">
+                ${current === "hours" ? (it.closed ? `<span class="text-stone">Closed</span>` : `<span class="text-stone">${escapeHtml(it.open)} – ${escapeHtml(it.close)}</span>`) : ""}
                 ${it.published === false ? `<span class="text-red-700">Draft</span>` : `<span class="text-forest">Published</span>`}
                 ${it.featured ? `<span class="text-gold">Featured</span>` : ""}
                 ${it.approval && it.approval!=="approved" ? `<span class="text-stone">${it.approval}</span>`:""}
@@ -283,6 +294,7 @@ import "../../styles/global.css";
               </div>
             </div>
             <div class="flex items-center gap-1 shrink-0">
+              ${current === "treatments" ? `<button data-ba="${it.id}" class="w-9 h-8 rounded hover:bg-gold/10" title="Add Before/After photos for this treatment" aria-label="Add Before/After photos">📸</button>` : ""}
               <button data-up="${it.id}" class="w-8 h-8 rounded hover:bg-ink/5" aria-label="Move up">↑</button>
               <button data-down="${it.id}" class="w-8 h-8 rounded hover:bg-ink/5" aria-label="Move down">↓</button>
               <button data-edit="${it.id}" class="px-3 py-1.5 rounded-full border border-ink/20 text-sm hover:border-forest">Edit</button>
@@ -298,6 +310,18 @@ import "../../styles/global.css";
         }));
         panel.querySelectorAll("[data-up]").forEach((/** @type {Element} */ b) => b.addEventListener("click", async () => { await api("PUT", `/api/content/${current}/${/** @type {HTMLButtonElement} */ (b).dataset.up}?reorder=1&dir=up`); load(); }));
         panel.querySelectorAll("[data-down]").forEach((/** @type {Element} */ b) => b.addEventListener("click", async () => { await api("PUT", `/api/content/${current}/${/** @type {HTMLButtonElement} */ (b).dataset.down}?reorder=1&dir=down`); load(); }));
+        // Dedicated per-treatment link into the Before / After editor.
+        if (current === "treatments") {
+          panel.querySelectorAll("[data-ba]").forEach((/** @type {Element} */ b) => b.addEventListener("click", async () => {
+            const name = items.find((/** @type {Item} */ x) => x.id === /** @type {HTMLButtonElement} */ (b).dataset.ba)?.name ?? "";
+            if (!name) return;
+            current = "beforeAfter";
+            renderNav();
+            baPrefill = name;
+            await load();
+            openEditor(null);
+          }));
+        }
       }
 
       // ============ Editor ============
@@ -306,6 +330,8 @@ import "../../styles/global.css";
       const editorTitle = /** @type {HTMLElement} */ ($("[data-editor-title]"));
       /** @type {string|null} */
       let editingId = null;
+      /** @type {string|null} */
+      let baPrefill = null;
 
       /** @type {(item:any) => void} */
       function openEditor(item) {
@@ -322,6 +348,13 @@ import "../../styles/global.css";
         editorForm.querySelectorAll("[data-objrow-del]").forEach((/** @type {Element} */ b) => b.addEventListener("click", () => /** @type {HTMLElement} */ (b.closest("[data-objrow]")).remove()));
         if (current === "beforeAfter") wireTreatmentName();
         $("[data-editor-delete]").classList.toggle("hidden", !editingId);
+        const baManage = $("[data-ba-manage]");
+        if (baManage) baManage.classList.toggle("hidden", !(current === "treatments" && editingId));
+        if (baPrefill) {
+          const nm = /** @type {HTMLInputElement|null} */ (editorForm.querySelector('[name="treatmentName"]'));
+          if (nm) nm.value = baPrefill;
+          baPrefill = null;
+        }
         editor.classList.remove("hidden");
         document.body.style.overflow = "hidden";
       }
@@ -342,10 +375,13 @@ import "../../styles/global.css";
             .map((/** @type {any} */ t) => (typeof t?.name === "string" ? t.name : ""))
             .filter(Boolean);
           if (!names.length) return;
-          const listEl = document.createElement("datalist");
-          listEl.id = "treatment-name-datalist";
+          let listEl = document.getElementById("treatment-name-datalist");
+          if (!listEl) {
+            listEl = document.createElement("datalist");
+            listEl.id = "treatment-name-datalist";
+            document.body.appendChild(listEl);
+          }
           listEl.innerHTML = names.map((/** @type {string} */ n) => `<option value="${escapeHtml(n)}"></option>`).join("");
-          document.body.appendChild(listEl);
           input.setAttribute("list", "treatment-name-datalist");
           input.placeholder = "Start typing to pick an existing treatment…";
         } catch (/** @type {any} */ e) {
@@ -454,6 +490,15 @@ import "../../styles/global.css";
       });
       $("[data-editor-close]")?.addEventListener("click", closeEditor);
       $("[data-editor-cancel]")?.addEventListener("click", closeEditor);
+      $("[data-ba-manage]")?.addEventListener("click", () => {
+        const name = /** @type {HTMLInputElement|null} */ (editorForm.querySelector('[name="name"]'))?.value?.trim();
+        if (!name) { alert("Give the treatment a name first, then add its Before/After photos."); return; }
+        closeEditor();
+        current = "beforeAfter";
+        renderNav();
+        baPrefill = name;
+        load().then(() => openEditor(null));
+      });
       $("[data-editor-delete]")?.addEventListener("click", async () => {
         if (!editingId) return;
         if (!confirm("Delete this item?")) return;

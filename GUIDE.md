@@ -355,6 +355,26 @@ Remove the `<button data-theme-toggle>` from `src/components/UtilityBar.astro`.
 - Brute-force protection: rate-limited login attempts
 - Session: HMAC-SHA256 signed cookie (`jab_admin`), 8-hour expiry
 
+### Before / After results on treatment pages
+
+Every treatment page (`/treatments/<slug>`) automatically shows a **Before /
+After comparison slider** when the clinic has uploaded matching cases through
+the Studio:
+
+1. Studio → **Before / After** → **+ New**
+2. **Treatment name** — pick an existing treatment (autocomplete). This is
+   what links the case to its treatment page; the names must match exactly
+   (matching is case-insensitive and trims whitespace).
+3. Upload the **Before image** and **After image** (stored in R2).
+4. Optional description + duration ("3 months after treatment", etc.).
+5. To make the case visible on the public site, set **Consent given** ✓,
+   **Approval status = approved** and **Published** ✓.
+
+The section only appears when there is at least one published + approved +
+consented case for that treatment, so you can prepare cases in draft and
+publish them later. Multiple cases for one treatment show as tabs above the
+slider.
+
 ---
 
 ## Troubleshooting
