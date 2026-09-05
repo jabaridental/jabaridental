@@ -1,0 +1,1 @@
+﻿src/middleware.ts(107,3): error TS2740: Type 'Promise<Response>' is missing the following properties from type 'Response': headers, ok, redirected, status, and 13 more.

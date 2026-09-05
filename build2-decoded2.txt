@@ -1,0 +1,8 @@
+﻿[2m17:58:34[22m [34m[build][39m output: [34m"server"[39m
+[2m17:58:34[22m [34m[build][39m mode: [34m"server"[39m
+[2m17:58:34[22m [34m[build][39m directory: [34mC:\Users\Lenovo\Desktop\jabaridental\dist\[39m
+[2m17:58:34[22m [34m[build][39m adapter: [32m@astrojs/cloudflare[39m
+[2m17:58:34[22m [34m[build][39m Collecting build info...
+[2m17:58:34[22m [34m[build][39m [32mÔ£ô Completed in 2.29s.[39m
+[2m17:58:34[22m [34m[build][39m Building server entrypoints...
+[33m[1m17:58:45[22m [WARN] [vite][39m [33m[plugin vite:resolve] Automatically externalized node built-in module "node:crypto" imported from "src\lib\auth.ts". Consider adding it to environments.ssr.external if it is intended.[39m

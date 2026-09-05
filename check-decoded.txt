@@ -1,0 +1,8 @@
+﻿
+> jabari-dental@1.0.0 check
+> astro check
+
+[2m18:34:53[22m [34m[content][39m Syncing content
+[2m18:34:53[22m [34m[content][39m Synced content
+[2m18:34:53[22m [34m[types][39m Generated [2m126ms[22m
+[2m18:34:53[22m [34m[check][39m Getting diagnostics for Astro files in C:\Users\Lenovo\Desktop\jabaridental...

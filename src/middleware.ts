@@ -73,7 +73,7 @@ function addNonceToInlineScripts(html: string, nonce: string): string {
   });
 }
 
-function applySecurityHeaders(res: Response, isHttps: boolean, path: string, nonce: string): Response {
+function applySecurityHeaders(res: Response, isHttps: boolean, path: string, nonce: string): Response | Promise<Response> {
   const h = res.headers;
   // Don't clobber headers an upstream proxy/CDN may have set intentionally.
   if (!h.has("content-security-policy")) h.set("content-security-policy", buildCsp(nonce));
