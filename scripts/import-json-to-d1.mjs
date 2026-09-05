@@ -372,7 +372,7 @@ async function main() {
 
 // Only run the CLI flow when executed directly (`node scripts/import-json-to-d1.mjs`),
 // NOT when imported as a module by scripts/seed-d1.mjs.
-const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href;
 if (isMain) {
   await main();
 }

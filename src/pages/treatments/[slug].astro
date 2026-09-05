@@ -1,9 +1,10 @@
 ---
-import { getTreatments, getContact } from "@/lib/store";
+import { getTreatments, getContact, getBeforeAfterForTreatment } from "@/lib/store";
 import type { Faq } from "@/lib/types";
 import Base from "@/layouts/Base.astro";
 import SmartImage from "@/components/SmartImage.astro";
 import FAQ from "@/components/FAQ.astro";
+import BeforeAfterSlider from "@/components/BeforeAfterSlider.astro";
 import FinalCTA from "@/components/sections/FinalCTA.astro";
 import CtaButton from "@/components/CtaButton.astro";
 
@@ -15,6 +16,11 @@ const treatment = treatments.find((t) => t.slug === slug);
 const contact = await getContact();
 
 if (!treatment) return Astro.redirect("/treatments");
+
+// Before/After cases uploaded via the Studio ("Before / After" section) whose
+// Treatment name matches this treatment. Only published + approved + consented
+// cases are returned.
+const baCases = await getBeforeAfterForTreatment(treatment.name);
 
 const related = treatments.filter((t) => t.slug !== slug).slice(0, 3);
 const faqs: Faq[] = (treatment.faqs || []).map((f, i) => ({
@@ -74,6 +80,8 @@ const faqs: Faq[] = (treatment.faqs || []).map((f, i) => ({
       </div>
     </div>
   </section>
+
+  {baCases.length > 0 && <BeforeAfterSlider cases={baCases} />}
 
   {faqs.length > 0 && <FAQ faqs={faqs} />}
 

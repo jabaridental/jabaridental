@@ -374,6 +374,29 @@ The Worker can't reach the D1 binding. Check:
 - Binding name `DB` matches `env.DB` usage in code
 - D1 migrations have been applied (`npm run db:migrate:remote`)
 
+### Console errors: "Executing inline script violates … CSP directive"
+
+Astro inlines small `<script>` tags into the HTML **without** the per-request
+CSP nonce, so a nonce-based `script-src` blocks them (this used to silently
+kill the service-worker registration → PWA, the mobile nav, the FAQ
+accordion, the gallery and the testimonial carousel). Fixed in
+`src/middleware.ts`: `addNonceToInlineScripts()` stamps the nonce onto every
+inline `<script>` before the response is sent. If you ever reintroduce this
+symptom, check that HTML responses pass through `applySecurityHeaders()` and
+that the middleware nonce matches `Astro.locals.cspNonce`.
+
+### Some seeded content missing after deploy
+
+The old `scripts/seed-d1.mjs` only wrote site/hero/contact/treatments (and
+wrote NULLs for nested fields). The rewritten seeder writes all 15
+collections from `src/data/seed.ts` in one SQL batch — re-run:
+
+```powershell
+npm run db:seed:remote
+```
+
+See `DEPLOY-FIX.md` for the full production repair runbook.
+
 ### Custom domain not working
 
 1. Zone must be in the same Cloudflare account as the Worker
@@ -462,7 +485,7 @@ node scripts/import-json-to-d1.mjs --remote
 │           ├── content/[collection].ts, content/[collection]/[id].ts
 │           └── upload.ts
 ├── public/                        # Static assets (copied to dist/)
-│   ├── images/, icons/, audio/
+│   ├── images/, icons/
 │   ├── favicon.ico / favicon.svg
 │   ├── manifest.webmanifest, robots.txt, sw.js, offline.html
 └── tests/e2e/studio.spec.ts       # Playwright acceptance tests

@@ -104,7 +104,7 @@ import "../../styles/global.css";
           case "treatments": return [t("name","Name"), t("slug","Slug"), t("category","Category"), t("shortDescription","Short description","textarea"), t("longDescription","Long description","textarea"), t("image","Image","image"), t("icon","Icon (char)"), t("duration","Duration"), t("price","Price (optional)"), t("priceVisible","Show price","bool"), t("faqs","FAQs","objectlist"), t("seoTitle","SEO title"), t("seoDescription","SEO description","textarea"), t("featured","Featured","bool"), t("active","Active (published)","bool")];
           case "team": return [t("name","Name"), t("role","Role"), t("photo","Photo","image"), t("biography","Biography","textarea"), t("specialties","Specialties (comma separated)","list"), t("credentials","Credentials"), t("published","Published","bool")];
           case "gallery": return [t("title","Title"), t("category","Category","select",{options:["clinic","team","treatments","smile","lifestyle"]}), t("description","Description","textarea"), t("image","Image","image"), t("alt","Alt text"), t("date","Date","date"), t("featured","Featured","bool"), t("published","Published","bool")];
-          case "beforeAfter": return [t("treatmentName","Treatment name"), t("description","Description","textarea"), t("duration","Duration"), t("beforeImage","Before image","image"), t("afterImage","After image","image"), t("consent","Consent given","bool"), t("approval","Approval status","select",{options:["draft","pending","approved"]}), t("published","Published","bool")];
+          case "beforeAfter": return [t("treatmentName","Treatment name (must match the treatment exactly — links the case to its page)"), t("description","Description","textarea"), t("duration","Duration"), t("beforeImage","Before image","image"), t("afterImage","After image","image"), t("consent","Consent given","bool"), t("approval","Approval status","select",{options:["draft","pending","approved"]}), t("published","Published","bool")];
           case "testimonials": return [t("displayName","Display name"), t("quote","Quote","textarea"), t("rating","Rating (1-5)","number"), t("date","Date","date"), t("isDemo","Mark as demo","bool"), t("approved","Approved","bool"), t("featured","Featured","bool"), t("published","Published","bool")];
           case "articles": return [t("title","Title"), t("slug","Slug"), t("excerpt","Excerpt","textarea"), t("body","Body (markdown-lite)","textarea"), t("featuredImage","Featured image","image"), t("author","Author"), t("category","Category"), t("tags","Tags (comma separated)","list"), t("publishedDate","Published date","date"), t("updatedDate","Updated date","date"), t("seoTitle","SEO title"), t("seoDescription","SEO description","textarea"), t("socialImage","Social image","image"), t("featured","Featured","bool"), t("published","Published","bool")];
           case "announcements": return [t("title","Title"), t("message","Message","textarea"), t("ctaLabel","CTA label"), t("ctaUrl","CTA URL"), t("startDate","Start date","date"), t("endDate","End date","date"), t("priority","Priority","select",{options:["low","normal","high"]}), t("style","Style","select",{options:["bar","banner","modal"]}), t("published","Published","bool")];
@@ -320,10 +320,39 @@ import "../../styles/global.css";
           wrap.insertAdjacentHTML("beforeend", objRow({name: /** @type {HTMLButtonElement} */ (b).dataset.objlistAdd}, i, {}));
         }));
         editorForm.querySelectorAll("[data-objrow-del]").forEach((/** @type {Element} */ b) => b.addEventListener("click", () => /** @type {HTMLElement} */ (b.closest("[data-objrow]")).remove()));
+        if (current === "beforeAfter") wireTreatmentName();
         $("[data-editor-delete]").classList.toggle("hidden", !editingId);
         editor.classList.remove("hidden");
         document.body.style.overflow = "hidden";
       }
+/**
+       * For the "Before / After" section only: turn the "Treatment name" text
+       * field into an autocomplete backed by the existing treatments. This
+       * makes linking a case to its treatment page foolproof — the visible
+       * label explains that the case only appears when the names match.
+       */
+      /** @type {() => Promise<void>} */
+      async function wireTreatmentName() {
+        const input = /** @type {HTMLInputElement|null} */ (editorForm.querySelector('[name="treatmentName"]'));
+        if (!input || input.dataset.linked) return;
+        input.dataset.linked = "1";
+        try {
+          const { data } = await api("GET", "/api/content/treatments");
+          const names = (Array.isArray(data) ? data : [])
+            .map((/** @type {any} */ t) => (typeof t?.name === "string" ? t.name : ""))
+            .filter(Boolean);
+          if (!names.length) return;
+          const listEl = document.createElement("datalist");
+          listEl.id = "treatment-name-datalist";
+          listEl.innerHTML = names.map((/** @type {string} */ n) => `<option value="${escapeHtml(n)}"></option>`).join("");
+          document.body.appendChild(listEl);
+          input.setAttribute("list", "treatment-name-datalist");
+          input.placeholder = "Start typing to pick an existing treatment…";
+        } catch (/** @type {any} */ e) {
+          // Non-fatal: the field simply stays a plain text input.
+        }
+      }
+
       /** @type {(f:Field) => any} */
       function defaultVal(f) {
         if (f.type === "bool") return false;

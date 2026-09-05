@@ -40,6 +40,7 @@ export const getTreatments           = (onlyPublished = true) => db.getTreatment
 export const getTeam                 = () => db.getTeam(l());
 export const getGallery              = () => db.getGallery(l());
 export const getBeforeAfter          = () => db.getBeforeAfter(l());
+export const getBeforeAfterForTreatment = (treatmentName: string) => db.getBeforeAfterForTreatment(treatmentName, l());
 export const getTestimonials         = () => db.getTestimonials(l());
 export const getArticles             = (onlyPublished = true) => db.getArticles(onlyPublished, l());
 export const getFaqs                 = () => db.getFaqs(l());

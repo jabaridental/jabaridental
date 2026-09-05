@@ -371,6 +371,25 @@ export async function getBeforeAfter(locals?: AnyLocals): Promise<BeforeAfterCas
   return (results ?? []).map(rowToBeforeAfter);
 }
 
+/**
+ * Before/After cases linked to ONE treatment, matched by the case's
+ * `treatment_name` against the treatment's name (case-insensitive, trimmed —
+ * the Studio labels the field so admins type the exact treatment name).
+ * Same visibility rules as getBeforeAfter: published + approved + consented.
+ */
+export async function getBeforeAfterForTreatment(treatmentName: string, locals?: AnyLocals): Promise<BeforeAfterCase[]> {
+  const env = envOf(locals as any);
+  if (!env.db) throw new Error("D1 not available");
+  const { results } = await env.db
+    .prepare(`SELECT * FROM before_after
+              WHERE published = 1 AND approval = 'approved' AND consent = 1
+                AND LOWER(TRIM(treatment_name)) = LOWER(TRIM(?))
+              ORDER BY display_order ASC`)
+    .bind(treatmentName)
+    .all<any>();
+  return (results ?? []).map(rowToBeforeAfter);
+}
+
 export async function getTestimonials(locals?: AnyLocals): Promise<Testimonial[]> {
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
