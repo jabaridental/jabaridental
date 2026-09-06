@@ -29,6 +29,9 @@ const ALLOWED_MIME: Record<string, string> = {
 // sanitizer (e.g. DOMPurify in a Worker) and a separate endpoint.
 
 const MAX_BYTES = 10 * 1024 * 1024;
+// D1 fallback max: SQLite TEXT can hold ~1MB comfortably as base64.
+// For larger images, we still require R2.
+const MAX_D1_FALLBACK_BYTES = 900 * 1024;
 
 export interface UploadResult {
   ok: true;
