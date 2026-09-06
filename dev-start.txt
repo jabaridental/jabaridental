@@ -1,3 +1,0 @@
-launched
-waiting... (0)
-HEALTH: 200 {"ok":true,"name":"jabari-dental","version":"1.0.0"}

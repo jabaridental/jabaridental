@@ -20,6 +20,9 @@ node_modules/
 dist/
 .astro/
 
+# Wrangler local dev state (D1 sqlite, tmp bundles) — never commit.
+.wrangler/
+
 # Drizzle Kit cache.
 drizzle/
 
