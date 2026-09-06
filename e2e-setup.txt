@@ -1,0 +1,3 @@
+=== 0. wrangler entry exists? ===
+True
+=== 1. Local D1 migrations ===

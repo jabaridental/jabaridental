@@ -52,13 +52,13 @@ export const SEED: ContentMap = {
   ],
 
   hours: [
-    { id: "mon", day: "monday", label: "Monday", closed: false, open: "08:00", close: "18:00", open2: "", close2: "" },
-    { id: "tue", day: "tuesday", label: "Tuesday", closed: false, open: "08:00", close: "18:00", open2: "", close2: "" },
-    { id: "wed", day: "wednesday", label: "Wednesday", closed: false, open: "08:00", close: "18:00", open2: "", close2: "" },
-    { id: "thu", day: "thursday", label: "Thursday", closed: false, open: "08:00", close: "18:00", open2: "", close2: "" },
-    { id: "fri", day: "friday", label: "Friday", closed: false, open: "08:00", close: "18:00", open2: "", close2: "" },
-    { id: "sat", day: "saturday", label: "Saturday", closed: false, open: "09:00", close: "14:00", open2: "", close2: "" },
     { id: "sun", day: "sunday", label: "Sunday", closed: true, open: "", close: "", open2: "", close2: "" },
+    { id: "mon", day: "monday", label: "Monday", closed: false, open: "08:00", close: "20:00", open2: "", close2: "" },
+    { id: "tue", day: "tuesday", label: "Tuesday", closed: false, open: "08:00", close: "20:00", open2: "", close2: "" },
+    { id: "wed", day: "wednesday", label: "Wednesday", closed: false, open: "08:00", close: "20:00", open2: "", close2: "" },
+    { id: "thu", day: "thursday", label: "Thursday", closed: false, open: "08:00", close: "20:00", open2: "", close2: "" },
+    { id: "fri", day: "friday", label: "Friday", closed: false, open: "08:00", close: "20:00", open2: "", close2: "" },
+    { id: "sat", day: "saturday", label: "Saturday", closed: false, open: "08:00", close: "20:00", open2: "", close2: "" },
   ],
 
   specialHours: [],

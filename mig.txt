@@ -1,0 +1,24 @@
+
+ ⛅️ wrangler 4.59.2 (update available 4.129.0)
+──────────────────────────────────────────────
+Resource location: local 
+
+Use --remote if you want to access the remote instance.
+
+Migrations to be applied:
+┌──────────────────┐
+│ name             │
+├──────────────────┤
+│ 0000_initial.sql │
+└──────────────────┘
+? About to apply 1 migration(s)
+Your database may not be available to serve requests during the migration, continue?
+🤖 Using fallback value in non-interactive context: yes
+🌀 Executing on local database DB (56b86e4d-14ad-432e-b427-d67cc3b786f2) from .wrangler\state\v3\d1:
+🌀 To execute on your remote database, add a --remote flag to your wrangler command.
+🚣 29 commands executed successfully.
+┌──────────────────┬────────┐
+│ name             │ status │
+├──────────────────┼────────┤
+│ 0000_initial.sql │ ✅     │
+└──────────────────┴────────┘

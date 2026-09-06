@@ -1,0 +1,344 @@
+
+> jabari-dental@1.0.0 check
+> astro check
+
+[2m17:32:27[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[2m17:32:27[22m [34m[content][39m Syncing content
+[2m17:32:27[22m [34m[content][39m Astro config changed
+[2m17:32:27[22m [34m[content][39m Clearing content store
+[2m17:32:27[22m [34m[content][39m Synced content
+[2m17:32:27[22m [34m[types][39m Generated [2m444ms[22m
+[2m17:32:27[22m [34m[check][39m Getting diagnostics for Astro files in C:\Users\Lenovo\Desktop\jabaridental...
+[96mscripts/deploy.mjs[0m:[93m48[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'warn' is declared but its value is never read.
+
+[7m48[0m const warn  = (m) => console.log(`${C.yellow}!${C.reset} ${m}`);
+[7m  [0m [93m      ~~~~[0m
+
+[96mscripts/import-json-to-d1.mjs[0m:[93m52[0m:[93m10[0m - [93mwarning[0m[90m ts(6133): [0m'sqlEscape' is declared but its value is never read.
+
+[7m52[0m function sqlEscape(v) {
+[7m  [0m [93m         ~~~~~~~~~[0m
+
+[96mscripts/optimize-images.mjs[0m:[93m27[0m:[93m21[0m - [93mwarning[0m[90m ts(80007): [0m'await' has no effect on the type of this expression.
+
+[7m27[0m   const optimized = await sharp(buf)
+[7m  [0m [93m                    ~~~~~~~~~~~~~~~~[0m
+[7m28[0m     .rotate()
+[7m  [0m [93m~~~~~~~~~~~~~[0m
+[7m29[0m     .resize({ width: MAX_DIM, height: MAX_DIM, fit: "inside", withoutEnlargement: true })
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m30[0m     .jpeg({ quality: QUALITY, mozjpeg: true });
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/BeforeAfterSlider.astro[0m:[93m3[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'SmartImage' is declared but its value is never read.
+
+[7m3[0m import SmartImage from "@/components/SmartImage.astro";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/BeforeAfterSlider.astro[0m:[93m88[0m:[93m9[0m - [93mwarning[0m[90m ts(6133): [0m'active' is declared but its value is never read.
+
+[7m88[0m     let active = 0;
+[7m  [0m [93m        ~~~~~~[0m
+
+[96msrc/components/BookingWizard.astro[0m:[93m38[0m:[93m27[0m - [93mwarning[0m[90m ts(6133): [0m'i' is declared but its value is never read.
+
+[7m38[0m             {list.map((s, i) => (
+[7m  [0m [93m                          ~[0m
+
+[96msrc/components/Footer.astro[0m:[93m12[0m:[93m22[0m - [93mwarning[0m[90m ts(6133): [0m'maps' is declared but its value is never read.
+
+[7m12[0m const { tel, waHref, maps, emailHref, phoneDisplay } = getContactLinks(
+[7m  [0m [93m                     ~~~~[0m
+
+[96msrc/components/TreatmentGrid.astro[0m:[93m4[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'CtaButton' is declared but its value is never read.
+
+[7m4[0m import CtaButton from "@/components/CtaButton.astro";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/layouts/Base.astro[0m:[93m125[0m:[93m13[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m125[0m     <script type="application/ld+json" nonce={Astro.locals.cspNonce} set:html={jsonLdSafe} />
+[7m   [0m [93m            ~~~~[0m
+
+[96msrc/lib/db.ts[0m:[93m258[0m:[93m16[0m - [93mwarning[0m[90m ts(6133): [0m'mustDb' is declared but its value is never read.
+
+[7m258[0m async function mustDb(env: PlatformEnv) {
+[7m   [0m [93m               ~~~~~~[0m
+
+[96msrc/pages/search.astro[0m:[93m49[0m:[93m11[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m49[0m   <script type="application/json" data-search-data set:html={payloadJson}></script>
+[7m  [0m [93m          ~~~~[0m
+
+[96msrc/pages/studio/index.astro[0m:[93m552[0m:[93m37[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m552[0m         } catch (/** @type {any} */ err) {
+[7m   [0m [93m                                    ~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m543[0m:[93m45[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m543[0m       editorForm.addEventListener("submit", async (/** @type {Event} */ e) => {
+[7m   [0m [93m                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m503[0m:[93m22[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m503[0m       async function saveItem(/** @type {string} */ key, /** @type {string|null} */ id, /** @type {any} */ base, /** @type {HTMLFormElement} */ scope) {
+[7m   [0m [93m                     ~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m491[0m:[93m98[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m491[0m             out[f.name] = (form.querySelector(`[name="${f.name}"]`)?.value || "").split(",").map((/** @type {string} */ s)=>s.trim()).filter(Boolean);
+[7m   [0m [93m                                                                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m482[0m:[93m48[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m482[0m             out[f.name] = Array.from(rows).map((/** @type {Element} */ r) => ({
+[7m   [0m [93m                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m483[0m               question: /** @type {HTMLInputElement} */ (r.querySelector('[data-of="question"]')).value,
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m484[0m               answer: /** @type {HTMLTextAreaElement} */ (r.querySelector('[data-of="answer"]')).value,
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m485[0m             }));
+[7m   [0m [93m~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m467[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m467[0m       function collectForm(scope) {
+[7m   [0m [93m               ~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m443[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m443[0m       function preservedFields(key, base) {
+[7m   [0m [93m               ~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m421[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m421[0m       function defaultVal(f) {
+[7m   [0m [93m               ~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m405[0m:[93m37[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m405[0m         } catch (/** @type {any} */ e) {
+[7m   [0m [93m                                    ~[0m
+[96msrc/pages/studio/index.astro[0m:[93m402[0m:[93m40[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m402[0m           listEl.innerHTML = names.map((/** @type {string} */ n) => `<option value="${escapeHtml(n)}"></option>`).join("");
+[7m   [0m [93m                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m393[0m:[93m18[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m393[0m             .map((/** @type {any} */ t) => (typeof t?.name === "string" ? t.name : ""))
+[7m   [0m [93m                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m386[0m:[93m22[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m386[0m       async function wireTreatmentName() {
+[7m   [0m [93m                     ~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m366[0m:[93m66[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m366[0m         editorForm.querySelectorAll("[data-objrow-del]").forEach((/** @type {Element} */ b) => b.addEventListener("click", () => /** @type {HTMLElement} */ (b.closest("[data-objrow]")).remove()));
+[7m   [0m [93m                                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m361[0m:[93m67[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m361[0m         editorForm.querySelectorAll("[data-objlist-add]").forEach((/** @type {Element} */ b) => b.addEventListener("click", () => {
+[7m   [0m [93m                                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m362[0m           const wrap = editorForm.querySelector(`[data-objlist="${/** @type {HTMLButtonElement} */ (b).dataset.objlistAdd}"] [data-objlist-items]`);
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m364[0m           wrap.insertAdjacentHTML("beforeend", objRow({name: /** @type {HTMLButtonElement} */ (b).dataset.objlistAdd}, i, {}));
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m365[0m         }));
+[7m   [0m [93m~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m354[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m354[0m       function openEditor(item) {
+[7m   [0m [93m               ~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m351[0m:[93m11[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m351[0m       let baPrefill = null;
+[7m   [0m [93m          ~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m349[0m:[93m11[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m349[0m       let editingBase = null;
+[7m   [0m [93m          ~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m344[0m:[93m11[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m344[0m       let editingId = null;
+[7m   [0m [93m          ~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m328[0m:[93m37[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m328[0m             const name = items.find((/** @type {Item} */ x) => x.id === /** @type {HTMLButtonElement} */ (b).dataset.ba)?.name ?? "";
+[7m   [0m [93m                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m327[0m:[93m55[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m327[0m           panel.querySelectorAll("[data-ba]").forEach((/** @type {Element} */ b) => b.addEventListener("click", async () => {
+[7m   [0m [93m                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m328[0m             const name = items.find((/** @type {Item} */ x) => x.id === /** @type {HTMLButtonElement} */ (b).dataset.ba)?.name ?? "";
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m334[0m             openEditor(null);
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m335[0m           }));
+[7m   [0m [93m~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m324[0m:[93m55[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m324[0m         panel.querySelectorAll("[data-down]").forEach((/** @type {Element} */ b) => b.addEventListener("click", async () => { await api("PUT", `/api/content/${current}/${/** @type {HTMLButtonElement} */ (b).dataset.down}?reorder=1&dir=down`); load(); }));
+[7m   [0m [93m                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m323[0m:[93m53[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m323[0m         panel.querySelectorAll("[data-up]").forEach((/** @type {Element} */ b) => b.addEventListener("click", async () => { await api("PUT", `/api/content/${current}/${/** @type {HTMLButtonElement} */ (b).dataset.up}?reorder=1&dir=up`); load(); }));
+[7m   [0m [93m                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m318[0m:[93m54[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m318[0m         panel.querySelectorAll("[data-del]").forEach((/** @type {Element} */ b) => b.addEventListener("click", async () => {
+[7m   [0m [93m                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m319[0m           if (!confirm("Delete this item?")) return;
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m321[0m           load();
+[7m   [0m [93m~~~~~~~~~~~~~~~~~[0m
+[7m322[0m         }));
+[7m   [0m [93m~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m317[0m:[93m141[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m317[0m         panel.querySelectorAll("[data-edit]").forEach((/** @type {Element} */ b) => b.addEventListener("click", () => openEditor(items.find((/** @type {Item} */ x) => x.id === /** @type {HTMLButtonElement} */ (b).dataset.edit))));
+[7m   [0m [93m                                                                                                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m317[0m:[93m55[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m317[0m         panel.querySelectorAll("[data-edit]").forEach((/** @type {Element} */ b) => b.addEventListener("click", () => openEditor(items.find((/** @type {Item} */ x) => x.id === /** @type {HTMLButtonElement} */ (b).dataset.edit))));
+[7m   [0m [93m                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m293[0m:[93m73[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m293[0m         panel.innerHTML = `<div class="space-y-2 max-w-3xl">${items.map((/** @type {Item} */ it) => `
+[7m   [0m [93m                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m294[0m           <div class="flex items-center justify-between gap-3 bg-white border border-ink/10 rounded-lg px-4 py-3">
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m314[0m             </div>
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~[0m
+[7m315[0m           </div>`).join("")}</div>`;
+[7m   [0m [93m~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m272[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m272[0m       function renderList(items) {
+[7m   [0m [93m               ~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m262[0m:[93m39[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m262[0m           } catch (/** @type {any} */ err) {
+[7m   [0m [93m                                      ~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m251[0m:[93m47[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m251[0m         singleForm.addEventListener("submit", async (/** @type {Event} */ e) => {
+[7m   [0m [93m                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m243[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m243[0m       function renderSingleForm(obj) {
+[7m   [0m [93m               ~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m237[0m:[93m37[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m237[0m         } catch (/** @type {any} */ e) {
+[7m   [0m [93m                                    ~[0m
+[96msrc/pages/studio/index.astro[0m:[93m212[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m212[0m       function objRow(f, i, it) {
+[7m   [0m [93m               ~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m207[0m:[93m65[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m207[0m           <div class="space-y-2" data-objlist-items>${items.map((/** @type {any} */ it,/** @type {number} */ i)=>objRow(f,i,it)).join("")}</div>
+[7m   [0m [93m                                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m203[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m203[0m       function objectListField(f, items) {
+[7m   [0m [93m               ~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m183[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m183[0m       function imageField(f, val) {
+[7m   [0m [93m               ~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m174[0m:[93m187[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m174[0m         if (f.type === "select") return `${label}<select id="${id}" name="${f.name}" class="mt-1 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm">${(f.options||[]).map((/** @type {string} */ o)=>`<option value="${o}" ${val===o?"selected":""}>${o}</option>`).join("")}</select>`;
+[7m   [0m [93m                                                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m166[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m166[0m       function fieldInput(f, val) {
+[7m   [0m [93m               ~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m163[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m163[0m       function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+[7m   [0m [93m               ~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m159[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m159[0m       function getVal(/** @type {any} */ obj, /** @type {string} */ name) {
+[7m   [0m [93m               ~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m153[0m:[93m56[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m153[0m         nav.querySelectorAll("[data-section]").forEach((/** @type {Element} */ b) =>
+[7m   [0m [93m                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m154[0m           b.addEventListener("click", () => { current = /** @type {HTMLButtonElement} */ (b).dataset.section || current; renderNav(); load(); })
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m138[0m:[93m22[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m138[0m       async function api(/** @type {string} */ method, /** @type {string} */ url, /** @type {any} */ body) {
+[7m   [0m [93m                     ~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m130[0m:[93m17[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m130[0m       const $ = (s) => document.querySelector(s);
+[7m   [0m [93m                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m130[0m:[93m13[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m130[0m       const $ = (s) => document.querySelector(s);
+[7m   [0m [93m            ~[0m
+[96msrc/pages/studio/index.astro[0m:[93m128[0m:[93m11[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m128[0m       let current = "site";
+[7m   [0m [93m          ~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m121[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m121[0m       function titleField(/** @type {string} */ key) {
+[7m   [0m [93m               ~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m100[0m:[93m19[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m100[0m         const t = (name, label, type = "text", extra = {}) => ({ name, label, type, ...extra });
+[7m   [0m [93m                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m100[0m:[93m15[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m100[0m         const t = (name, label, type = "text", extra = {}) => ({ name, label, type, ...extra });
+[7m   [0m [93m              ~[0m
+[96msrc/pages/studio/index.astro[0m:[93m98[0m:[93m16[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m98[0m       function schema(/** @type {string} */ key) {
+[7m  [0m [93m               ~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m80[0m:[93m13[0m - [93mwarning[0m[90m ts(80004): [0mJSDoc types may be moved to TypeScript types.
+
+[7m80[0m       const SECTIONS = [
+[7m  [0m [93m            ~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m76[0m:[93m11[0m - [93mwarning[0m[90m ts(80009): [0mJSDoc typedef may be converted to TypeScript type.
+
+[7m76[0m       /** @typedef {{key:string,label:string,single?:boolean,fixed?:boolean}} Section */
+[7m  [0m [93m          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m75[0m:[93m11[0m - [93mwarning[0m[90m ts(80009): [0mJSDoc typedef may be converted to TypeScript type.
+
+[7m75[0m       /** @typedef {{id?:string,published?:boolean,featured?:boolean,approval?:string,active?:boolean,displayOrder?:number,[k:string]:any}} Item */
+[7m  [0m [93m          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/studio/index.astro[0m:[93m74[0m:[93m11[0m - [93mwarning[0m[90m ts(80009): [0mJSDoc typedef may be converted to TypeScript type.
+
+[7m74[0m       /** @typedef {{name:string,label:string,type:string,options?:string[]}} Field */
+[7m  [0m [93m          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96mtests/e2e/public.spec.ts[0m:[93m132[0m:[93m11[0m - [93mwarning[0m[90m ts(6133): [0m'bar' is declared but its value is never read.
+
+[7m132[0m     const bar = page.locator('[data-announcement-dismissable]');
+[7m   [0m [93m          ~~~[0m
+
+[96mtests/e2e/studio.spec.ts[0m:[93m27[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'resolve' is declared but its value is never read.
+
+[7m27[0m import { resolve } from "node:path";
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96mtests/e2e/studio.spec.ts[0m:[93m26[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'readFileSync' is declared but its value is never read.
+
+[7m26[0m import { readFileSync } from "node:fs";
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+Result (90 files): 
+- 0 errors
+- 0 warnings
+- 66 hints
+
+DONE 

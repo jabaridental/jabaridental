@@ -54,6 +54,21 @@ export const ARRAYS: ReadonlySet<CollectionKey> = new Set<CollectionKey>([
   "hours", "specialHours", "social",
 ]);
 
+/**
+ * Collections whose D1 tables have NO `display_order` column. Generic admin
+ * queries must never `ORDER BY display_order` for these — SQLite raises
+ * "no such column" and the Studio's GET for the section 500s. Reorder
+ * (up/down) is likewise unavailable for them.
+ */
+const NO_DISPLAY_ORDER: ReadonlySet<CollectionKey> = new Set<CollectionKey>([
+  "site", "hero", "contact", "hours", "specialHours", "announcements", "offers",
+]);
+
+/** Whether the up/down reorder API is valid for a collection. */
+export function supportsReorder(key: CollectionKey): boolean {
+  return !NO_DISPLAY_ORDER.has(key);
+}
+
 export function isCollectionKey(k: string): k is CollectionKey {
   return SINGLE.has(k as CollectionKey) || ARRAYS.has(k as CollectionKey);
 }
@@ -452,7 +467,12 @@ export async function listAll(key: CollectionKey, locals?: AnyLocals): Promise<a
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const tbl = tableFor(key);
-  const { results } = await env.db.prepare(`SELECT * FROM ${tbl} ORDER BY display_order ASC, id ASC`).all<any>();
+  // Only tables that actually have a display_order column may order by it —
+  // ordering by it on the tables in NO_DISPLAY_ORDER raised "no such column"
+  // and made whole Studio sections (hours, site, hero, contact, announcements,
+  // offers, special hours) fail to load.
+  const orderBy = NO_DISPLAY_ORDER.has(key) ? "id ASC" : "display_order ASC, id ASC";
+  const { results } = await env.db.prepare(`SELECT * FROM ${tbl} ORDER BY ${orderBy}`).all<any>();
   return results ?? [];
 }
 
@@ -561,7 +581,7 @@ export async function deleteItem(key: CollectionKey, id: string, locals?: AnyLoc
  * run statements sequentially.)
  */
 export async function reorderItem(key: CollectionKey, id: string, dir: "up" | "down", locals?: AnyLocals): Promise<boolean> {
-  if (SINGLE.has(key)) return false;
+  if (SINGLE.has(key) || !supportsReorder(key)) return false;
   const env = envOf(locals as any);
   if (!env.db) throw new Error("D1 not available");
   const tbl = tableFor(key);

@@ -1,0 +1,4 @@
+
+> jabari-dental@1.0.0 build
+> astro build --config astro.cloudflare.mjs && node scripts/write-assetsignore.mjs
+

@@ -1,0 +1,141 @@
+--- node/workerd/npx processes ---
+
+   Id Name    StartT
+              ime   
+   -- ----    ------
+ 2172 node    9/6...
+ 6724 node    9/6...
+ 8428 node    9/6...
+ 9740 node    9/6...
+ 9916 node    9/6...
+12648 node    9/6...
+12972 node    9/6...
+13404 node    9/6...
+17232 node    9/6...
+ 6120 workerd 9/6...
+15424 workerd 9/6...
+
+
+
+--- wrangler state ---
+
+FullName            
+--------            
+C:\Users\Lenovo\D...
+
+
+
+--- local-d1.txt ---
+
+--- wrangler-dev.log ---
+
+ ?>.??? wrangler 4.59.2 (update available 4.129.0)
+?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
+Using vars defined in .env
+Your Worker has access to the following bindings:
+Binding                                                           Resource                  Mode
+env.DB (jabari-dental-db)                                         D1 Database               local
+env.MEDIA_BUCKET (jabari-dental-media)                            R2 Bucket                 local
+env.ASSETS                                                        Assets                    local
+env.MEDIA_PUBLIC_BASE_URL ("https://media.jabaridental.com")      Environment Variable      local
+env.PUBLIC_PHONE ("(hidden)")                                     Environment Variable      local
+env.PUBLIC_WHATSAPP ("(hidden)")                                  Environment Variable      local
+env.ADMIN_SECRET ("(hidden)")                                     Environment Variable      local
+env.AUTH_SECRET ("(hidden)")                                      Environment Variable      local
+env.PUBLIC_SITE_URL ("(hidden)")                                  Environment Variable      local
+env.PUBLIC_MAPS_URL ("(hidden)")                                  Environment Variable      local
+env.CLOUDFLARE_API_TOKEN ("(hidden)")                             Environment Variable      local
+env.CLOUDFLARE_ACCOUNT_ID ("(hidden)")                            Environment Variable      local
+
+?Z" Starting local server...
+[wrangler:info] Ready on http://127.0.0.1:8787
+[wrangler:info] GET /api/health 200 OK (1967ms)
+[wrangler:info] GET /api/health 200 OK (5ms)
+[wrangler:info] GET /studio 302 Found (14ms)
+[wrangler:info] GET /studio/login 200 OK (32ms)
+[wrangler:info] GET /_astro/about.DX1g7KCq.css 200 OK (14ms)
+[wrangler:info] GET /_astro/page.DSySmlfp.js 200 OK (14ms)
+[wrangler:info] GET /favicon.ico 200 OK (8ms)
+[wrangler:info] POST /api/auth/login 200 OK (20ms)
+[wrangler:info] GET /studio 200 OK (10ms)
+[wrangler:info] GET /_astro/index.astro_astro_type_script_index_0_lang.BLarwnVj.js 200 OK (9ms)
+[wrangler:info] GET /_astro/about.DX1g7KCq.css 304 Not Modified (12ms)
+[wrangler:info] GET /_astro/page.DSySmlfp.js 304 Not Modified (16ms)
+[wrangler:info] GET /api/content/site 200 OK (41ms)
+[wrangler:info] POST /api/content/site 200 OK (31ms)
+[wrangler:info] GET /api/content/site 200 OK (10ms)
+[wrangler:info] GET /api/content/hours 200 OK (28ms)
+[wrangler:info] PUT /api/content/hours/fri 200 OK (68ms)
+[wrangler:info] GET /api/content/hours 200 OK (18ms)
+[wrangler:info] PUT /api/content/hours/fri 200 OK (34ms)
+[wrangler:info] GET /api/content/hours 200 OK (9ms)
+[wrangler:info] GET /api/content/treatments 200 OK (25ms)
+[wrangler:info] GET /api/content/beforeAfter 200 OK (22ms)
+[wrangler:info] GET /api/content/treatments 200 OK (27ms)
+[wrangler:info] POST /api/content/beforeAfter 201 Created (102ms)
+[wrangler:info] GET /api/content/beforeAfter 200 OK (14ms)
+[wrangler:info] GET /treatments/teeth-whitening 200 OK (167ms)
+[wrangler:info] GET /_astro/UtilityBar.astro_astro_type_script_index_0_lang.B0iCTOEn.js 200 OK (13ms)
+[wrangler:info] GET /_astro/about.DX1g7KCq.css 304 Not Modified (9ms)
+[wrangler:info] GET /_astro/page.DSySmlfp.js 304 Not Modified (9ms)
+[wrangler:info] GET /images/stock/article-whitening.jpg 200 OK (15ms)
+[wrangler:info] GET /images/stock/gallery-smile.jpg 200 OK (15ms)
+[wrangler:info] GET /images/stock/hero.jpg 200 OK (12ms)
+[wrangler:info] GET /manifest.webmanifest 200 OK (22ms)
+[wrangler:info] GET /_astro/status.Cw2zN1gY.js 200 OK (20ms)
+[wrangler:info] GET /images/stock/treatment-whitening.jpg 200 OK (8ms)
+[wrangler:info] GET /sw.js 200 OK (5ms)
+[wrangler:info] GET /offline.html 307 Temporary Redirect (7ms)
+[wrangler:info] GET / 200 OK (150ms)
+[wrangler:info] GET /icons/favicon.svg 200 OK (154ms)
+[wrangler:info] GET /icons/icon-192.png 200 OK (152ms)
+[wrangler:info] GET /manifest.webmanifest 304 Not Modified (157ms)
+[wrangler:info] GET /offline 200 OK (157ms)
+[wrangler:info] GET /icons/icon-192.png 304 Not Modified (7ms)
+[wrangler:info] GET /icons/icon-512.png 200 OK (6ms)
+[wrangler:info] GET /images/stock/treatment-general.jpg 200 OK (13ms)
+[wrangler:info] GET /images/stock/treatment-cosmetic.jpg 200 OK (15ms)
+[wrangler:info] GET /images/stock/treatment-ortho.jpg 200 OK (16ms)
+[wrangler:info] GET / 200 OK (175ms)
+[wrangler:info] GET /_astro/about.DX1g7KCq.css 304 Not Modified (175ms)
+[wrangler:info] GET /_astro/page.DSySmlfp.js 304 Not Modified (162ms)
+[wrangler:info] GET /_astro/UtilityBar.astro_astro_type_script_index_0_lang.B0iCTOEn.js 304 Not Modified (171ms)
+[wrangler:info] GET /images/stock/gallery-reception.jpg 200 OK (21ms)
+[wrangler:info] GET /_astro/MapSection.astro_astro_type_script_index_0_lang.CW2up4HG.js 200 OK (168ms)
+[wrangler:info] GET /images/stock/gallery-room.jpg 200 OK (34ms)
+[wrangler:info] GET /manifest.webmanifest 304 Not Modified (36ms)
+[wrangler:info] GET /images/stock/hero.jpg 304 Not Modified (155ms)
+[wrangler:info] GET /images/stock/gallery-light.jpg 200 OK (53ms)
+[wrangler:info] GET /images/stock/article-whitening.jpg 304 Not Modified (9ms)
+[wrangler:info] GET /images/stock/gallery-smile.jpg 304 Not Modified (7ms)
+[wrangler:info] GET /_astro/status.Cw2zN1gY.js 304 Not Modified (7ms)
+[wrangler:info] GET /icons/icon-192.png 304 Not Modified (6ms)
+[wrangler:info] GET /sw.js 304 Not Modified (8ms)
+[wrangler:info] GET /studio 200 OK (14ms)
+[wrangler:info] GET /_astro/about.DX1g7KCq.css 304 Not Modified (7ms)
+[wrangler:info] GET /_astro/page.DSySmlfp.js 304 Not Modified (6ms)
+[wrangler:info] GET /_astro/index.astro_astro_type_script_index_0_lang.BLarwnVj.js 304 Not Modified (9ms)
+[wrangler:info] GET /api/content/site 200 OK (23ms)
+[wrangler:info] GET /sw.js 304 Not Modified (7ms)
+[wrangler:info] GET /api/content/hero 200 OK (12ms)
+[wrangler:info] GET /api/content/contact 200 OK (13ms)
+[wrangler:info] GET /api/content/announcements 200 OK (11ms)
+[wrangler:info] GET /api/content/offers 200 OK (10ms)
+[wrangler:info] GET /api/content/specialHours 200 OK (8ms)
+[wrangler:info] GET /api/content/testimonials 200 OK (8ms)
+[wrangler:info] GET /api/content/articles 200 OK (9ms)
+[wrangler:info] GET /api/content/faqs 200 OK (9ms)
+[wrangler:info] GET /api/content/social 200 OK (10ms)
+[wrangler:info] GET /api/content/testimonials 200 OK (10ms)
+[wrangler:info] GET /studio 200 OK (14ms)
+[wrangler:info] GET /_astro/about.DX1g7KCq.css 200 OK (9ms)
+[wrangler:info] GET /_astro/page.DSySmlfp.js 200 OK (7ms)
+[wrangler:info] GET /_astro/index.astro_astro_type_script_index_0_lang.BLarwnVj.js 200 OK (11ms)
+[wrangler:info] GET /api/content/site 200 OK (16ms)
+[wrangler:info] GET /favicon.ico 200 OK (8ms)
+[wrangler:info] GET /api/content/testimonials 200 OK (16ms)
+[wrangler:info] GET /_astro/page.DSySmlfp.js 304 Not Modified (7ms)
+[wrangler:info] GET /_astro/index.astro_astro_type_script_index_0_lang.BLarwnVj.js 304 Not Modified (10ms)
+
+--- wrangler-dev.err.log ---
+
