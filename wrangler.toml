@@ -57,7 +57,7 @@ binding = "MEDIA_BUCKET"
 bucket_name = "jabari-dental-media"
 
 [vars]
-MEDIA_PUBLIC_BASE_URL = "https://media.jabaridental.com"
+MEDIA_PUBLIC_BASE_URL = "https://jabaridental.com/media"
 
 # Secrets (AUTH_SECRET, ADMIN_SECRET) are set via:
 #   wrangler secret put AUTH_SECRET

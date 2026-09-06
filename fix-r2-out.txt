@@ -1,0 +1,12 @@
+=== ATTACH CUSTOM DOMAIN media.jabaridental.com ===
+HTTP 200
+{"success":true,"errors":[],"messages":[],"result":{"domain":"media.jabaridental.com","enabled":true,"zoneId":"84daa0e0e4a92b95affa53a77e9f97fa"}}
+
+=== LIST CUSTOM DOMAINS ===
+HTTP 200
+{"success":true,"errors":[],"messages":[],"result":{"domains":[{"domain":"media.jabaridental.com","status":{"ssl":"pending","ownership":"pending"},"zoneId":"84daa0e0e4a92b95affa53a77e9f97fa","zoneName":"jabaridental.com"}]}}
+
+=== DNS RECORDS (media.*) ===
+HTTP 200
+{"result":[{"id":"45d371ac1858d8834ec1a1d0bbb0ca6b","name":"media.jabaridental.com","type":"CNAME","content":"public.r2.dev","proxiable":true,"proxied":true,"ttl":1,"settings":{"flatten_cname":false},"meta":{"r2_bucket":"jabari-dental-media","read_only":true},"comment":null,"tags":[],"created_on":"2026-09-06T15:41:39.359631Z","modified_on":"2026-09-06T15:41:39.359631Z"}],"success":true,"errors":[],"messages":[],"result_info":{"page":1,"per_page":100,"count":1,"total_count":1,"total_pages":1}}
+

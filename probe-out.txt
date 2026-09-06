@@ -1,0 +1,87 @@
+=== ACCOUNT 3f741a WORKERS ===
+HTTP 200
+{
+  "result": [
+    {
+      "created_on": "2026-09-01T21:17:09.488458Z",
+      "modified_on": "2026-09-06T15:34:54.520766Z",
+      "id": "jabaridental",
+      "tag": "494aea025780485da879401787366b6b",
+      "tags": [],
+      "deployment_id": "",
+      "tail_consumers": null,
+      "logpush": false,
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "redact_query_string": false,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true,
+          "invocation_logs": true
+        },
+        "traces": {
+          "enabled": false,
+          "persist": true,
+          "head_sampling_rate": 1
+        }
+      },
+      "has_assets": true,
+      "has_modules": true,
+      "etag": "1c1c13f0a369081a26fa8b6a8794a62fffbebe065e89990f38f3d07c51502541",
+      "handlers": [
+        "fetch"
+      ],
+      "named_handlers": [
+        {
+          "name": "pageMap",
+          "handlers": [
+            "get",
+            "set",
+            "has",
+            "delete",
+            "clear",
+            "entries",
+            "forEach",
+            "keys",
+            "size",
+            "values",
+            "getOrInsert",
+            "getOrInsertComputed"
+          ]
+        }
+      ],
+      "last_deployed_from": "wrangler",
+      "compatibility_date": "2025-08-01",
+      "compatibility_flags": [
+        "nodejs_compat"
+      ],
+      "usage_model": "standard",
+      "routes": null
+    }
+  ],
+  "success": true,
+  "errors": [],
+  "messages": []
+}
+
+
+=== ACCOUNT 3f741a D1 DATABASES ===
+HTTP 200
+{"result":[{"uuid":"56b86e4d-14ad-432e-b427-d67cc3b786f2","name":"jabari-dental-db","created_at":"2026-09-01T20:31:49.354Z","version":"production","num_tables":0,"file_size":233472,"jurisdiction":null}],"errors":[],"messages":[],"success":true,"result_info":{"count":1,"page":1,"per_page":100,"total_count":1}}
+
+=== ZONE WORKERS ROUTES ===
+HTTP 200
+{
+  "result": [],
+  "success": true,
+  "errors": [],
+  "messages": []
+}
+
+
+=== ZONE DNS RECORDS ===
+HTTP 200
+{"result":[{"id":"2ee1c249a9e175b865a534d0825b488d","name":"jabaridental.com","type":"MX","content":"eforward5.registrar-servers.com","priority":20,"proxiable":false,"proxied":false,"ttl":1,"settings":{},"meta":{},"comment":null,"tags":[],"created_on":"2026-08-30T13:53:40.120846Z","modified_on":"2026-08-30T13:53:40.120846Z"},{"id":"f31290cc666c7eb2dbc311ea2a3e98de","name":"jabaridental.com","type":"MX","content":"eforward4.registrar-servers.com","priority":15,"proxiable":false,"proxied":false,"ttl":1,"settings":{},"meta":{},"comment":null,"tags":[],"created_on":"2026-08-30T13:53:40.112184Z","modified_on":"2026-08-30T13:53:40.112184Z"},{"id":"64f60ee476e994daa9e197566b7440c7","name":"jabaridental.com","type":"MX","content":"eforward3.registrar-servers.com","priority":10,"proxiable":false,"proxied":false,"ttl":1,"settings":{},"meta":{},"comment":null,"tags":[],"created_on":"2026-08-30T13:53:40.104198Z","modified_on":"2026-08-30T13:53:40.104198Z"},{"id":"b3ec637a521f3b5e69870fee4871056b","name":"jabaridental.com","type":"MX","content":"eforward2.registrar-servers.com","priority":10,"proxiable":false,"proxied":false,"ttl":1,"settings":{},"meta":{},"comment":null,"tags":[],"created_on":"2026-08-30T13:53:40.094492Z","modified_on":"2026-08-30T13:53:40.094492Z"},{"id":"47248a0fd2e338320f3d537771e1c14f","name":"jabaridental.com","type":"MX","content":"eforward1.registrar-servers.com","priority":10,"proxiable":false,"proxied":false,"ttl":1,"settings":{},"meta":{},"comment":null,"tags":[],"created_on":"2026-08-30T13:53:40.085792Z","modified_on":"2026-08-30T13:53:40.085792Z"},{"id":"048f4c0aafa4c5cd652a83aeef8e626e","name":"jabaridental.com","type":"TXT","content":"\"v=spf1 include:spf.efwd.registrar-servers.com ~all\"","proxiable":false,"proxied":false,"ttl":1,"settings":{},"meta":{},"comment":null,"tags":[],"created_on":"2026-08-30T13:53:40.130197Z","modified_on":"2026-08-30T13:53:40.130197Z"},{"id":"f0096c6fe61c61f9f4c3758b7c49d720","name":"jabaridental.com","type":"AAAA","content":"100::","proxiable":true,"proxied":true,"ttl":1,"settings":{},"meta":{"origin_worker_id":"3f16c46bad94eeabae6a06b28c73b397d65adb91","read_only":true},"comment":null,"tags":[],"created_on":"2026-09-02T12:18:03.034462Z","modified_on":"2026-09-02T12:18:03.034462Z"},{"id":"74669d6d885890b7d7501f7f33f453fe","name":"www.jabaridental.com","type":"AAAA","content":"100::","proxiable":true,"proxied":true,"ttl":1,"settings":{},"meta":{"origin_worker_id":"05f32c5167a787d8897bc509223a8045b051e9a4","read_only":true},"comment":null,"tags":[],"created_on":"2026-09-02T12:18:04.35995Z","modified_on":"2026-09-02T12:18:04.35995Z"}],"success":true,"errors":[],"messages":[],"result_info":{"page":1,"per_page":100,"count":8,"total_count":8,"total_pages":1}}
+

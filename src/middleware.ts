@@ -21,7 +21,7 @@ function generateNonce(): string {
  * apply: object-src/base-uri are locked down and frame-ancestors prevents
  * clickjacking.
  */
-function buildCsp(nonce: string): string {
+function buildCsp(nonce: string, mediaOrigin: string): string {
   return [
     "default-src 'self'",
     // Scripts: same-origin bundles plus the per-request nonce. Inline scripts
@@ -35,7 +35,7 @@ function buildCsp(nonce: string): string {
     // Images: same-origin, data: (inline SVGs in CMS), and the R2 public
     // hostname (configured in wrangler.toml). This is what unblocks the
     // getPublicAssetUrl() URLs without leaking `*`.
-    `img-src 'self' data: blob: ${getR2HostForCsp()}`,
+    `img-src 'self' data: blob: ${mediaOrigin}`,
     "media-src 'self'",
     "connect-src 'self'",
     "form-action 'self'",
@@ -46,9 +46,14 @@ function buildCsp(nonce: string): string {
   ].join("; ");
 }
 
-/** Read MEDIA_PUBLIC_BASE_URL from env so CSP allows the R2 host. */
-function getR2HostForCsp(): string {
-  const url = process.env.MEDIA_PUBLIC_BASE_URL || "";
+/**
+ * Media origin for CSP img-src. We use the *resolved* platform binding
+ * (Astro.locals.platform.mediaPublicBaseUrl, populated from the Cloudflare
+ * env vars) rather than process.env — the binding is always present at
+ * runtime, whereas process.env is not reliably populated with worker vars.
+ */
+function getR2HostForCsp(mediaOriginInput: string): string {
+  const url = mediaOriginInput || "";
   if (!url) return "";
   try { return new URL(url).origin; } catch { return ""; }
 }
@@ -73,10 +78,10 @@ function addNonceToInlineScripts(html: string, nonce: string): string {
   });
 }
 
-function applySecurityHeaders(res: Response, isHttps: boolean, path: string, nonce: string): Response | Promise<Response> {
+function applySecurityHeaders(res: Response, isHttps: boolean, path: string, nonce: string, mediaOrigin: string): Response | Promise<Response> {
   const h = res.headers;
   // Don't clobber headers an upstream proxy/CDN may have set intentionally.
-  if (!h.has("content-security-policy")) h.set("content-security-policy", buildCsp(nonce));
+  if (!h.has("content-security-policy")) h.set("content-security-policy", buildCsp(nonce, mediaOrigin));
   if (!h.has("x-content-type-options")) h.set("x-content-type-options", "nosniff");
   if (!h.has("x-frame-options")) h.set("x-frame-options", "DENY");
   if (!h.has("referrer-policy")) h.set("referrer-policy", "strict-origin-when-cross-origin");
@@ -135,11 +140,37 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // for scripts in production while keeping the inline JSON-LD and theme
   // bootstrap working.
   locals.cspNonce = generateNonce();
+  // Resolve the media origin from the platform binding so img-src allows
+  // uploaded R2 images regardless of process.env availability.
+  const mediaOrigin = getR2HostForCsp(locals.platform.mediaPublicBaseUrl);
+
+  // Serve R2 media objects through the Worker (/media/* → R2 object).
+  // This makes uploaded images work without needing a custom R2 domain
+  // (media.jabaridental.com) which requires manual R2 activation in the dashboard.
+  if (path.startsWith("/media/")) {
+    const objectKey = path.slice("/media/".length);
+    if (!objectKey) {
+      return new Response("Not found", { status: 404 });
+    }
+    const bucket = locals.platform.mediaBucket;
+    if (!bucket) {
+      return new Response("R2 not configured", { status: 500 });
+    }
+    const object = await bucket.get(objectKey);
+    if (!object) {
+      return new Response("Not found", { status: 404 });
+    }
+    const headers = new Headers();
+    object.writeHttpMetadata(headers);
+    headers.set("cache-control", "public, max-age=31536000, immutable");
+    headers.set("etag", object.httpEtag);
+    return new Response(object.body, { headers });
+  }
 
   // API protection
   if (path.startsWith("/api/")) {
     if (PUBLIC_API.includes(path)) {
-      return applySecurityHeaders(await next(), isHttps, path, locals.cspNonce);
+      return applySecurityHeaders(await next(), isHttps, path, locals.cspNonce, mediaOrigin);
     }
     const authed = verifyToken(cookies.get(COOKIE_NAME)?.value, locals.platform);
     if (!authed) {
@@ -150,19 +181,20 @@ export const onRequest = defineMiddleware(async (context, next) => {
         }),
         isHttps,
         path,
-        locals.cspNonce
+        locals.cspNonce,
+        mediaOrigin
       );
     }
-    return applySecurityHeaders(await next(), isHttps, path, locals.cspNonce);
+    return applySecurityHeaders(await next(), isHttps, path, locals.cspNonce, mediaOrigin);
   }
 
   // Studio protection
   if (path.startsWith("/studio")) {
-    if (path === "/studio/login") return applySecurityHeaders(await next(), isHttps, path, locals.cspNonce);
+    if (path === "/studio/login") return applySecurityHeaders(await next(), isHttps, path, locals.cspNonce, mediaOrigin);
     const authed = verifyToken(cookies.get(COOKIE_NAME)?.value, locals.platform);
     if (!authed) return redirect("/studio/login");
-    return applySecurityHeaders(await next(), isHttps, path, locals.cspNonce);
+    return applySecurityHeaders(await next(), isHttps, path, locals.cspNonce, mediaOrigin);
   }
 
-  return applySecurityHeaders(await next(), isHttps, path, locals.cspNonce);
+  return applySecurityHeaders(await next(), isHttps, path, locals.cspNonce, mediaOrigin);
 });
